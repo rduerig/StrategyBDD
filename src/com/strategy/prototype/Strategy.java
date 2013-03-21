@@ -15,11 +15,13 @@ public class Strategy {
 	// TODO make a primitiveBoard to board mapper
 	// TODO make a board to BDD mapper (one for black and one for white)
 	public static void main(String[] args) {
+
 		/*
 		 * Get a primitive board, fields are represented as integers.
 		 */
-		int[][] primitiveBoard = new int[][] { { 0, 0, 0, 1 }, { 0, 0, 1, 0 },
-				{ 0, 1, 0, 0 }, { 1, 0, 0, 0 } };
+		int[][] primitiveBoard = new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
+				{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+
 		/*
 		 * Map the primitive board to the internal representation.
 		 */
@@ -28,7 +30,11 @@ public class Strategy {
 		System.out.println();
 
 		BoardAnalizer analizer = new BoardAnalizer(board);
-		System.out.println(analizer.getModelCount());
+		int currentModels = analizer.getModelCount();
+		System.out.println("Models count: " + currentModels);
+		if (0 < currentModels) {
+
+		}
 
 	}
 

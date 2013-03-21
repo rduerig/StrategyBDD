@@ -63,7 +63,7 @@ public class PrototypeBoard implements Board {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				sb.append(fields[i][j] + " ");
+				sb.append(fields[i][j] + "");
 			}
 			sb.append("\n");
 		}
