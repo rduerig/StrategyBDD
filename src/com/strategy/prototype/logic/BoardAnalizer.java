@@ -1,5 +1,8 @@
 package com.strategy.prototype.logic;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
@@ -7,7 +10,9 @@ import com.strategy.prototype.board.Board;
 
 public class BoardAnalizer {
 
-	private BDD[][] bdds;
+	private Map<Position, BDD> bdds;
+	private int rows;
+	private int cols;
 	private BDDFactory fac;
 
 	public BoardAnalizer(Board board) {
@@ -17,21 +22,27 @@ public class BoardAnalizer {
 
 	public int getModelCount() {
 		// TODO check real win situations
-		BDD white = fac.one();
+		Position pos = getUnseenSetPosition();
+		if(null == pos){
+			return 0;
+		}
+		
+		BDD path = bdds.get(pos);
 
-		white.andWith(bdds[3][0].id());
-		white.andWith(bdds[2][1].id());
-		white.andWith(bdds[1][2].id());
-		white.andWith(bdds[0][3].id());
+//		white.andWith(bdds[3][0].id());
+//		white.andWith(bdds[2][1].id());
+//		white.andWith(bdds[1][2].id());
+//		white.andWith(bdds[0][3].id());
+		
 
-		Double result = white.satCount();
+		Double result = path.satCount();
 		return result.intValue();
 	}
 
 	public int[] getBestPoint() {
 		int[] result = null;
-		for (int i = 0; i < bdds.length; i++) {
-			for (int j = 0; j < bdds[0].length; j++) {
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				if (isFreeField(i, j)) {
 					// set free field with white - evaluate and continue with
 					// another free field
@@ -59,11 +70,35 @@ public class BoardAnalizer {
 
 	private void initBdds(Board board, BDDFactory factory) {
 		BoardTransformer transformer = new BoardTransformer(board, factory);
-		bdds = transformer.getBDDBoard();
+		BDD[][] bddBoard = transformer.getBDDBoard();
+		rows = bddBoard.length;
+		cols = bddBoard[0].length;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				bdds.put(Position.get(i, j), bddBoard[i][j]);
+			}
+		}
 	}
 
 	private boolean isFreeField(int row, int col) {
-		return !bdds[row][col].isOne() && !bdds[row][col].isZero();
+		return !bdds.get(Position.get(row, col)).isOne() && !bdds.get(Position.get(row, col)).isZero();
 	}
+	
+	private boolean isInRange(Position pos) {
+		boolean rowsRange = pos.getRow() >= 0 && pos.getRow() < rows;
+		boolean ColsRange = pos.getCol() >= 0 && pos.getCol() < cols;
 
+		return rowsRange && ColsRange;
+	}
+	
+	private Position getUnseenSetPosition(){
+		for (Entry<Position, BDD> entry : bdds.entrySet()) {
+			if(!entry.getKey().isSeen() && entry.getValue().isOne()){
+				return entry.getKey();
+			}
+		}
+		
+		return null;
+	}
+	
 }
