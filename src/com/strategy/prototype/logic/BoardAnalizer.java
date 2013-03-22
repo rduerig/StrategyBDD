@@ -35,6 +35,33 @@ public class BoardAnalizer {
 //		white.andWith(bdds[0][3].id());
 		
 
+		/*
+		 * All Paths:
+		 * 
+		 * 
+
+    start -> end
+    Mark start node.
+    current = start.
+    String path += start // stringwise
+     
+    FindPath()
+     
+    FindPath(){
+      for each connection -> node j from current node
+        if j is not in path{
+          path += j  // stringwise
+          current = j
+          if (j = end) Print path
+          else FindPath() //recurse
+     
+          path -= j // stringwise, so we can reset to the original state.
+        }
+    }
+
+
+		 */
+		
 		Double result = path.satCount();
 		return result.intValue();
 	}
