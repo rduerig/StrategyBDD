@@ -20,7 +20,7 @@ public class Strategy {
 		 * Get a primitive board, fields are represented as integers.
 		 */
 		int[][] primitiveBoard = new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
-				{ 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+				{ 0, 0, 0, 0 }, { 1, 0, 0, 0 } };
 
 		/*
 		 * Map the primitive board to the internal representation.

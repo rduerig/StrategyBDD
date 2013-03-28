@@ -52,8 +52,17 @@ public class Position {
 	public Position getRight(){
 		return new Position(row, col+1);
 	}
+	
+	public boolean isNeighbour(Position other){
+		return other.equals(this.getUpper()) || other.equals(this.getLower()) || other.equals(this.getLeft()) || other.equals(this.getRight());
+	}
 
 	// ************************************************************************
+	
+	@Override
+	public String toString() {
+		return "("+row+", "+col+")";
+	}
 	
 	@Override
 	public int hashCode() {
