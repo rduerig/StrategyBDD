@@ -12,15 +12,17 @@ import com.strategy.prototype.logic.BoardAnalizer;
  */
 public class Strategy {
 
-	// TODO make a primitiveBoard to board mapper
 	// TODO make a board to BDD mapper (one for black and one for white)
 	public static void main(String[] args) {
 
 		/*
 		 * Get a primitive board, fields are represented as integers.
 		 */
-		int[][] primitiveBoard = new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
-				{ 0, 0, 0, 0 }, { 1, 0, 0, 0 } };
+		int[][] primitiveBoard = new int[][] {//
+				{ 0, 0, 0, 0 },//
+				{ 0, 0, 0, 0 },//				
+				{ 0, 0, 0, 0 },//
+				{ 1, 0, 0, 0 } };
 
 		/*
 		 * Map the primitive board to the internal representation.
