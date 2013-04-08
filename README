@@ -1,7 +1,9 @@
 havannahBDD
 8 April 2013
 
-This project is considered as a research project for personal interest and/or academic purpose. Its main goal is to provide an evaluation and a turn prediction for the board game Havannah.
+This project is considered as a research project for personal interest and/or 
+academic purpose. Its main goal is to provide an evaluation and a turn prediction
+for the board game Havannah.
 
 The following libraries are needed:
 - javabdd-1.0b2
