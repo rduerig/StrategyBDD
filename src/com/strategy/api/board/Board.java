@@ -1,6 +1,6 @@
-package com.strategy.prototype.board;
+package com.strategy.api.board;
 
-import com.strategy.prototype.field.Field;
+import com.strategy.api.field.Field;
 
 /**
  * Represents a board with fields that can be empty or contain a stone of a

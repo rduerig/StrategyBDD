@@ -8,39 +8,18 @@ import java.util.Map.Entry;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import com.strategy.prototype.board.Board;
+import com.strategy.api.board.Board;
+import com.strategy.api.logic.BoardAnalyzer;
+import com.strategy.api.logic.Position;
 
-/*
- * All Paths:
-
- start -> end
- Mark start node.
- current = start.
- String path += start // stringwise
-
- FindPath()
-
- FindPath(){
- for each connection -> node j from current node
- if j is not in path{
- path += j  // stringwise
- current = j
- if (j = end) Print path
- else FindPath() //recurse
-
- path -= j // stringwise, so we can reset to the original state.
- }
- }
- */
-
-public class BoardAnalizer {
+public class BoardAnalizerPrototype implements BoardAnalyzer {
 
 	private Map<Position, BDD> bdds;
 	private int rows;
 	private int cols;
 	private BDDFactory fac;
 
-	public BoardAnalizer(Board board) {
+	public BoardAnalizerPrototype(Board board) {
 		initFactory(board);
 		initBdds(board, fac);
 	}
@@ -55,10 +34,10 @@ public class BoardAnalizer {
 		// TODO check with dynamic position, here we use a fixed position for
 		// testing
 		// corner bottom left
-		p = Position.get(3, 0);
+		p = PositionSquare.get(3, 0);
 
 		// corner top right
-		Position q = Position.get(0, 3);
+		Position q = PositionSquare.get(0, 3);
 		// build the formula to check if there is a path from p to q
 		BDD path = getPathTransitiveClosure(p, q);
 		BDD someResult = path.satOne();
@@ -106,21 +85,22 @@ public class BoardAnalizer {
 	}
 
 	private void initBdds(Board board, BDDFactory factory) {
-		BoardTransformer transformer = new BoardTransformer(board, factory);
+		BoardTransformerPrototype transformer = new BoardTransformerPrototype(
+				board, factory);
 		BDD[][] bddBoard = transformer.getBDDBoard();
 		rows = bddBoard.length;
 		cols = bddBoard[0].length;
 		bdds = new HashMap<Position, BDD>(rows * cols);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				bdds.put(Position.get(i, j), bddBoard[i][j]);
+				bdds.put(PositionSquare.get(i, j), bddBoard[i][j]);
 			}
 		}
 	}
 
 	private boolean isFreeField(int row, int col) {
-		return !bdds.get(Position.get(row, col)).isOne()
-				&& !bdds.get(Position.get(row, col)).isZero();
+		return !bdds.get(PositionSquare.get(row, col)).isOne()
+				&& !bdds.get(PositionSquare.get(row, col)).isZero();
 	}
 
 	private Position getUnseenSetPosition() {
@@ -151,7 +131,7 @@ public class BoardAnalizer {
 			}
 		}
 
-		Position m = Position.get(i / rows, i % rows);
+		Position m = PositionSquare.get(i / rows, i % rows);
 		return recursiveTransitiveClosure(i - 1, p, q).orWith(
 				recursiveTransitiveClosure(i - 1, p, m).andWith(
 						recursiveTransitiveClosure(i - 1, m, q)));

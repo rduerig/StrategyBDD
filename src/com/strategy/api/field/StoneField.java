@@ -1,4 +1,4 @@
-package com.strategy.prototype.field;
+package com.strategy.api.field;
 
 /**
  * Represents a non empty field, i.e. a field that has a stone.

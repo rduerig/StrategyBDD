@@ -1,69 +1,79 @@
 package com.strategy.prototype.logic;
 
-public class Position {
+import com.strategy.api.logic.Position;
+
+public class PositionSquare implements Position {
 	private final int row;
 	private final int col;
 	private boolean seen;
-	
-	public static Position get(int row, int col){
-		return new Position(row, col);
+
+	public static Position get(int row, int col) {
+		return new PositionSquare(row, col);
 	}
-	
-	public Position(int row, int col) {
+
+	public PositionSquare(int row, int col) {
 		this.row = row;
 		this.col = col;
 		seen = false;
 	}
-	
+
+	@Override
 	public int getRow() {
 		return row;
 	}
-	
+
+	@Override
 	public int getCol() {
 		return col;
 	}
-	
+
 	// ************************************************************************
-	
+
+	@Override
 	public boolean isSeen() {
 		return seen;
 	}
-	
+
+	@Override
 	public void setSeen(boolean seen) {
 		this.seen = seen;
 	}
-	
-	public void setVisited(){
+
+	@Override
+	public void setVisited() {
 		setSeen(true);
 	}
-	
-	public Position getUpper(){
-		return new Position(row-1, col);
+
+	public Position getUpper() {
+		return new PositionSquare(row - 1, col);
 	}
-	
-	public Position getLower(){
-		return new Position(row+1, col);
+
+	public Position getLower() {
+		return new PositionSquare(row + 1, col);
 	}
-	
-	public Position getLeft(){
-		return new Position(row, col-1);
+
+	public Position getLeft() {
+		return new PositionSquare(row, col - 1);
 	}
-	
-	public Position getRight(){
-		return new Position(row, col+1);
+
+	public Position getRight() {
+		return new PositionSquare(row, col + 1);
 	}
-	
-	public boolean isNeighbour(Position other){
-		return other.equals(this.getUpper()) || other.equals(this.getLower()) || other.equals(this.getLeft()) || other.equals(this.getRight());
+
+	@Override
+	public boolean isNeighbour(Position other) {
+		return other.equals(this.getUpper()) || other.equals(this.getLower())
+				|| other.equals(this.getLeft())
+				|| other.equals(this.getRight());
 	}
 
 	// ************************************************************************
-	
+
 	@Override
 	public String toString() {
-		return "("+row+", "+col+")";
+		return "(" + row + ", " + col + ")";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -84,7 +94,7 @@ public class Position {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Position other = (Position) obj;
+		PositionSquare other = (PositionSquare) obj;
 		if (col != other.col) {
 			return false;
 		}
@@ -93,7 +103,5 @@ public class Position {
 		}
 		return true;
 	}
-	
-	
 
 }

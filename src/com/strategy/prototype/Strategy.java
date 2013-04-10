@@ -1,8 +1,8 @@
 package com.strategy.prototype;
 
-import com.strategy.prototype.board.Board;
-import com.strategy.prototype.board.PrototypeBoard;
-import com.strategy.prototype.logic.BoardAnalizer;
+import com.strategy.api.board.Board;
+import com.strategy.prototype.board.BoardPrototype;
+import com.strategy.prototype.logic.BoardAnalizerPrototype;
 
 /**
  * Gets a board situation and uses BDDs to check if there are models for winning
@@ -29,11 +29,11 @@ public class Strategy {
 		/*
 		 * Map the primitive board to the internal representation.
 		 */
-		Board board = PrototypeBoard.getInstance(primitiveBoard);
+		Board board = BoardPrototype.getInstance(primitiveBoard);
 		System.out.println("Given board:\n" + board);
 		System.out.println();
 
-		BoardAnalizer analizer = new BoardAnalizer(board);
+		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(board);
 		int currentModels = analizer.getModelCount();
 		System.out.println("Models count for path from (3,0) to (0,3): "
 				+ currentModels);

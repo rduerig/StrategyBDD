@@ -1,16 +1,17 @@
 package com.strategy.prototype.board;
 
-import com.strategy.prototype.field.BlackStone;
-import com.strategy.prototype.field.EmtpyField;
-import com.strategy.prototype.field.Field;
-import com.strategy.prototype.field.WhiteStone;
+import com.strategy.api.board.Board;
+import com.strategy.api.field.BlackStone;
+import com.strategy.api.field.EmptyField;
+import com.strategy.api.field.Field;
+import com.strategy.api.field.WhiteStone;
 
 /**
  * Represents a board.
  * 
  * @author Ralph Dürig
  */
-public class PrototypeBoard implements Board {
+public class BoardPrototype implements Board {
 
 	private static Board instance;
 
@@ -19,7 +20,7 @@ public class PrototypeBoard implements Board {
 	private final Field fields[][];
 
 	// Singleton
-	private PrototypeBoard(int[][] board) {
+	private BoardPrototype(int[][] board) {
 
 		if (board.length < 1 || board[0].length < 1) {
 			throw new IllegalArgumentException("Given board was empty!");
@@ -33,7 +34,7 @@ public class PrototypeBoard implements Board {
 
 	public static Board getInstance(int[][] board) {
 		if (null == instance) {
-			instance = new PrototypeBoard(board);
+			instance = new BoardPrototype(board);
 		}
 		return instance;
 	}
@@ -75,20 +76,21 @@ public class PrototypeBoard implements Board {
 	private void init(int[][] board) {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				Field field = getFieldForPrimitive(board[i][j]);
+				int index = i * rows + j;
+				Field field = getFieldForPrimitive(board[i][j], index);
 				fields[i][j] = field;
 			}
 		}
 	}
 
-	private Field getFieldForPrimitive(int primitiveField) {
+	private Field getFieldForPrimitive(int primitiveField, int index) {
 		switch (primitiveField) {
 		case 1:
-			return new WhiteStone();
+			return new WhiteStone(index);
 		case 2:
-			return new BlackStone();
+			return new BlackStone(index);
 		default:
-			return new EmtpyField();
+			return new EmptyField(index);
 		}
 	}
 

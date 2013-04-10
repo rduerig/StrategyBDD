@@ -3,16 +3,16 @@ package com.strategy.prototype.logic;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import com.strategy.prototype.board.Board;
-import com.strategy.prototype.field.BlackStone;
-import com.strategy.prototype.field.WhiteStone;
+import com.strategy.api.board.Board;
+import com.strategy.api.logic.BoardTransformer;
+import com.strategy.prototype.field.BDDFieldVisitor;
 
-public class BoardTransformer {
+public class BoardTransformerPrototype implements BoardTransformer {
 
 	private BDDFactory fac;
 	private Board board;
 
-	public BoardTransformer(Board board, BDDFactory fac) {
+	public BoardTransformerPrototype(Board board, BDDFactory fac) {
 		this.board = board;
 		this.fac = fac;
 	}
@@ -22,21 +22,15 @@ public class BoardTransformer {
 		 * Get a BDD matrix that represents the board: empty field -> BDD
 		 * variable, white stone -> BDD true, black stone -> BDD false
 		 */
+		BDDFieldVisitor visitor = new BDDFieldVisitor(fac);
 		BDD[][] bddBoard = new BDD[board.getRows()][board.getColumns()];
 		for (int i = 0; i < board.getRows(); i++) {
 			for (int j = 0; j < board.getColumns(); j++) {
-				if (board.getField(i, j) instanceof WhiteStone) {
-					// System.out.println("found white on: " + i + " - " + j);
-					bddBoard[i][j] = fac.one();
-				} else if (board.getField(i, j) instanceof BlackStone) {
-					bddBoard[i][j] = fac.zero();
-				} else {
-					bddBoard[i][j] = fac.ithVar(i * board.getRows() + j);
-				}
+				board.getField(i, j).accept(visitor);
+				bddBoard[i][j] = visitor.getBdd();
 			}
 		}
 
 		return bddBoard;
 	}
-
 }
