@@ -1,5 +1,7 @@
 package com.strategy.api.field;
 
+import com.strategy.api.logic.Position;
+
 /**
  * Represents a non emtpy field that is covered by a white stone.
  * 
@@ -7,10 +9,17 @@ package com.strategy.api.field;
  */
 public class WhiteStone implements StoneField {
 
+	private final Position pos;
 	private final Integer index;
 
-	public WhiteStone(Integer index) {
+	public WhiteStone(Position pos, Integer index) {
+		this.pos = pos;
 		this.index = index;
+	}
+
+	@Override
+	public Position getPosition() {
+		return pos;
 	}
 
 	@Override

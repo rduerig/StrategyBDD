@@ -1,5 +1,7 @@
 package com.strategy.api.field;
 
+import com.strategy.api.logic.Position;
+
 /**
  * Represents a non empty field that is covered by a black stone.
  * 
@@ -7,10 +9,17 @@ package com.strategy.api.field;
  */
 public class BlackStone implements StoneField {
 
+	private final Position pos;
 	private final Integer index;
 
-	public BlackStone(Integer index) {
+	public BlackStone(Position pos, Integer index) {
+		this.pos = pos;
 		this.index = index;
+	}
+
+	@Override
+	public Position getPosition() {
+		return pos;
 	}
 
 	@Override

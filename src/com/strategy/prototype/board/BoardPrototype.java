@@ -1,10 +1,13 @@
 package com.strategy.prototype.board;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import com.strategy.api.board.Board;
-import com.strategy.api.field.BlackStone;
-import com.strategy.api.field.EmptyField;
 import com.strategy.api.field.Field;
-import com.strategy.api.field.WhiteStone;
+import com.strategy.api.logic.Position;
+import com.strategy.prototype.logic.PositionSquare;
+import com.strategy.util.FieldGenerator;
 
 /**
  * Represents a board.
@@ -18,6 +21,7 @@ public class BoardPrototype implements Board {
 	private final int rows;
 	private final int columns;
 	private final Field fields[][];
+	private Collection<Position> positions;
 
 	// Singleton
 	private BoardPrototype(int[][] board) {
@@ -29,6 +33,7 @@ public class BoardPrototype implements Board {
 		rows = board.length;
 		columns = board[0].length;
 		fields = new Field[rows][columns];
+		positions = new HashSet<Position>();
 		init(board);
 	}
 
@@ -60,6 +65,11 @@ public class BoardPrototype implements Board {
 	}
 
 	@Override
+	public Collection<Position> getPositions() {
+		return positions;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < rows; i++) {
@@ -76,21 +86,12 @@ public class BoardPrototype implements Board {
 	private void init(int[][] board) {
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
-				int index = i * rows + j;
-				Field field = getFieldForPrimitive(board[i][j], index);
+				Position pos = PositionSquare.get(i, j);
+				Field field = FieldGenerator.create(board[i][j], pos, i * rows
+						+ j);
 				fields[i][j] = field;
+				positions.add(pos);
 			}
-		}
-	}
-
-	private Field getFieldForPrimitive(int primitiveField, int index) {
-		switch (primitiveField) {
-		case 1:
-			return new WhiteStone(index);
-		case 2:
-			return new BlackStone(index);
-		default:
-			return new EmptyField(index);
 		}
 	}
 

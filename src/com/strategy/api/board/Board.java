@@ -1,6 +1,9 @@
 package com.strategy.api.board;
 
+import java.util.Collection;
+
 import com.strategy.api.field.Field;
+import com.strategy.api.logic.Position;
 
 /**
  * Represents a board with fields that can be empty or contain a stone of a
@@ -62,5 +65,10 @@ public interface Board {
 	 * @return the vertical length
 	 */
 	int getRows();
+
+	/**
+	 * Returns all available positions on the board.
+	 */
+	Collection<Position> getPositions();
 
 }

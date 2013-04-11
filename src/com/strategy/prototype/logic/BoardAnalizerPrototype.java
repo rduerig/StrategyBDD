@@ -52,15 +52,15 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 
 	public int[] getBestPoint() {
 		int[] result = null;
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				if (isFreeField(i, j)) {
-					// set free field with white - evaluate and continue with
-					// another free field
-					// TODO getBestPoint
-				}
-			}
-		}
+		// for (int i = 0; i < rows; i++) {
+		// for (int j = 0; j < cols; j++) {
+		// if (isFreeField(i, j)) {
+		// // set free field with white - evaluate and continue with
+		// // another free field
+		// // TODO getBestPoint
+		// }
+		// }
+		// }
 
 		return result;
 	}
@@ -85,22 +85,20 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 	}
 
 	private void initBdds(Board board, BDDFactory factory) {
+		rows = board.getRows();
+		cols = board.getColumns();
 		BoardTransformerPrototype transformer = new BoardTransformerPrototype(
 				board, factory);
-		BDD[][] bddBoard = transformer.getBDDBoard();
-		rows = bddBoard.length;
-		cols = bddBoard[0].length;
-		bdds = new HashMap<Position, BDD>(rows * cols);
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				bdds.put(PositionSquare.get(i, j), bddBoard[i][j]);
-			}
-		}
+		Map<Position, BDD> bddBoard = transformer.getBDDBoard();
+		bdds = new HashMap<Position, BDD>(bddBoard);
 	}
 
 	private boolean isFreeField(int row, int col) {
-		return !bdds.get(PositionSquare.get(row, col)).isOne()
-				&& !bdds.get(PositionSquare.get(row, col)).isZero();
+		BDD field = bdds.get(PositionSquare.get(row, col));
+		if (null == field) {
+			return false;
+		}
+		return !field.isOne() && !field.isZero();
 	}
 
 	private Position getUnseenSetPosition() {
@@ -115,7 +113,11 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 	}
 
 	private BDD getBDDCopy(Position pos) {
-		return bdds.get(pos).id();
+		BDD bdd = bdds.get(pos);
+		if (null == bdd) {
+			return null;
+		}
+		return bdd.id();
 	}
 
 	private BDD getPathTransitiveClosure(Position p, Position q) {

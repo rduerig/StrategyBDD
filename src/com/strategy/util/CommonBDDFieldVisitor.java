@@ -1,23 +1,34 @@
-package com.strategy.prototype.field;
+/**
+ * 
+ */
+package com.strategy.util;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.field.BlackStone;
 import com.strategy.api.field.EmptyField;
-import com.strategy.api.field.FieldVisitor;
 import com.strategy.api.field.WhiteStone;
 
-public class BDDFieldVisitor implements FieldVisitor {
+/**
+ * @author Ralph Dürig
+ */
+public class CommonBDDFieldVisitor implements BDDFieldVisitor {
 
 	private final BDDFactory fac;
 	private BDD result;
 
-	public BDDFieldVisitor(BDDFactory fac) {
+	public CommonBDDFieldVisitor(BDDFactory fac) {
 		this.fac = fac;
 	}
 
-	public BDD getBdd() {
+	@Override
+	public BDD getBDD() {
+		if (null == result) {
+			throw new IllegalStateException(
+					"No BDD can be returned, a field must be visited before.");
+		}
 		return result;
 	}
 

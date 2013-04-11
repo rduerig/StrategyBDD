@@ -2,6 +2,12 @@ package com.strategy.prototype.logic;
 
 import com.strategy.api.logic.Position;
 
+/**
+ * Represents a position on a square board and provides the according
+ * neighborhood calculations.
+ * 
+ * @author Ralph Dürig
+ */
 public class PositionSquare implements Position {
 	private final int row;
 	private final int col;
@@ -27,8 +33,6 @@ public class PositionSquare implements Position {
 		return col;
 	}
 
-	// ************************************************************************
-
 	@Override
 	public boolean isSeen() {
 		return seen;
@@ -44,6 +48,15 @@ public class PositionSquare implements Position {
 		setSeen(true);
 	}
 
+	@Override
+	public boolean isNeighbour(Position other) {
+		return other.equals(this.getUpper()) || other.equals(this.getLower())
+				|| other.equals(this.getLeft())
+				|| other.equals(this.getRight());
+	}
+
+	// ************************************************************************
+
 	public Position getUpper() {
 		return new PositionSquare(row - 1, col);
 	}
@@ -58,13 +71,6 @@ public class PositionSquare implements Position {
 
 	public Position getRight() {
 		return new PositionSquare(row, col + 1);
-	}
-
-	@Override
-	public boolean isNeighbour(Position other) {
-		return other.equals(this.getUpper()) || other.equals(this.getLower())
-				|| other.equals(this.getLeft())
-				|| other.equals(this.getRight());
 	}
 
 	// ************************************************************************
