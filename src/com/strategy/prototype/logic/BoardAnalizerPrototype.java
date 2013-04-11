@@ -41,7 +41,7 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		// build the formula to check if there is a path from p to q
 		BDD path = getPathTransitiveClosure(p, q);
 		BDD someResult = path.satOne();
-		someResult.printSet();
+		// someResult.printSet();
 		List allsat = path.allsat();
 
 		int result = allsat.size();

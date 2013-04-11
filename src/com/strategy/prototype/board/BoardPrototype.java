@@ -10,7 +10,7 @@ import com.strategy.prototype.logic.PositionSquare;
 import com.strategy.util.FieldGenerator;
 
 /**
- * Represents a board.
+ * Represents a square board.
  * 
  * @author Ralph Dürig
  */
