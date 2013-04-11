@@ -6,4 +6,18 @@ academic purpose. Its main goal is to provide an evaluation and a turn predictio
 for the board game Havannah.
 
 The following libraries are needed:
-- javabdd-1.0b2
+- JavaBDD (javabdd-1.0b2, available at http://javabdd.sourceforge.net/)
+
+The above mentioned library JavaBDD wraps other bdd libraries such as CUDD
+and BuDDy. To be able to use BuDDy for instance, put the BuDDy library file in the
+projects root folder and set a system property for the JVM according to its name.
+
+Example:
+The BuDDy library is called libbdd.so. In the source code the property "bdd" is
+set to "bdd" via "System.setProperty("bdd","bdd")".
+
+Note that JavaBDD contains those *.so files for the wrapped bdd frameworks. 
+If you're running a 32-bit machine, everything is fine but to use those bdd
+frameworks with 64-bit machines you have to build them by yourself.
+If there is no such *.so file given, JavaBDD falls back to a pure java
+implementation.
