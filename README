@@ -7,6 +7,8 @@ for the board game Havannah.
 
 The following libraries are needed:
 - JavaBDD (javabdd-1.0b2, available at http://javabdd.sourceforge.net/)
+- Guava (guava-14.0.1)
+- JUnit (junit-4.11)
 
 The above mentioned library JavaBDD wraps other bdd libraries such as CUDD
 and BuDDy. To be able to use BuDDy for instance, put the BuDDy library file in the

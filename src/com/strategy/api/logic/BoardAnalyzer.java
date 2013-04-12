@@ -1,12 +1,18 @@
 package com.strategy.api.logic;
 
+import net.sf.javabdd.BDD;
 
 public interface BoardAnalyzer {
 
-	public int getModelCount();
+	/**
+	 * Returns the bdd representation of the reachability problem of the given
+	 * positions.
+	 */
+	public BDD getPath(Position p, Position q);
 
-	public int[] getBestPoint();
-
+	/**
+	 * Releases all used BDDs and frees memory.
+	 */
 	public void done();
 
 }

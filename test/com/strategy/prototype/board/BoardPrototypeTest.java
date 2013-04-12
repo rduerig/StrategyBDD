@@ -1,15 +1,15 @@
-/**
- * 
- */
 package com.strategy.prototype.board;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertEquals;
+import net.sf.javabdd.BDD;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.strategy.api.board.Board;
+import com.strategy.api.logic.Position;
 import com.strategy.prototype.logic.BoardAnalizerPrototype;
+import com.strategy.prototype.logic.PositionSquare;
 
 /**
  * Test for {@link BoardPrototype}.
@@ -35,10 +35,10 @@ public class BoardPrototypeTest {
 	}
 
 	@Test
-	public void testBoard() {
+	public void testModelCount() {
 
 		// it exists exactly one path from (3,0) to (0,3)
-		int expected = 1;
+		int expectedModelCount = 1;
 
 		/*
 		 * Map the primitive board to the internal representation.
@@ -47,12 +47,18 @@ public class BoardPrototypeTest {
 		// System.out.println("Given board:\n" + board);
 		// System.out.println();
 
+		// corner bottom left
+		Position p = PositionSquare.get(3, 0);
+		// corner top right
+		Position q = PositionSquare.get(0, 3);
+
 		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(board);
-		int actual = analizer.getModelCount();
+		BDD path = analizer.getPath(p, q);
+		int actual = path.allsat().size();
 		// System.out.println("Models count for path from (3,0) to (0,3): "
 		// + currentModels);
 
-		Assert.assertEquals(expected, actual);
+		assertEquals(expectedModelCount, actual);
 	}
 
 }

@@ -1,7 +1,6 @@
 package com.strategy.prototype.logic;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,30 +23,22 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		initBdds(board, fac);
 	}
 
-	public int getModelCount() {
-		// TODO check real win situations
-		Position p = getUnseenSetPosition();
-		if (null == p) {
-			return 0;
-		}
+	// public int getModelCountReachability(Position p, Position q) {
+	// // build the formula to check if there is a path from p to q
+	// BDD path = getPathTransitiveClosure(p, q);
+	// BDD someResult = path.satOne();
+	// // someResult.printSet();
+	// List allsat = path.allsat();
+	//
+	// int result = allsat.size();
+	// path.free();
+	// someResult.free();
+	// return result;
+	// }
 
-		// TODO check with dynamic position, here we use a fixed position for
-		// testing
-		// corner bottom left
-		p = PositionSquare.get(3, 0);
-
-		// corner top right
-		Position q = PositionSquare.get(0, 3);
-		// build the formula to check if there is a path from p to q
+	public BDD getPath(Position p, Position q) {
 		BDD path = getPathTransitiveClosure(p, q);
-		BDD someResult = path.satOne();
-		// someResult.printSet();
-		List allsat = path.allsat();
-
-		int result = allsat.size();
-		path.free();
-		someResult.free();
-		return result;
+		return path;
 	}
 
 	public int[] getBestPoint() {
