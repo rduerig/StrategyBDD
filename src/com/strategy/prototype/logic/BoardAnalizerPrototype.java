@@ -115,6 +115,10 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		return recursiveTransitiveClosure(rows * cols - 1, p, q);
 	}
 
+	/*
+	 * TODO performance - doesn't work for boards bigger than 4x4, for every
+	 * additional field exactly 3 times more recursions are to be done
+	 */
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q) {
 		if (i == 0) {
 			if (p.isNeighbour(q)) {

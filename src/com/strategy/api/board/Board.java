@@ -53,6 +53,14 @@ public interface Board {
 	Field getField(int row, int col);
 
 	/**
+	 * Overwrites a field on the board on the same position as the given field.
+	 * 
+	 * @param newField
+	 *            field to set
+	 */
+	void setField(Field newField);
+
+	/**
 	 * Returns the horizontal length of the board.
 	 * 
 	 * @return the horizontal length

@@ -6,6 +6,8 @@ package com.strategy.havannah.board;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.strategy.api.board.Board;
+
 /**
  * Test for {@link BoardHavannah}.
  * 
@@ -93,6 +95,31 @@ public class BoardHavannahTest {
 		board[2 * b - 2][2 * b - 2] = 0;
 
 		assertMatrixEquals(expected, board);
+	}
+
+	@Test
+	public void testBoardConstruction() {
+		int[][] rawBoard = new int[][] {//
+		/*    */{ 2, 2, 2, 1, 1 },//
+				{ 2, 2, 2, 2, 1 },//
+				{ 2, 2, 2, 2, 2 },//
+				{ 1, 2, 2, 2, 2 },//
+				{ 1, 1, 2, 2, 2 } };
+
+		Board board = BoardHavannah.createInstance(rawBoard, 3);
+		System.out.println(board);
+
+		/*
+		 * (0,3), (0,4), (1,4), (3,0), (4,0), (4,1) not valid, must be null
+		 */
+
+		Assert.assertNull(board.getField(0, 3));
+		Assert.assertNull(board.getField(0, 4));
+		Assert.assertNull(board.getField(1, 4));
+		Assert.assertNull(board.getField(3, 0));
+		Assert.assertNull(board.getField(4, 0));
+		Assert.assertNull(board.getField(4, 1));
+
 	}
 
 	// ************************************************************************

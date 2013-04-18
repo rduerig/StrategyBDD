@@ -21,6 +21,7 @@ public class BoardPrototypeTest {
 
 	private Board PRIMITIVE_BOARD_PATHS_ONE;
 	private Board PRIMITIVE_BOARD_PATHS_ALL;
+	private Board PRIMITIVE_BOARD_PATHS_BIG;
 
 	@Before
 	public void init() {
@@ -40,6 +41,13 @@ public class BoardPrototypeTest {
 						{ 0, 0, 0, 0 },//
 						{ 0, 0, 0, 0 },//
 						{ 0, 0, 0, 0 } });
+
+		PRIMITIVE_BOARD_PATHS_BIG = BoardPrototype.createInstance(new int[][] {//
+				/*    */{ 0, 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0, 0 } });
 	}
 
 	@Test

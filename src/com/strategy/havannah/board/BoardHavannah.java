@@ -33,8 +33,22 @@ public class BoardHavannah implements Board {
 		init(board);
 	}
 
+	private BoardHavannah(int[][] board, int boardSize) {
+		if (null == board || board.length < 1 || board[0].length < 1) {
+			throw new IllegalArgumentException("Given board was empty!");
+		}
+
+		this.boardSize = boardSize;
+		fields = new HashMap<Position, Field>();
+		init(board, boardSize);
+	}
+
 	public static Board createInstance(Map<Position, Integer> board,
 			int boardSize) {
+		return new BoardHavannah(board, boardSize);
+	}
+
+	public static Board createInstance(int[][] board, int boardSize) {
 		return new BoardHavannah(board, boardSize);
 	}
 
@@ -47,13 +61,19 @@ public class BoardHavannah implements Board {
 	}
 
 	@Override
+	public void setField(Field newField) {
+		Position key = newField.getPosition();
+		fields.put(key, newField);
+	}
+
+	@Override
 	public int getColumns() {
-		return boardSize;
+		return (2 * boardSize) - 1;
 	}
 
 	@Override
 	public int getRows() {
-		return boardSize;
+		return (2 * boardSize) - 1;
 	}
 
 	@Override
@@ -66,14 +86,62 @@ public class BoardHavannah implements Board {
 		return fields.keySet();
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getColumns(); j++) {
+				Field field = getField(i, j);
+				if (null != field) {
+					sb.append(field + "");
+				} else {
+					sb.append("   ");
+				}
+			}
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
 	// ************************************************************************
 
 	private void init(Map<Position, Integer> board) {
-		int index = 0;
 		for (Entry<Position, Integer> entry : board.entrySet()) {
-			Field field = FieldGenerator.create(entry.getValue(),
-					entry.getKey(), index++);
+			Position pos = entry.getKey();
+			Field field = FieldGenerator.create(entry.getValue(), pos,
+					getRows() * pos.getRow() + pos.getCol());
 			fields.put(field.getPosition(), field);
 		}
+	}
+
+	private void init(int[][] board, int boardSize) {
+		int limit = ((2 * boardSize) - 1);
+
+		for (int i = 0; i < limit; i++) {
+			if (i < boardSize - 1) {
+				for (int j = 0; j < ((boardSize + i) % limit); j++) {
+					Position pos = PositionHexagon.get(i, j);
+					Field field = FieldGenerator.create(board[i][j], pos,
+							getRows() * i + j);
+					fields.put(pos, field);
+				}
+			} else if (i == boardSize - 1) {
+				for (int j = 0; j < limit; j++) {
+					Position pos = PositionHexagon.get(i, j);
+					Field field = FieldGenerator.create(board[i][j], pos,
+							getRows() * i + j);
+					fields.put(pos, field);
+				}
+			} else {
+				for (int j = ((boardSize + i) % limit); j < limit; j++) {
+					Position pos = PositionHexagon.get(i, j);
+					Field field = FieldGenerator.create(board[i][j], pos,
+							getRows() * i + j);
+					fields.put(pos, field);
+				}
+			}
+		}
+
 	}
 }

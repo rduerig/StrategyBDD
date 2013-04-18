@@ -117,7 +117,7 @@ public class BoardAnalizerHavannah implements BoardAnalyzer {
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q) {
 		if (i == 0) {
-			if (p.isNeighbour(q)) {
+			if (p.isNeighbour(q) && bdds.containsKey(p) && bdds.containsKey(q)) {
 				return getBDDCopy(p).andWith(getBDDCopy(q));
 			} else {
 				return fac.zero();

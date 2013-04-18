@@ -23,7 +23,7 @@ public class BoardPrototype implements Board {
 
 	private BoardPrototype(int[][] board) {
 
-		if (board.length < 1 || board[0].length < 1) {
+		if (null == board || board.length < 1 || board[0].length < 1) {
 			throw new IllegalArgumentException("Given board was empty!");
 		}
 
@@ -46,6 +46,15 @@ public class BoardPrototype implements Board {
 			return null;
 		}
 		return fields[row][col];
+	}
+
+	@Override
+	public void setField(Field newField) {
+		int row = newField.getPosition().getRow();
+		int col = newField.getPosition().getCol();
+		if (isInRange(row, col)) {
+			fields[row][col] = newField;
+		}
 	}
 
 	@Override
