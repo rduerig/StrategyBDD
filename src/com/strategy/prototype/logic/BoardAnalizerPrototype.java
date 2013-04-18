@@ -71,7 +71,7 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		// b.getRows() * b.getColumns() -> works when we have a square board
 		int dimension = board.getRows() * board.getColumns();
 		// dimension * 10 because we don't yet really know how much nodes we get
-		fac = BDDFactory.init(dimension * 10, dimension * 10);
+		fac = BDDFactory.init(dimension * 1000, dimension * 1000);
 		fac.setVarNum(dimension);
 	}
 

@@ -16,14 +16,11 @@ import com.strategy.util.FieldGenerator;
  */
 public class BoardPrototype implements Board {
 
-	private static Board instance;
-
 	private final int rows;
 	private final int columns;
 	private final Field fields[][];
 	private Collection<Position> positions;
 
-	// Singleton
 	private BoardPrototype(int[][] board) {
 
 		if (board.length < 1 || board[0].length < 1) {
@@ -37,11 +34,8 @@ public class BoardPrototype implements Board {
 		init(board);
 	}
 
-	public static Board getInstance(int[][] board) {
-		if (null == instance) {
-			instance = new BoardPrototype(board);
-		}
-		return instance;
+	public static Board createInstance(int[][] board) {
+		return new BoardPrototype(board);
 	}
 
 	// ************************************************************************
@@ -61,6 +55,11 @@ public class BoardPrototype implements Board {
 
 	@Override
 	public int getRows() {
+		return rows;
+	}
+
+	@Override
+	public int getBoardSize() {
 		return rows;
 	}
 

@@ -33,7 +33,7 @@ public class Strategy {
 		/*
 		 * Map the primitive board to the internal representation.
 		 */
-		Board board = BoardPrototype.getInstance(primitiveBoard);
+		Board board = BoardPrototype.createInstance(primitiveBoard);
 		System.out.println("Given board:\n" + board);
 		System.out.println();
 

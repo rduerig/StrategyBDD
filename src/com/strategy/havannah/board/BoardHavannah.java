@@ -20,7 +20,6 @@ import com.strategy.util.FieldGenerator;
  */
 public class BoardHavannah implements Board {
 
-	private static Board instance;
 	private int boardSize;
 	private Map<Position, Field> fields;
 
@@ -34,11 +33,9 @@ public class BoardHavannah implements Board {
 		init(board);
 	}
 
-	public static Board getInstance(Map<Position, Integer> board, int boardSize) {
-		if (null == instance) {
-			instance = new BoardHavannah(board, boardSize);
-		}
-		return instance;
+	public static Board createInstance(Map<Position, Integer> board,
+			int boardSize) {
+		return new BoardHavannah(board, boardSize);
 	}
 
 	// ************************************************************************
@@ -56,6 +53,11 @@ public class BoardHavannah implements Board {
 
 	@Override
 	public int getRows() {
+		return boardSize;
+	}
+
+	@Override
+	public int getBoardSize() {
 		return boardSize;
 	}
 

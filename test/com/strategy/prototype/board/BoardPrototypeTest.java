@@ -2,6 +2,7 @@ package com.strategy.prototype.board;
 
 import static org.junit.Assert.assertEquals;
 import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +19,8 @@ import com.strategy.prototype.logic.PositionSquare;
  */
 public class BoardPrototypeTest {
 
-	private static int[][] PRIMITIVE_BOARD_PATHS_ONE;
+	private Board PRIMITIVE_BOARD_PATHS_ONE;
+	private Board PRIMITIVE_BOARD_PATHS_ALL;
 
 	@Before
 	public void init() {
@@ -27,37 +29,85 @@ public class BoardPrototypeTest {
 		/*
 		 * Get a primitive board, fields are represented as integers.
 		 */
-		PRIMITIVE_BOARD_PATHS_ONE = new int[][] {//
-		/*    */{ 2, 1, 2, 0 },//
-				{ 0, 2, 1, 0 },//
-				{ 1, 0, 1, 0 },//
-				{ 1, 0, 2, 2 } };
+		PRIMITIVE_BOARD_PATHS_ONE = BoardPrototype.createInstance(new int[][] {//
+				/*    */{ 2, 1, 2, 0 },//
+						{ 0, 2, 1, 0 },//
+						{ 1, 0, 1, 0 },//
+						{ 1, 0, 2, 2 } });
+
+		PRIMITIVE_BOARD_PATHS_ALL = BoardPrototype.createInstance(new int[][] {//
+				/*    */{ 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0 },//
+						{ 0, 0, 0, 0 } });
 	}
 
 	@Test
-	public void testModelCount() {
+	public void testModelCountSample() {
 
 		// it exists exactly one path from (3,0) to (0,3)
 		int expectedModelCount = 1;
-
-		/*
-		 * Map the primitive board to the internal representation.
-		 */
-		Board board = BoardPrototype.getInstance(PRIMITIVE_BOARD_PATHS_ONE);
-		// System.out.println("Given board:\n" + board);
-		// System.out.println();
 
 		// corner bottom left
 		Position p = PositionSquare.get(3, 0);
 		// corner top right
 		Position q = PositionSquare.get(0, 3);
 
-		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(board);
+		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(
+				PRIMITIVE_BOARD_PATHS_ONE);
 		BDD path = analizer.getPath(p, q);
 		int actual = path.allsat().size();
 		// System.out.println("Models count for path from (3,0) to (0,3): "
 		// + currentModels);
+		analizer.done();
+		path.free();
 
+		assertEquals(expectedModelCount, actual);
+	}
+
+	@Test
+	public void testModelCountAll() {
+
+		// there are 260 possible paths from bottom left to top right on a 4x4
+		// board
+		int expectedModelCount = 260;
+
+		Position p = PositionSquare.get(3, 0);
+		Position q = PositionSquare.get(0, 3);
+
+		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(
+				PRIMITIVE_BOARD_PATHS_ALL);
+		BDD path = analizer.getPath(p, q);
+		int actual = path.allsat().size();
+		analizer.done();
+		path.free();
+
+		assertEquals(expectedModelCount, actual);
+	}
+
+	@Test
+	public void testModelCountChanging() {
+
+		// there are 260 possible paths from bottom left to top right on a 4x4
+		// board
+		int expectedModelCount = 260;
+
+		Position p = PositionSquare.get(3, 0);
+		Position q = PositionSquare.get(0, 3);
+
+		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(
+				PRIMITIVE_BOARD_PATHS_ALL);
+		BDD path = analizer.getPath(p, q);
+		int actual = path.allsat().size();
+		assertEquals(expectedModelCount, actual);
+
+		expectedModelCount = 58;
+		BDDFactory fac = path.getFactory();
+		BDD restricted = path.restrict(fac.ithVar(2).not());
+		actual = restricted.allsat().size();
+		analizer.done();
+		path.free();
+		restricted.free();
 		assertEquals(expectedModelCount, actual);
 	}
 

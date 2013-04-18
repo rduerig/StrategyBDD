@@ -67,6 +67,14 @@ public interface Board {
 	int getRows();
 
 	/**
+	 * Returns the size of the board. In case of a square board, it's the length
+	 * of one edge. The same applies to hexagonal boards.
+	 * 
+	 * @return the board's size
+	 */
+	int getBoardSize();
+
+	/**
 	 * Returns all available positions on the board.
 	 */
 	Collection<Position> getPositions();

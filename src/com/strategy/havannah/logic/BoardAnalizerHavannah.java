@@ -1,4 +1,4 @@
-package com.strategy.prototype.logic;
+package com.strategy.havannah.logic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,24 +8,19 @@ import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
 import com.strategy.api.board.Board;
-import com.strategy.api.logic.BDDCache;
 import com.strategy.api.logic.BoardAnalyzer;
-import com.strategy.api.logic.HasBDDCache;
 import com.strategy.api.logic.Position;
 
-public class BoardAnalizerPrototypeWithCache implements BoardAnalyzer,
-		HasBDDCache {
+public class BoardAnalizerHavannah implements BoardAnalyzer {
 
 	private Map<Position, BDD> bdds;
 	private int rows;
 	private int cols;
 	private BDDFactory fac;
-	private BDDCache cache;
 
-	public BoardAnalizerPrototypeWithCache(Board board) {
+	public BoardAnalizerHavannah(Board board) {
 		initFactory(board);
 		initBdds(board, fac);
-		cache = new BDDCachePrototype();
 	}
 
 	// public int getModelCountReachability(Position p, Position q) {
@@ -76,21 +71,21 @@ public class BoardAnalizerPrototypeWithCache implements BoardAnalyzer,
 		// b.getRows() * b.getColumns() -> works when we have a square board
 		int dimension = board.getRows() * board.getColumns();
 		// dimension * 10 because we don't yet really know how much nodes we get
-		fac = BDDFactory.init(dimension * 10, dimension * 10);
+		fac = BDDFactory.init(dimension * 1000, dimension * 1000);
 		fac.setVarNum(dimension);
 	}
 
 	private void initBdds(Board board, BDDFactory factory) {
 		rows = board.getRows();
 		cols = board.getColumns();
-		BoardTransformerPrototype transformer = new BoardTransformerPrototype(
+		BoardTransformerHavannah transformer = new BoardTransformerHavannah(
 				board, factory);
 		Map<Position, BDD> bddBoard = transformer.getBDDBoard();
 		bdds = new HashMap<Position, BDD>(bddBoard);
 	}
 
 	private boolean isFreeField(int row, int col) {
-		BDD field = bdds.get(PositionSquare.get(row, col));
+		BDD field = bdds.get(PositionHexagon.get(row, col));
 		if (null == field) {
 			return false;
 		}
@@ -122,40 +117,23 @@ public class BoardAnalizerPrototypeWithCache implements BoardAnalyzer,
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q) {
 		if (i == 0) {
-			if (cache.isCached(p, q)) {
-				return cache.restore(p, q);
-			}
 			if (p.isNeighbour(q)) {
-				BDD andBdd = getBDDCopy(p).andWith(getBDDCopy(q));
-				cache.store(p, q, andBdd);
-				return andBdd;
+				return getBDDCopy(p).andWith(getBDDCopy(q));
 			} else {
-				BDD zero = fac.zero();
-				cache.store(p, q, zero);
-				return zero;
+				return fac.zero();
 			}
 		}
 
-		Position m = PositionSquare.get(i / rows, i % rows);
-		BDD bddPQ = findOrStore(p, q, recursiveTransitiveClosure(i - 1, p, q));
-		BDD bddPM = findOrStore(p, m, recursiveTransitiveClosure(i - 1, p, m));
-		BDD bddMQ = findOrStore(m, q, recursiveTransitiveClosure(i - 1, m, q));
-		BDD result = bddPQ.orWith(bddPM.andWith(bddMQ));
-		return result;
+		Position m = PositionHexagon.get(i / rows, i % rows);
+		return recursiveTransitiveClosure(i - 1, p, q).orWith(
+				recursiveTransitiveClosure(i - 1, p, m).andWith(
+						recursiveTransitiveClosure(i - 1, m, q)));
 	}
 
 	private void freeAll() {
 		for (Entry<Position, BDD> entry : bdds.entrySet()) {
 			entry.getValue().free();
 		}
-	}
-
-	@Override
-	public BDD findOrStore(Position p, Position q, BDD defaultValue) {
-		if (cache.isCached(p, q)) {
-			return cache.restore(p, q);
-		}
-		return defaultValue;
 	}
 
 }
