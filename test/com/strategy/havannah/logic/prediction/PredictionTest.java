@@ -1,6 +1,7 @@
-package com.strategy.havannah.logic;
+package com.strategy.havannah.logic.prediction;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.strategy.api.board.Board;
@@ -8,7 +9,7 @@ import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
-import com.strategy.havannah.logic.prediction.PredictionHavannah;
+import com.strategy.havannah.logic.BoardAnalizerHavannah;
 import com.strategy.util.FieldGenerator;
 
 /**
@@ -18,15 +19,20 @@ public class PredictionTest {
 
 	private static int[][] BOARD_5x5 = new int[][] {//
 	/*    */{ 1, 0, 0, 1, 1 },//
-			{ 0, 0, 2, 2, 1 },//
-			{ 0, 2, 2, 2, 0 },//
-			{ 1, 2, 2, 2, 0 },//
-			{ 1, 1, 0, 0, 0 } };
+			{ 0, 0, 0, 0, 1 },//
+			{ 0, 0, 0, 0, 0 },//
+			{ 1, 0, 0, 2, 2 },//
+			{ 1, 1, 0, 2, 0 } };
 
 	private static int[][] BOARD_3x3 = new int[][] {//
 	/*    */{ 0, 0, 1 },//
 			{ 0, 0, 0 },//
 			{ 1, 0, 0 } };
+
+	@Before
+	public void before() {
+		System.setProperty("bdd", "bdd");
+	}
 
 	@Test
 	public void testPathsChanging() {

@@ -1,6 +1,5 @@
 package com.strategy.havannah.logic.prediction;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.sf.javabdd.BDD;
@@ -17,6 +16,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.logic.PositionHexagon;
+import com.strategy.util.FieldGenerator;
 
 /**
  * TODO Prototype of turn prediction
@@ -42,25 +42,39 @@ public class PredictionHavannah implements Prediction {
 	 */
 	@Override
 	public int doNextTurn(Field lastSet) {
-		System.out.println("opponent sets on: " + lastSet.getIndex());
+		System.out.println("player sets on: " + lastSet.getIndex());
 		board.setField(lastSet);
 		lastSet.accept(visitor);
 		win = visitor.getWin();
 
 		// TODO make own turn
 
+		// System.out.println(win.satOne().toString());
 		List<byte[]> allsat = win.allsat();
 		int index = -1;
 		byte[] sat = Iterables.getFirst(allsat, new byte[0]);
-		System.out.println(Arrays.toString(sat));
-		for (int i = 0; i < sat.length; i++) {
-			if (sat[i] == 0x0001) {
-				index = i;
-				break;
+		if (null != sat) {
+			// System.out.println(Arrays.toString(sat));
+			for (int i = 0; i < sat.length; i++) {
+				if (sat[i] == 0x0001) {
+					index = i;
+					break;
+				}
 			}
 		}
 
-		System.out.println("set on field: " + index);
+		if (index > 0) {
+			System.out.println("computer sets on field: " + index);
+			Field ownField = FieldGenerator.create(
+					1,
+					PositionHexagon.get(index / board.getRows(),
+							index % board.getColumns()), index);
+			board.setField(ownField);
+			ownField.accept(visitor);
+			win = visitor.getWin();
+		} else {
+			System.out.println("computer passes");
+		}
 
 		return index;
 	}
@@ -87,14 +101,14 @@ public class PredictionHavannah implements Prediction {
 		 * - i=2b-2, j=2b-2
 		 */
 
-		// TODO path for all corners
 		int b = board.getBoardSize();
-		Position corner1 = PositionHexagon.get(0, 0);
-		Position corner2 = PositionHexagon.get(0, b - 1);
-		Position corner3 = PositionHexagon.get(b - 1, 0);
-		Position corner4 = PositionHexagon.get(b - 1, 2 * b - 2);
-		Position corner5 = PositionHexagon.get(2 * b - 2, b - 1);
-		Position corner6 = PositionHexagon.get(2 * b - 2, 2 * b - 2);
+		Position[] corners = new PositionHexagon[6];
+		corners[0] = PositionHexagon.get(0, 0);
+		corners[1] = PositionHexagon.get(0, b - 1);
+		corners[2] = PositionHexagon.get(b - 1, 0);
+		corners[3] = PositionHexagon.get(b - 1, 2 * b - 2);
+		corners[4] = PositionHexagon.get(2 * b - 2, b - 1);
+		corners[5] = PositionHexagon.get(2 * b - 2, 2 * b - 2);
 		/**
 		 * corners for a 5x5 board:<br>
 		 * |1|| ||2| <br>
@@ -104,12 +118,34 @@ public class PredictionHavannah implements Prediction {
 		 * ______|5|| ||6|<br>
 		 */
 
-		// ArrayList<Position> corners = Lists.newArrayList(corner1, corner2,
-		// corner3, corner4, corner5, corner6);
-		// for (Position position : corners) {
+		// TODO use zero to start building win
+		win = analyzer.getPath(corners[0], corners[1]).id();
+		for (int i = 0; i < corners.length; i++) {
+			for (int j = i + 1; j < corners.length; j++) {
+				win = win.id().orWith(
+						analyzer.getPath(corners[i], corners[j]).id());
+			}
+		}
+		// win = analyzer.getPath(corners[0], corners[1]).id();
+		// win = win.orWith(analyzer.getPath(corners[0], corners[2]).id());
+		// win = win.orWith(analyzer.getPath(corners[0], corners[3]).id());
+		// win = win.orWith(analyzer.getPath(corners[0], corners[4]).id());
+		// win = win.orWith(analyzer.getPath(corners[0], corners[5]).id());
 		//
-		// }
-		win = analyzer.getPath(corner1, corner3).id();
+		// win = win.orWith(analyzer.getPath(corners[1], corners[2]).id());
+		// win = win.orWith(analyzer.getPath(corners[1], corners[3]).id());
+		// win = win.orWith(analyzer.getPath(corners[1], corners[4]).id());
+		// win = win.orWith(analyzer.getPath(corners[1], corners[5]).id());
+		//
+		// win = win.orWith(analyzer.getPath(corners[2], corners[3]).id());
+		// win = win.orWith(analyzer.getPath(corners[2], corners[4]).id());
+		// win = win.orWith(analyzer.getPath(corners[2], corners[5]).id());
+		//
+		// win = win.orWith(analyzer.getPath(corners[3], corners[4]).id());
+		// win = win.orWith(analyzer.getPath(corners[3], corners[5]).id());
+		//
+		// win = win.orWith(analyzer.getPath(corners[4], corners[5]).id());
+
 		visitor = new TurnFieldVisitor(win);
 	}
 

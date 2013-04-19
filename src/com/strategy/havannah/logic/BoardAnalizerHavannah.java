@@ -28,6 +28,7 @@ public class BoardAnalizerHavannah implements BoardAnalyzer {
 
 	public BDD getPath(Position p, Position q) {
 		BDD path = getPathTransitiveClosure(p, q);
+		cache = new BddCacheHavannah();
 		return path;
 	}
 
