@@ -14,7 +14,6 @@ import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardTransformer;
 import com.strategy.api.logic.Position;
-import com.strategy.prototype.logic.PositionSquare;
 
 /**
  * Transforms a given {@link Board} to a map between {@link Position}s and
@@ -58,7 +57,7 @@ public abstract class AbstractBoardTransformer implements BoardTransformer {
 			Field field = board.getField(i, j);
 			if (null != field) {
 				field.accept(visitor);
-				bddBoard.put(PositionSquare.get(i, j), visitor.getBDD());
+				bddBoard.put(getPositionInstance(i, j), visitor.getBDD());
 			}
 		}
 

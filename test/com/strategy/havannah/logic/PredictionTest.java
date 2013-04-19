@@ -13,26 +13,26 @@ import com.strategy.util.FieldGenerator;
  */
 public class PredictionTest {
 
+	private static int[][] BOARD_5x5 = new int[][] {//
+	/*    */{ 0, 0, 0, 1, 1 },//
+			{ 0, 0, 0, 0, 1 },//
+			{ 0, 0, 0, 0, 0 },//
+			{ 1, 0, 0, 0, 0 },//
+			{ 1, 1, 0, 0, 0 } };
+
+	private static int[][] BOARD_3x3 = new int[][] {//
+	/*    */{ 0, 0, 1 },//
+			{ 0, 0, 0 },//
+			{ 1, 0, 0 } };
+
 	@Test
 	public void testTurn() {
-		// int[][] rawBoard = new int[][] {//
-		// /* */{ 0, 0, 0, 1, 1 },//
-		// { 0, 0, 0, 0, 1 },//
-		// { 0, 0, 0, 0, 0 },//
-		// { 1, 0, 0, 0, 0 },//
-		// { 1, 1, 0, 0, 0 } };
-
-		int[][] rawBoard = new int[][] {//
-		/*    */{ 0, 0, 1 },//
-				{ 0, 0, 0 },//
-				{ 1, 0, 0 } };
-
-		Board board = BoardHavannah.createInstance(rawBoard, 2);
+		Board board = BoardHavannah.createInstance(BOARD_5x5, 3);
 		System.out.println(board);
 
 		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
 		Prediction p = new Prediction(analyzer, board);
-		p.doNextTurn(FieldGenerator.create(2, PositionHexagon.get(0, 0), 0));
+		p.doNextTurn(FieldGenerator.create(2, PositionHexagon.get(1, 0), 2));
 
 	}
 

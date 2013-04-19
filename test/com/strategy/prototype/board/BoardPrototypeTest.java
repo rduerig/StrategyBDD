@@ -22,6 +22,7 @@ public class BoardPrototypeTest {
 	private Board PRIMITIVE_BOARD_PATHS_ONE;
 	private Board PRIMITIVE_BOARD_PATHS_ALL;
 	private Board PRIMITIVE_BOARD_PATHS_BIG;
+	private Board PRIMITIVE_BOARD_PATHS_RECURSION_DEBUG;
 
 	@Before
 	public void init() {
@@ -42,12 +43,17 @@ public class BoardPrototypeTest {
 						{ 0, 0, 0, 0 },//
 						{ 0, 0, 0, 0 } });
 
+		PRIMITIVE_BOARD_PATHS_RECURSION_DEBUG = BoardPrototype
+				.createInstance(new int[][] {//
+				/*    */{ 0, 0 },//
+						{ 0, 0 } });
+
 		PRIMITIVE_BOARD_PATHS_BIG = BoardPrototype.createInstance(new int[][] {//
-				/*    */{ 0, 0, 0, 0, 0 },//
-						{ 0, 0, 0, 0, 0 },//
-						{ 0, 0, 0, 0, 0 },//
-						{ 0, 0, 0, 0, 0 },//
-						{ 0, 0, 0, 0, 0 } });
+				/*    */{ 2, 2, 2, 2, 2 },//
+						{ 2, 2, 0, 0, 0 },//
+						{ 2, 0, 0, 2, 0 },//
+						{ 0, 0, 2, 0, 0 },//
+						{ 2, 2, 2, 2, 2 } });
 	}
 
 	@Test
@@ -67,26 +73,6 @@ public class BoardPrototypeTest {
 		int actual = path.allsat().size();
 		// System.out.println("Models count for path from (3,0) to (0,3): "
 		// + currentModels);
-		analizer.done();
-		path.free();
-
-		assertEquals(expectedModelCount, actual);
-	}
-
-	@Test
-	public void testModelCountAll() {
-
-		// there are 260 possible paths from bottom left to top right on a 4x4
-		// board
-		int expectedModelCount = 260;
-
-		Position p = PositionSquare.get(3, 0);
-		Position q = PositionSquare.get(0, 3);
-
-		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(
-				PRIMITIVE_BOARD_PATHS_ALL);
-		BDD path = analizer.getPath(p, q);
-		int actual = path.allsat().size();
 		analizer.done();
 		path.free();
 
@@ -116,6 +102,22 @@ public class BoardPrototypeTest {
 		analizer.done();
 		path.free();
 		restricted.free();
+		assertEquals(expectedModelCount, actual);
+	}
+
+	@Test
+	public void testModelCountBigBoard() {
+
+		int expectedModelCount = 1;
+		Position p = PositionSquare.get(3, 0);
+		Position q = PositionSquare.get(3, 3);
+		BoardAnalizerPrototype analizer = new BoardAnalizerPrototype(
+				PRIMITIVE_BOARD_PATHS_BIG);
+		BDD path = analizer.getPath(p, q);
+		int actual = path.allsat().size();
+		analizer.done();
+		path.free();
+
 		assertEquals(expectedModelCount, actual);
 	}
 

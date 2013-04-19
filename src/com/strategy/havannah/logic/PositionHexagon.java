@@ -3,6 +3,7 @@
  */
 package com.strategy.havannah.logic;
 
+import com.google.common.base.Objects;
 import com.strategy.api.logic.Position;
 
 /**
@@ -111,7 +112,7 @@ public class PositionHexagon implements Position {
 				|| other.equals(this.getNorthWest())
 				|| other.equals(this.getSouthWest())
 				|| other.equals(this.getNorthEast())
-				|| other.equals(this.getSouthEast());
+				|| other.equals(this.getSouthEast()) || other.equals(this);
 	}
 
 	// ************************************************************************
@@ -149,11 +150,7 @@ public class PositionHexagon implements Position {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + col;
-		result = prime * result + row;
-		return result;
+		return Objects.hashCode(row, col);
 	}
 
 	@Override
@@ -164,7 +161,7 @@ public class PositionHexagon implements Position {
 		if (obj == null) {
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
+		if (!(obj instanceof Position)) {
 			return false;
 		}
 		PositionHexagon other = (PositionHexagon) obj;

@@ -3,10 +3,16 @@
  */
 package com.strategy.havannah.board;
 
+import static org.junit.Assert.assertEquals;
+import net.sf.javabdd.BDD;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.strategy.api.board.Board;
+import com.strategy.api.logic.Position;
+import com.strategy.havannah.logic.BoardAnalizerHavannah;
+import com.strategy.havannah.logic.PositionHexagon;
 
 /**
  * Test for {@link BoardHavannah}.
@@ -14,6 +20,13 @@ import com.strategy.api.board.Board;
  * @author Ralph Dürig
  */
 public class BoardHavannahTest {
+
+	private static int[][] BOARD_PATH_ONE = new int[][] {//
+	/*    */{ 0, 2, 2, 1, 1 },//
+			{ 0, 2, 2, 2, 1 },//
+			{ 0, 0, 0, 2, 2 },//
+			{ 1, 2, 2, 0, 2 },//
+			{ 1, 1, 2, 2, 0 } };
 
 	@Test
 	public void testValidFieldConstruction() {
@@ -120,6 +133,23 @@ public class BoardHavannahTest {
 		Assert.assertNull(board.getField(4, 0));
 		Assert.assertNull(board.getField(4, 1));
 
+	}
+
+	@Test
+	public void testPathCalculation() {
+		int expectedModelCount = 1;
+
+		Board board = BoardHavannah.createInstance(BOARD_PATH_ONE, 3);
+
+		Position p = PositionHexagon.get(0, 0);
+		Position q = PositionHexagon.get(4, 4);
+		BoardAnalizerHavannah analizer = new BoardAnalizerHavannah(board);
+		BDD path = analizer.getPath(p, q);
+		int actual = path.allsat().size();
+		analizer.done();
+		path.free();
+
+		assertEquals(expectedModelCount, actual);
 	}
 
 	// ************************************************************************

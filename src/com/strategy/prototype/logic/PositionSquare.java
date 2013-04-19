@@ -52,7 +52,8 @@ public class PositionSquare implements Position {
 	public boolean isNeighbour(Position other) {
 		return other.equals(this.getUpper()) || other.equals(this.getLower())
 				|| other.equals(this.getLeft())
-				|| other.equals(this.getRight());
+				|| other.equals(this.getRight())
+				|| other.equals(this);
 	}
 
 	// ************************************************************************

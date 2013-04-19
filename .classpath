@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src">
-	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="test">
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/rayu/Dev/JavaBDD/javabdd-1.0b2.jar" sourcepath="/home/rayu/Dev/JavaBDD/JavaBDD"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
-	</classpathentry>
-	<classpathentry kind="lib" path="/home/rayu/Dev/guava-14.0.1/guava-14.0.1.jar"/>
-	<classpathentry kind="lib" path="/home/rayu/Dev/junit-4.11/junit-4.11.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src"/>
+	<classpathentry kind="src" output="target/test-classes" path="test"/>
+	<classpathentry kind="lib" path="C:/Users/Papa/Dev/Lib/javabdd_1.0b2/javabdd-1.0b2.jar" sourcepath="C:/Users/Papa/Dev/Lib/javabdd_1.0b2/JavaBDD"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="C:/Users/Papa/Dev/Lib/guava-14.0.1.jar" sourcepath="C:/Users/Papa/Dev/Lib/guava-14.0.1-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
