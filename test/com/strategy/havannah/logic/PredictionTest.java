@@ -1,11 +1,14 @@
 package com.strategy.havannah.logic;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.strategy.api.board.Board;
+import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
-import com.strategy.api.logic.Prediction;
+import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
+import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.FieldGenerator;
 
 /**
@@ -14,10 +17,10 @@ import com.strategy.util.FieldGenerator;
 public class PredictionTest {
 
 	private static int[][] BOARD_5x5 = new int[][] {//
-	/*    */{ 0, 0, 0, 1, 1 },//
-			{ 0, 0, 0, 0, 1 },//
-			{ 0, 0, 0, 0, 0 },//
-			{ 1, 0, 0, 0, 0 },//
+	/*    */{ 1, 0, 0, 1, 1 },//
+			{ 0, 0, 2, 2, 1 },//
+			{ 0, 2, 2, 2, 0 },//
+			{ 1, 2, 2, 2, 0 },//
 			{ 1, 1, 0, 0, 0 } };
 
 	private static int[][] BOARD_3x3 = new int[][] {//
@@ -26,13 +29,28 @@ public class PredictionTest {
 			{ 1, 0, 0 } };
 
 	@Test
-	public void testTurn() {
+	public void testPathsChanging() {
 		Board board = BoardHavannah.createInstance(BOARD_5x5, 3);
-		System.out.println(board);
 
 		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
-		Prediction p = new Prediction(analyzer, board);
-		p.doNextTurn(FieldGenerator.create(2, PositionHexagon.get(1, 0), 2));
+		Prediction p = new PredictionHavannah(analyzer, board);
+		Assert.assertEquals(1, p.getPossiblePaths());
+		Field field = board.getField(0, 1);
+		p.doNextTurn(FieldGenerator.create(2, field.getPosition(),
+				field.getIndex()));
+		Assert.assertEquals(0, p.getPossiblePaths());
+
+	}
+
+	@Test
+	public void testTurn() {
+		Board board = BoardHavannah.createInstance(BOARD_5x5, 3);
+
+		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
+		Prediction p = new PredictionHavannah(analyzer, board);
+		Field field = board.getField(1, 0);
+		p.doNextTurn(FieldGenerator.create(2, field.getPosition(),
+				field.getIndex()));
 
 	}
 
