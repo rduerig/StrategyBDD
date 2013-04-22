@@ -7,10 +7,12 @@ import java.io.InputStreamReader;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.prediction.Prediction;
+import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalizerHavannah;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
+import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.FieldGenerator;
 
 /**
@@ -29,7 +31,8 @@ public class StrategyHavannah {
 		Board board = BoardHavannah.createInstance(rawBoard, 3);
 
 		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
-		Prediction p = new PredictionHavannah(analyzer, board);
+		Situation sit = new SituationHavannah(analyzer, board);
+		Prediction p = new PredictionHavannah(sit);
 
 		int limit = board.getRows() * board.getColumns();
 
@@ -50,7 +53,7 @@ public class StrategyHavannah {
 			}
 
 			if ("exit".equals(line)) {
-				System.out.println("Bye!");
+				System.out.println("Bye");
 				break;
 			}
 

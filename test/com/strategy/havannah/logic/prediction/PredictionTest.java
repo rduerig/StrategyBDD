@@ -8,8 +8,10 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.prediction.Prediction;
+import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalizerHavannah;
+import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.FieldGenerator;
 
 /**
@@ -39,7 +41,8 @@ public class PredictionTest {
 		Board board = BoardHavannah.createInstance(BOARD_5x5, 3);
 
 		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
-		Prediction p = new PredictionHavannah(analyzer, board);
+		Situation sit = new SituationHavannah(analyzer, board);
+		Prediction p = new PredictionHavannah(sit);
 		Assert.assertEquals(1, p.getPossiblePaths());
 		Field field = board.getField(0, 1);
 		p.doNextTurn(FieldGenerator.create(2, field.getPosition(),
@@ -53,7 +56,8 @@ public class PredictionTest {
 		Board board = BoardHavannah.createInstance(BOARD_5x5, 3);
 
 		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
-		Prediction p = new PredictionHavannah(analyzer, board);
+		Situation sit = new SituationHavannah(analyzer, board);
+		Prediction p = new PredictionHavannah(sit);
 		Field field = board.getField(1, 0);
 		p.doNextTurn(FieldGenerator.create(2, field.getPosition(),
 				field.getIndex()));
