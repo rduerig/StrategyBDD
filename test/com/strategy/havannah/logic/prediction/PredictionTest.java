@@ -2,6 +2,7 @@ package com.strategy.havannah.logic.prediction;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.strategy.api.board.Board;
@@ -19,8 +20,29 @@ import com.strategy.util.FieldGenerator;
  */
 public class PredictionTest {
 
+	private static int[][] BOARD_19x19 = new int[][] {//
+	/*    */{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },//
+			{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },//
+			{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+
 	private static int[][] BOARD_5x5 = new int[][] {//
-	/*    */{ 1, 0, 0, 1, 1 },//
+	/*    */{ 0, 0, 0, 1, 1 },//
 			{ 0, 0, 0, 0, 1 },//
 			{ 0, 0, 0, 0, 0 },//
 			{ 1, 0, 0, 2, 2 },//
@@ -61,6 +83,17 @@ public class PredictionTest {
 		Field field = board.getField(1, 0);
 		p.doNextTurn(FieldGenerator.create(2, field.getPosition(),
 				field.getIndex()));
+
+	}
+
+	@Test
+	@Ignore
+	public void testSuperTurn() {
+		Board board = BoardHavannah.createInstance(BOARD_19x19, 10);
+
+		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
+		Situation sit = new SituationHavannah(analyzer, board);
+		Prediction p = new PredictionHavannah(sit);
 
 	}
 

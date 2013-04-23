@@ -1,5 +1,7 @@
 package com.strategy.havannah.logic.situation;
 
+import java.util.concurrent.Callable;
+
 import net.sf.javabdd.BDD;
 
 import com.strategy.api.board.Board;
@@ -80,14 +82,14 @@ public class SituationHavannah implements Situation {
 		 * ______|5|| ||6|<br>
 		 */
 
-		// TODO use zero to start building win
-		win = analyzer.getPath(corners[0], corners[1]).id();
+		win = analyzer.getFactory().zero();
 		for (int i = 0; i < corners.length; i++) {
 			for (int j = i + 1; j < corners.length; j++) {
 				win = win.id().orWith(
 						analyzer.getPath(corners[i], corners[j]).id());
 			}
 		}
+
 		// win = analyzer.getPath(corners[0], corners[1]).id();
 		// win = win.orWith(analyzer.getPath(corners[0], corners[2]).id());
 		// win = win.orWith(analyzer.getPath(corners[0], corners[3]).id());
@@ -109,6 +111,26 @@ public class SituationHavannah implements Situation {
 		// win = win.orWith(analyzer.getPath(corners[4], corners[5]).id());
 
 		visitor = new TurnFieldVisitor(win);
+	}
+
+	class PathCaller implements Callable<BDD> {
+
+		private BoardAnalyzer analyzer;
+		private Position p;
+		private Position q;
+
+		public PathCaller(BoardAnalyzer analyzer, Position p, Position q) {
+			this.analyzer = analyzer;
+			this.p = p;
+			this.q = q;
+		}
+
+		@Override
+		public BDD call() {
+			return analyzer.getPath(p, q).id();
+
+		}
+
 	}
 
 }

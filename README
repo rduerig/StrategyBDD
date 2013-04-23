@@ -1,4 +1,6 @@
 StrategyBDD
+===========
+
 8 April 2013
 
 This project is considered as a research project for personal interest and/or 
@@ -23,3 +25,14 @@ If you're running a 32-bit machine, everything is fine but to use those bdd
 frameworks with 64-bit machines you have to build them by yourself.
 If there is no such *.so file given, JavaBDD falls back to a pure java
 implementation.
+
+Important:
+----------
+
+In order to build the project with maven you must install the JavaBDD library to
+your local maven repository with the following command:
+
+> mvn install:install-file -Dfile=[PATH_TO_LIB]/javabdd-1.0b2.jar 
+   -DgroupId=net.sf -DartifactId=javabdd -Dversion=1.0b2 -Dpackaging=jar
+
+This means, it must be downloaded and installed manually.

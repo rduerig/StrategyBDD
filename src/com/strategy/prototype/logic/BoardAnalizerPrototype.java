@@ -36,6 +36,11 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		fac.done();
 	}
 
+	@Override
+	public BDDFactory getFactory() {
+		return fac;
+	}
+
 	// ************************************************************************
 
 	private void initFactory(Board board) {

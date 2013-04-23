@@ -3,6 +3,11 @@ package com.strategy.havannah.logic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -37,6 +42,11 @@ public class BoardAnalizerHavannah implements BoardAnalyzer {
 		fac.done();
 	}
 
+	@Override
+	public BDDFactory getFactory() {
+		return fac;
+	}
+
 	// ************************************************************************
 
 	private void initFactory(Board board) {
@@ -45,7 +55,7 @@ public class BoardAnalizerHavannah implements BoardAnalyzer {
 		 * size.
 		 */
 		int dimension = board.getRows() * board.getColumns();
-		fac = BDDFactory.init(dimension * 1000, dimension * 1000);
+		fac = BDDFactory.init(dimension * 100000, dimension * 100000);
 		fac.setVarNum(dimension);
 	}
 
@@ -68,7 +78,19 @@ public class BoardAnalizerHavannah implements BoardAnalyzer {
 
 	private BDD getPathTransitiveClosure(Position p, Position q) {
 		int i = rows * cols - 1;
-		return recursiveTransitiveClosure(i, p, q);
+		ExecutorService executor = Executors.newCachedThreadPool();
+		Future<BDD> submit = executor.submit(new PathCaller(i, p, q));
+		try {
+			return submit.get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+
+		// return recursiveTransitiveClosure(i, p, q);
 	}
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q) {
@@ -94,6 +116,41 @@ public class BoardAnalizerHavannah implements BoardAnalyzer {
 		for (Entry<Position, BDD> entry : bdds.entrySet()) {
 			entry.getValue().free();
 		}
+	}
+
+	class PathCaller implements Callable<BDD> {
+
+		private int i;
+		private Position p;
+		private Position q;
+
+		public PathCaller(int i, Position p, Position q) {
+			this.i = i;
+			this.p = p;
+			this.q = q;
+		}
+
+		@Override
+		public BDD call() throws Exception {
+			if (i == 0) {
+				if (p.isNeighbour(q) && bdds.containsKey(p)
+						&& bdds.containsKey(q)) {
+					return getBDDCopy(p).andWith(getBDDCopy(q));
+				} else {
+					return fac.zero();
+				}
+			}
+
+			Position m = PositionHexagon.get(i / rows, i % cols);
+			BDD pq = cache.isCached(p, q) ? cache.restore(p, q) : cache.store(
+					p, q, recursiveTransitiveClosure(i - 1, p, q));
+			BDD pm = cache.isCached(p, m) ? cache.restore(p, m) : cache.store(
+					p, m, recursiveTransitiveClosure(i - 1, p, m));
+			BDD mq = cache.isCached(m, q) ? cache.restore(m, q) : cache.store(
+					m, q, recursiveTransitiveClosure(i - 1, m, q));
+			return pq.orWith(pm.andWith(mq));
+		}
+
 	}
 
 }
