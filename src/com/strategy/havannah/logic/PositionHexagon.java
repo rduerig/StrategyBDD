@@ -164,11 +164,11 @@ public class PositionHexagon implements Position {
 		if (!(obj instanceof Position)) {
 			return false;
 		}
-		PositionHexagon other = (PositionHexagon) obj;
-		if (col != other.col) {
+		Position other = (Position) obj;
+		if (col != other.getCol()) {
 			return false;
 		}
-		if (row != other.row) {
+		if (row != other.getRow()) {
 			return false;
 		}
 		return true;

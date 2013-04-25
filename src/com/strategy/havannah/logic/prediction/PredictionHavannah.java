@@ -33,7 +33,6 @@ public class PredictionHavannah implements Prediction {
 		situation.update(lastSet);
 
 		// TODO make own turn
-		// System.out.println(win.satOne().toString());
 		List<byte[]> allsat = situation.getWinningCondition().allsat();
 		int index = -1;
 		byte[] sat = Iterables.getFirst(allsat, new byte[0]);

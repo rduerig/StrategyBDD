@@ -27,8 +27,12 @@ public class BddCacheHavannah implements BddCache {
 
 	@Override
 	public BDD store(Position p, Position q, BDD bdd) {
+		if (null == bdd) {
+			return null;
+		}
 		BddCacheIndex key = BddCacheIndex.getIndex(p, q);
-		cache.put(key, bdd.id());
+		cache.put(key, bdd);
+		// return bdd.id().simplify(bdd);
 		return bdd.id();
 	}
 

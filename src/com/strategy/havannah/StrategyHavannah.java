@@ -9,7 +9,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
-import com.strategy.havannah.logic.BoardAnalizerHavannah;
+import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
@@ -30,7 +30,7 @@ public class StrategyHavannah {
 				{ 1, 1, 0, 0, 0 } };
 		Board board = BoardHavannah.createInstance(rawBoard, 3);
 
-		BoardAnalyzer analyzer = new BoardAnalizerHavannah(board);
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 		Situation sit = new SituationHavannah(analyzer, board);
 		Prediction p = new PredictionHavannah(sit);
 

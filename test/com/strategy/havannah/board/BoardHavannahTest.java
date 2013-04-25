@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.Position;
-import com.strategy.havannah.logic.BoardAnalizerHavannah;
+import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.PositionHexagon;
 
 /**
@@ -143,7 +143,7 @@ public class BoardHavannahTest {
 
 		Position p = PositionHexagon.get(0, 0);
 		Position q = PositionHexagon.get(4, 4);
-		BoardAnalizerHavannah analizer = new BoardAnalizerHavannah(board);
+		BoardAnalyzerHavannah analizer = new BoardAnalyzerHavannah(board);
 		BDD path = analizer.getPath(p, q);
 		int actual = path.allsat().size();
 		analizer.done();

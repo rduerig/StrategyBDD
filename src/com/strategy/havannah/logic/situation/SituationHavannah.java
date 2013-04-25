@@ -29,7 +29,7 @@ public class SituationHavannah implements Situation {
 
 	@Override
 	public BDD getWinningCondition() {
-		return win.id();
+		return win;
 	}
 
 	@Override
@@ -85,10 +85,14 @@ public class SituationHavannah implements Situation {
 		win = analyzer.getFactory().zero();
 		for (int i = 0; i < corners.length; i++) {
 			for (int j = i + 1; j < corners.length; j++) {
-				win = win.id().orWith(
-						analyzer.getPath(corners[i], corners[j]).id());
+				BDD path = analyzer.getPath(corners[i], corners[j]);
+				win = win.id().orWith(path);
 			}
 		}
+
+		// System.out.println("Nodes: " + win.nodeCount());
+		// Double satCount = win.satCount();
+		// System.out.println("Value: " + satCount.longValue());
 
 		// win = analyzer.getPath(corners[0], corners[1]).id();
 		// win = win.orWith(analyzer.getPath(corners[0], corners[2]).id());
@@ -127,7 +131,7 @@ public class SituationHavannah implements Situation {
 
 		@Override
 		public BDD call() {
-			return analyzer.getPath(p, q).id();
+			return analyzer.getPath(p, q);
 
 		}
 
