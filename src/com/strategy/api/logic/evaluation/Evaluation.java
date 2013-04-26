@@ -11,6 +11,6 @@ import com.strategy.api.logic.situation.Situation;
  */
 public interface Evaluation {
 
-	Map<Integer, Integer> getEvaluatedFields();
+	Map<Integer, Double> getEvaluatedFields();
 
 }

@@ -15,6 +15,4 @@ public interface Prediction {
 	 */
 	int doNextTurn(Field lastSet);
 
-	int getPossiblePaths();
-
 }

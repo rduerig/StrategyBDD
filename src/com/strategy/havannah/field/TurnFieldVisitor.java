@@ -36,12 +36,12 @@ public class TurnFieldVisitor implements FieldVisitor {
 
 	@Override
 	public void visit(WhiteStone field) {
-		win = win.restrict(fac.ithVar(field.getIndex()).id()).id();
+		win = win.restrict(fac.ithVar(field.getIndex())).id();
 	}
 
 	@Override
 	public void visit(BlackStone field) {
-		win = win.restrict(fac.ithVar(field.getIndex()).id().not()).id();
+		win = win.restrict(fac.ithVar(field.getIndex()).not()).id();
 	}
 
 }

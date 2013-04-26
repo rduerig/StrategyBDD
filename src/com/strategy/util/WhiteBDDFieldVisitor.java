@@ -14,12 +14,12 @@ import com.strategy.api.field.WhiteStone;
 /**
  * @author Ralph Dürig
  */
-public class CommonBDDFieldVisitor implements BDDFieldVisitor {
+public class WhiteBDDFieldVisitor implements BDDFieldVisitor {
 
 	private final BDDFactory fac;
 	private BDD result;
 
-	public CommonBDDFieldVisitor(BDDFactory fac) {
+	public WhiteBDDFieldVisitor(BDDFactory fac) {
 		this.fac = fac;
 	}
 

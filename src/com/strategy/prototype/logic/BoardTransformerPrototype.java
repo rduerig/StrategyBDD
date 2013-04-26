@@ -7,7 +7,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.logic.Position;
 import com.strategy.util.AbstractBoardTransformer;
-import com.strategy.util.CommonBDDFieldVisitor;
+import com.strategy.util.WhiteBDDFieldVisitor;
 
 /**
  * Transforms a given {@link Board} to a map between {@link Position}s and
@@ -32,7 +32,7 @@ public class BoardTransformerPrototype extends AbstractBoardTransformer {
 
 	@Override
 	protected BDDFieldVisitor getBDDFieldVisitor() {
-		return new CommonBDDFieldVisitor(fac);
+		return new WhiteBDDFieldVisitor(fac);
 	}
 
 	@Override

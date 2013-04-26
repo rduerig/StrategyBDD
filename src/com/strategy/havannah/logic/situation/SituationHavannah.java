@@ -33,6 +33,11 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
+	public Board getBoard() {
+		return board;
+	}
+
+	@Override
 	public void update(Field field) {
 		System.out.println("setting stone on: " + field.getIndex());
 		board.setField(field);

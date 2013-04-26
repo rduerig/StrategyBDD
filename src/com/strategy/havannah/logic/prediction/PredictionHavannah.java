@@ -1,12 +1,15 @@
 package com.strategy.havannah.logic.prediction;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import com.google.common.collect.Iterables;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.Situation;
+import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 
 /**
  * Uses a {@link Situation} and its {@link Evaluation} to predict where to set
@@ -26,38 +29,28 @@ public class PredictionHavannah implements Prediction {
 	 * Black has set on given field, updates the board according to that.
 	 * 
 	 * @param field
-	 * @return
+	 * @return index of field that was rated best
 	 */
 	@Override
 	public int doNextTurn(Field lastSet) {
 		situation.update(lastSet);
-
 		// TODO make own turn
-		List<byte[]> allsat = situation.getWinningCondition().allsat();
-		int index = -1;
-		byte[] sat = Iterables.getFirst(allsat, new byte[0]);
-		if (null != sat) {
-			// System.out.println(Arrays.toString(sat));
-			for (int i = 0; i < sat.length; i++) {
-				if (sat[i] == 0x0001) {
-					index = i;
-					break;
-				}
-			}
-		}
+		Evaluation eval = new EvaluationHavannah(situation);
+		Map<Integer, Double> rating = eval.getEvaluatedFields();
+		Entry<Integer, Double> max = Collections.max(rating.entrySet(),
+				new Comparator<Entry<Integer, Double>>() {
 
-		if (index > 0) {
-			situation.update(index, 1);
-		} else {
-			System.out.println("computer passes");
-		}
+					@Override
+					public int compare(Entry<Integer, Double> o1,
+							Entry<Integer, Double> o2) {
+						return o1.getValue().compareTo(o2.getValue());
+					}
+				});
 
-		return index;
-	}
+		Integer best = max.getKey();
+		situation.update(best, 1);
 
-	@Override
-	public int getPossiblePaths() {
-		return situation.getWinningCondition().allsat().size();
+		return best;
 	}
 
 }

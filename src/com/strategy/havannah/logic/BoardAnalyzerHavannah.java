@@ -3,7 +3,6 @@ package com.strategy.havannah.logic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -13,7 +12,7 @@ import com.strategy.api.field.Field;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
-import com.strategy.util.CommonBDDFieldVisitor;
+import com.strategy.util.WhiteBDDFieldVisitor;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
@@ -23,12 +22,12 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	private BDDFactory fac;
 	private BddCache cache;
 	private Board board;
-	private CommonBDDFieldVisitor visitor;
+	private WhiteBDDFieldVisitor visitor;
 
 	public BoardAnalyzerHavannah(Board board) {
 		this.board = board;
 		initFactory(board);
-		this.visitor = new CommonBDDFieldVisitor(fac);
+		this.visitor = new WhiteBDDFieldVisitor(fac);
 		initBdds(board, fac);
 		cache = new BddCacheHavannah();
 	}
@@ -104,41 +103,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		Field field = board.getField(p.getRow(), p.getCol());
 		field.accept(visitor);
 		return visitor.getBDD();
-	}
-
-	class PathCaller implements Callable<BDD> {
-
-		private int i;
-		private Position p;
-		private Position q;
-
-		public PathCaller(int i, Position p, Position q) {
-			this.i = i;
-			this.p = p;
-			this.q = q;
-		}
-
-		@Override
-		public BDD call() throws Exception {
-			if (i == 0) {
-				if (p.isNeighbour(q) && bdds.containsKey(p)
-						&& bdds.containsKey(q)) {
-					return getBDDForPosition(p).andWith(getBDDForPosition(q));
-				} else {
-					return fac.zero();
-				}
-			}
-
-			Position m = PositionHexagon.get(i / rows, i % cols);
-			BDD pq = cache.isCached(p, q) ? cache.restore(p, q) : cache.store(
-					p, q, recursiveTransitiveClosure(i - 1, p, q));
-			BDD pm = cache.isCached(p, m) ? cache.restore(p, m) : cache.store(
-					p, m, recursiveTransitiveClosure(i - 1, p, m));
-			BDD mq = cache.isCached(m, q) ? cache.restore(m, q) : cache.store(
-					m, q, recursiveTransitiveClosure(i - 1, m, q));
-			return pq.orWith(pm.andWith(mq));
-		}
-
 	}
 
 }
