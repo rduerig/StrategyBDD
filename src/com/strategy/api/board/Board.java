@@ -87,4 +87,34 @@ public interface Board {
 	 */
 	Collection<Position> getPositions();
 
+	/**
+	 * Checks if there is a valid field on the board.
+	 * 
+	 * @param row
+	 *            row of field to check
+	 * @param col
+	 *            column of field to check
+	 * @return true if there is a field on the given row and the given column on
+	 *         the current board
+	 */
+	boolean isValidField(int row, int col);
+
+	/**
+	 * Checks if there is a valid field on the board.
+	 * 
+	 * @param p
+	 *            {@link Position} of the field to check
+	 * @return true if there is a field on the given {@link Position} on the
+	 *         current board
+	 */
+	boolean isValidField(Position p);
+
+	/**
+	 * Transforms the board to a String representation showing each field's
+	 * index
+	 * 
+	 * @return the index values of the fields as they are lying on the board
+	 */
+	String toIndexString();
+
 }

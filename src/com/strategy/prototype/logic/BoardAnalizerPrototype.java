@@ -11,6 +11,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
+import com.strategy.util.StoneColor;
 
 public class BoardAnalizerPrototype implements BoardAnalyzer {
 
@@ -39,6 +40,11 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 	@Override
 	public BDDFactory getFactory() {
 		return fac;
+	}
+
+	@Override
+	public StoneColor getStoneColor() {
+		return StoneColor.WHITE;
 	}
 
 	// ************************************************************************

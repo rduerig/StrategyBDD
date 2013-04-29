@@ -87,6 +87,16 @@ public class BoardHavannah implements Board {
 	}
 
 	@Override
+	public boolean isValidField(int row, int col) {
+		return isValidField(PositionHexagon.get(row, col));
+	}
+
+	@Override
+	public boolean isValidField(Position p) {
+		return fields.containsKey(p);
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
@@ -94,6 +104,23 @@ public class BoardHavannah implements Board {
 				Field field = getField(i, j);
 				if (null != field) {
 					sb.append(field + "");
+				} else {
+					sb.append("   ");
+				}
+			}
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
+	public String toIndexString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getColumns(); j++) {
+				Field field = getField(i, j);
+				if (null != field) {
+					sb.append("|" + field.getIndex() + "|");
 				} else {
 					sb.append("   ");
 				}

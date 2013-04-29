@@ -1,33 +1,33 @@
 package com.strategy.havannah.logic;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
 import com.strategy.api.board.Board;
+import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
+import com.strategy.util.BlackBDDFieldVisitor;
+import com.strategy.util.StoneColor;
 import com.strategy.util.WhiteBDDFieldVisitor;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
-	private Map<Position, BDD> bdds;
 	private int rows;
 	private int cols;
 	private BDDFactory fac;
 	private BddCache cache;
 	private Board board;
-	private WhiteBDDFieldVisitor visitor;
+	private BDDFieldVisitor visitor;
+	private StoneColor color;
 
-	public BoardAnalyzerHavannah(Board board) {
+	public BoardAnalyzerHavannah(Board board, StoneColor color) {
 		this.board = board;
 		initFactory(board);
-		this.visitor = new WhiteBDDFieldVisitor(fac);
+		this.color = color;
+		initVisitor(color, fac);
 		initBdds(board, fac);
 		cache = new BddCacheHavannah();
 	}
@@ -38,13 +38,17 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	}
 
 	public void done() {
-		freeAll();
 		fac.done();
 	}
 
 	@Override
 	public BDDFactory getFactory() {
 		return fac;
+	}
+
+	@Override
+	public StoneColor getStoneColor() {
+		return color;
 	}
 
 	// ************************************************************************
@@ -62,10 +66,14 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	private void initBdds(Board board, BDDFactory factory) {
 		rows = board.getRows();
 		cols = board.getColumns();
-		BoardTransformerHavannah transformer = new BoardTransformerHavannah(
-				board, factory);
-		Map<Position, BDD> bddBoard = transformer.getBDDBoard();
-		bdds = new HashMap<Position, BDD>(bddBoard);
+	}
+
+	private void initVisitor(StoneColor color, BDDFactory factory) {
+		if (StoneColor.BLACK.equals(color)) {
+			visitor = new BlackBDDFieldVisitor(factory);
+		} else {
+			visitor = new WhiteBDDFieldVisitor(factory);
+		}
 	}
 
 	private BDD getPathTransitiveClosure(Position p, Position q) {
@@ -75,7 +83,8 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q) {
 		if (i == 0) {
-			if (p.isNeighbour(q) && bdds.containsKey(p) && bdds.containsKey(q)) {
+			if (p.isNeighbour(q) && board.isValidField(p)
+					&& board.isValidField(q)) {
 				return getBDDForPosition(p).andWith(getBDDForPosition(q));
 			} else {
 				return fac.zero();
@@ -91,12 +100,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 				recursiveTransitiveClosure(i - 1, m, q));
 		BDD pmandmq = pm.andWith(mq);
 		return pq.orWith(pmandmq);
-	}
-
-	private void freeAll() {
-		for (Entry<Position, BDD> entry : bdds.entrySet()) {
-			entry.getValue().free();
-		}
 	}
 
 	private BDD getBDDForPosition(Position p) {

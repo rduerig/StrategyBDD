@@ -15,4 +15,9 @@ public interface Prediction {
 	 */
 	int doNextTurn(Field lastSet);
 
+	// /**
+	// * frees memory from bdds
+	// */
+	// void cleanup();
+
 }

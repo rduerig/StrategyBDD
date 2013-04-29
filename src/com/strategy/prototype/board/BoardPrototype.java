@@ -78,11 +78,33 @@ public class BoardPrototype implements Board {
 	}
 
 	@Override
+	public boolean isValidField(int row, int col) {
+		return isValidField(PositionSquare.get(row, col));
+	}
+
+	@Override
+	public boolean isValidField(Position p) {
+		return positions.contains(p);
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < columns; j++) {
 				sb.append(fields[i][j] + "");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public String toIndexString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				sb.append(fields[i][j].getIndex() + "");
 			}
 			sb.append("\n");
 		}

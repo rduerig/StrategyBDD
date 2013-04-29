@@ -12,6 +12,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.field.TurnFieldVisitor;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -21,9 +22,11 @@ public class SituationHavannah implements Situation {
 	private BDD win;
 	private Board board;
 	private TurnFieldVisitor visitor;
+	private StoneColor color;
 
 	public SituationHavannah(BoardAnalyzer analyzer, Board board) {
 		this.board = board;
+		this.color = analyzer.getStoneColor();
 		init(analyzer);
 	}
 
@@ -35,6 +38,11 @@ public class SituationHavannah implements Situation {
 	@Override
 	public Board getBoard() {
 		return board;
+	}
+
+	@Override
+	public StoneColor getStoneColor() {
+		return color;
 	}
 
 	@Override

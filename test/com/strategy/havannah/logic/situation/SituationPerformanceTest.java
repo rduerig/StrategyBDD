@@ -10,6 +10,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -26,7 +27,8 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_3, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 		System.out.println(sit.getWinningCondition().satCount());
 	}
@@ -37,7 +39,8 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 	}
 
@@ -47,7 +50,8 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_5, 5);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 	}
 
@@ -57,7 +61,8 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_6, 6);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 	}
 
@@ -67,7 +72,8 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_7, 7);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 	}
 
@@ -77,7 +83,8 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_10,
 				10);
 
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 
 	}

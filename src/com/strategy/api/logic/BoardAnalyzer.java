@@ -3,6 +3,8 @@ package com.strategy.api.logic;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.strategy.util.StoneColor;
+
 public interface BoardAnalyzer {
 
 	/**
@@ -17,5 +19,10 @@ public interface BoardAnalyzer {
 	public void done();
 
 	public BDDFactory getFactory();
+
+	/**
+	 * @return
+	 */
+	public StoneColor getStoneColor();
 
 }

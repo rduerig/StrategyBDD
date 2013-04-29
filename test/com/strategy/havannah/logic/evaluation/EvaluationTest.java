@@ -20,6 +20,7 @@ import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.situation.SituationHavannah;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -38,7 +39,8 @@ public class EvaluationTest {
 				.createInstance(TestBoardProvider.BOARD_4, 4);
 		board.setField(new WhiteStone(PositionHexagon.get(0, 0), 0));
 
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
+				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 		Evaluation eval = new EvaluationHavannah(sit);
 		Map<Integer, Double> rating = eval.getEvaluatedFields();
