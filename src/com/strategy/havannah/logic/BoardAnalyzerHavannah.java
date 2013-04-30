@@ -59,7 +59,7 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		 * size.
 		 */
 		int dimension = board.getRows() * board.getColumns();
-		fac = BDDFactory.init(dimension * 500000, dimension * 100000);
+		fac = BDDFactory.init(dimension * 100000, dimension * 100000);
 		fac.setVarNum(dimension);
 	}
 

@@ -20,8 +20,8 @@ public class StrategyHavannah {
 	public static void main(String[] args) {
 		System.setProperty("bdd", "bdd");
 
-		int[][] rawBoard = PrimitiveBoardProvider.BOARD_3;
-		Board board = BoardHavannah.createInstance(rawBoard, 3);
+		int[][] rawBoard = PrimitiveBoardProvider.BOARD_4;
+		Board board = BoardHavannah.createInstance(rawBoard, 4);
 		System.out.println(board.toIndexString());
 
 		Prediction p = new PredictionHavannah(board);
