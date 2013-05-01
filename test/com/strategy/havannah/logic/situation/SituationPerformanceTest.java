@@ -23,6 +23,7 @@ public class SituationPerformanceTest {
 	}
 
 	@Test(timeout = 20000)
+	// @Ignore
 	public void testBoard3() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_3, 3);
@@ -30,11 +31,10 @@ public class SituationPerformanceTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
-		System.out.println(sit.getWinningCondition().satCount());
 	}
 
 	@Test(timeout = 20000)
-	@Ignore
+	// @Ignore
 	public void testBoard4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
@@ -44,8 +44,8 @@ public class SituationPerformanceTest {
 		Situation sit = new SituationHavannah(analyzer, board);
 	}
 
-	@Test(timeout = 20000)
-	@Ignore
+	@Test(timeout = 30000)
+	// @Ignore
 	public void testBoard5() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_5, 5);
@@ -55,7 +55,7 @@ public class SituationPerformanceTest {
 		Situation sit = new SituationHavannah(analyzer, board);
 	}
 
-	@Test(timeout = 20000)
+	@Test(timeout = 60000)
 	@Ignore
 	public void testBoard6() {
 		Board board = BoardHavannah

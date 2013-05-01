@@ -2,6 +2,7 @@ package com.strategy.havannah.logic;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
+import net.sf.javabdd.MicroFactory;
 
 import com.strategy.api.board.Board;
 import com.strategy.api.field.BDDFieldVisitor;
@@ -34,11 +35,13 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	public BDD getPath(Position p, Position q) {
 		BDD path = getPathTransitiveClosure(p, q);
+		fac.reorder(BDDFactory.REORDER_SIFT);
 		return path;
 	}
 
 	public void done() {
-		fac.done();
+		// fac.done();
+		cache.free();
 	}
 
 	@Override
@@ -59,8 +62,11 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		 * size.
 		 */
 		int dimension = board.getRows() * board.getColumns();
-		fac = BDDFactory.init(dimension * 100000, dimension * 100000);
+		// fac = BDDFactory.init(dimension * 100000, dimension * 100000);
+		fac = MicroFactory.init(dimension * 100000, dimension * 100000);
 		fac.setVarNum(dimension);
+		fac.autoReorder(BDDFactory.REORDER_SIFT, 40);
+		fac.reorderVerbose(0);
 	}
 
 	private void initBdds(Board board, BDDFactory factory) {
@@ -99,6 +105,9 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		BDD mq = cache.isCached(m, q) ? cache.restore(m, q) : cache.store(m, q,
 				recursiveTransitiveClosure(i - 1, m, q));
 		BDD pmandmq = pm.andWith(mq);
+		// if (pmandmq.nodeCount() >= 100000 && fac.getReorderTimes() > 0) {
+		// fac.reorder(BDDFactory.REORDER_SIFT);
+		// }
 		return pq.orWith(pmandmq);
 	}
 

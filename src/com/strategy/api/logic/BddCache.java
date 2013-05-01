@@ -48,6 +48,11 @@ public interface BddCache {
 	 */
 	boolean isCached(Position p, Position q);
 
+	/**
+	 * Clears the cache.
+	 */
+	void free();
+
 	// ************************************************************************
 
 	/**

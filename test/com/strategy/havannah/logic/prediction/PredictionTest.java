@@ -8,8 +8,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
-import com.strategy.havannah.logic.PositionHexagon;
-import com.strategy.util.FieldGenerator;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -22,13 +21,22 @@ public class PredictionTest {
 	}
 
 	@Test
-	@Ignore
-	public void testNextField() {
+	public void testNextField4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
 
 		Prediction p = new PredictionHavannah(board);
-		p.doNextTurn(FieldGenerator.create(1, PositionHexagon.get(0, 0), 0));
+		p.doNextTurn(0, StoneColor.BLACK);
+	}
+
+	@Test
+	@Ignore
+	public void testNextField5() {
+		Board board = BoardHavannah
+				.createInstance(TestBoardProvider.BOARD_5, 5);
+
+		Prediction p = new PredictionHavannah(board);
+		p.doNextTurn(0, StoneColor.BLACK);
 	}
 
 }

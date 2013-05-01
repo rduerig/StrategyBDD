@@ -32,7 +32,6 @@ public class BddCacheHavannah implements BddCache {
 		}
 		BddCacheIndex key = BddCacheIndex.getIndex(p, q);
 		cache.put(key, bdd);
-		// return bdd.id().simplify(bdd);
 		return bdd.id();
 	}
 
@@ -40,6 +39,11 @@ public class BddCacheHavannah implements BddCache {
 	public boolean isCached(Position p, Position q) {
 		BddCacheIndex key = BddCacheIndex.getIndex(p, q);
 		return cache.containsKey(key);
+	}
+
+	@Override
+	public void free() {
+		cache.clear();
 	}
 
 }

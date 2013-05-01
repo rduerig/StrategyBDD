@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import com.google.common.primitives.Doubles;
 import com.strategy.api.board.Board;
-import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
@@ -33,23 +32,26 @@ public class PredictionHavannah implements Prediction {
 		init(board);
 	}
 
-	/**
-	 * Black has set on given field, updates the board according to that.
-	 * 
-	 * @param field
-	 * @return index of field that was rated best
-	 */
 	@Override
-	public int doNextTurn(Field lastSet) {
-		situationWhite.update(lastSet);
+	public int doNextTurn(int fieldIndex, StoneColor color) {
+		// System.out.println("update situation white");
+		situationWhite.update(fieldIndex, color);
+		// System.out.println("...done");
+		// System.out.println("update situation black");
+		situationBlack.update(fieldIndex, color);
+		// System.out.println("...done");
 
 		// evaluate all possible white turns
+		// System.out.println("evaluate all possible white turns");
 		Evaluation evalWhite = new EvaluationHavannah(situationWhite);
 		Map<Integer, Double> ratingWhite = evalWhite.getEvaluatedFields();
+		// System.out.println("...done");
 
 		// evaluate all possible black turns
+		// System.out.println("evaluate all possible black turns");
 		Evaluation evalBlack = new EvaluationHavannah(situationBlack);
 		final Map<Integer, Double> ratingBlack = evalBlack.getEvaluatedFields();
+		// System.out.println("...done");
 
 		Double avgRatingWhite = getAverage(ratingWhite.values());
 		Double avgRatingBlack = getAverage(ratingBlack.values());
@@ -61,7 +63,12 @@ public class PredictionHavannah implements Prediction {
 			best = getBestIndex(ratingBlack);
 		}
 
-		situationWhite.update(best, 1);
+		// System.out.println("do own turn on white situation");
+		situationWhite.update(best, StoneColor.WHITE);
+		// System.out.println("...done");
+		// System.out.println("do own turn on black situation");
+		situationBlack.update(best, StoneColor.WHITE);
+		// System.out.println("...done");
 
 		return best;
 	}
@@ -69,12 +76,15 @@ public class PredictionHavannah implements Prediction {
 	// ************************************************************************
 
 	private void init(Board board) {
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
+		BoardAnalyzer analyzerWhite = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		situationWhite = new SituationHavannah(analyzer, board);
+		situationWhite = new SituationHavannah(analyzerWhite, board);
+		analyzerWhite.done();
 
-		analyzer = new BoardAnalyzerHavannah(board, StoneColor.BLACK);
-		situationBlack = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerBlack = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		situationBlack = new SituationHavannah(analyzerBlack, board);
+		analyzerBlack.done();
 	}
 
 	private Double getAverage(Collection<Double> values) {
@@ -93,16 +103,6 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	// ************************************************************************
-
-	private static class FieldValueEntryComparator implements
-			Comparator<Entry<Integer, Double>> {
-
-		@Override
-		public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {
-			return o1.getValue().compareTo(o2.getValue());
-		}
-
-	}
 
 	private static class DoubleEntryComparator implements
 			Comparator<Entry<Integer, Double>> {

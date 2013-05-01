@@ -7,10 +7,8 @@ import java.io.InputStreamReader;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
-import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
-import com.strategy.util.FieldGenerator;
-import com.strategy.util.PrimitiveBoardProvider;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -20,7 +18,15 @@ public class StrategyHavannah {
 	public static void main(String[] args) {
 		System.setProperty("bdd", "bdd");
 
-		int[][] rawBoard = PrimitiveBoardProvider.BOARD_4;
+		// int[][] rawBoard = TestBoardProvider.BOARD_4;
+		int[][] rawBoard = new int[][] {//
+		/*    */{ 0, 0, 0, 0, 1, 1, 1 },//
+				{ 0, 0, 0, 0, 0, 1, 1 },//
+				{ 0, 0, 0, 0, 0, 0, 1 },//
+				{ 0, 0, 0, 0, 0, 0, 0 },//
+				{ 1, 0, 0, 0, 0, 0, 0 },//
+				{ 1, 1, 0, 0, 0, 0, 0 },//
+				{ 1, 1, 1, 0, 0, 0, 0 } };
 		Board board = BoardHavannah.createInstance(rawBoard, 4);
 		System.out.println(board.toIndexString());
 
@@ -61,9 +67,11 @@ public class StrategyHavannah {
 				continue;
 			}
 
-			p.doNextTurn(FieldGenerator.create(2, PositionHexagon.get(
-					fieldIndex / board.getRows(),
-					fieldIndex % board.getColumns()), fieldIndex));
+			// p.doNextTurn(FieldGenerator.create(2, PositionHexagon.get(
+			// fieldIndex / board.getRows(),
+			// fieldIndex % board.getColumns()), fieldIndex));
+
+			p.doNextTurn(fieldIndex, StoneColor.BLACK);
 		}
 
 	}

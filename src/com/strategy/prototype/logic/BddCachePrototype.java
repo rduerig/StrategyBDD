@@ -38,4 +38,9 @@ public class BddCachePrototype implements BddCache {
 		return cache.containsKey(key);
 	}
 
+	@Override
+	public void free() {
+		cache.clear();
+	}
+
 }

@@ -1,15 +1,15 @@
 package com.strategy.havannah.logic.situation;
 
-import java.util.concurrent.Callable;
+import java.io.IOException;
 
 import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
 
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.Situation;
-import com.strategy.havannah.field.TurnFieldVisitor;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.StoneColor;
@@ -19,9 +19,9 @@ import com.strategy.util.StoneColor;
  */
 public class SituationHavannah implements Situation {
 
+	private static final String BDD_FILE_PREFIX = "win";
 	private BDD win;
 	private Board board;
-	private TurnFieldVisitor visitor;
 	private StoneColor color;
 
 	public SituationHavannah(BoardAnalyzer analyzer, Board board) {
@@ -46,28 +46,39 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
-	public void update(Field field) {
-		System.out.println("setting stone on: " + field.getIndex());
-		board.setField(field);
-		field.accept(visitor);
-		win = visitor.getWin();
-	}
-
-	@Override
-	public void update(int fieldIndex, int type) {
+	public void update(int fieldIndex, StoneColor color) {
 		System.out.println("setting stone on: " + fieldIndex);
 		Field field = FieldGenerator.create(
-				type,
+				color.getPrimitive(),
 				PositionHexagon.get(fieldIndex / board.getRows(), fieldIndex
 						% board.getColumns()), fieldIndex);
 		board.setField(field);
-		field.accept(visitor);
-		win = visitor.getWin();
+		BDDFactory fac = win.getFactory();
+		if (this.color.equals(color)) {
+			win.restrictWith(fac.ithVar(field.getIndex()));
+		} else {
+			win.restrictWith(fac.nithVar(field.getIndex()));
+		}
+
 	}
 
 	// ************************************************************************
 
 	private void init(BoardAnalyzer analyzer) {
+		// System.out.println("try loading from file: win" +
+		// board.getBoardSize()
+		// + color.name().toLowerCase());
+		try {
+			win = analyzer.getFactory().load(getFileName());
+			// System.out.println("loaded from file: win" + board.getBoardSize()
+			// + color.name().toLowerCase());
+		} catch (IOException e) {
+			initFromScratch(analyzer);
+			// System.out.println("loaded from scratch");
+		}
+	}
+
+	private void initFromScratch(BoardAnalyzer analyzer) {
 		/**
 		 * corners in havannah board are as follows (let b = board size):<br>
 		 * - i=0, j=0<br>
@@ -103,6 +114,12 @@ public class SituationHavannah implements Situation {
 			}
 		}
 
+		try {
+			analyzer.getFactory().save(getFileName(), win);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		// System.out.println("Nodes: " + win.nodeCount());
 		// Double satCount = win.satCount();
 		// System.out.println("Value: " + satCount.longValue());
@@ -126,28 +143,11 @@ public class SituationHavannah implements Situation {
 		// win = win.orWith(analyzer.getPath(corners[3], corners[5]).id());
 		//
 		// win = win.orWith(analyzer.getPath(corners[4], corners[5]).id());
-
-		visitor = new TurnFieldVisitor(win);
 	}
 
-	class PathCaller implements Callable<BDD> {
-
-		private BoardAnalyzer analyzer;
-		private Position p;
-		private Position q;
-
-		public PathCaller(BoardAnalyzer analyzer, Position p, Position q) {
-			this.analyzer = analyzer;
-			this.p = p;
-			this.q = q;
-		}
-
-		@Override
-		public BDD call() {
-			return analyzer.getPath(p, q);
-
-		}
-
+	private String getFileName() {
+		return BDD_FILE_PREFIX + board.getBoardSize()
+				+ color.name().toLowerCase();
 	}
 
 }

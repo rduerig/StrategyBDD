@@ -8,6 +8,7 @@ import com.strategy.api.field.EmptyField;
 import com.strategy.api.field.Field;
 import com.strategy.api.field.FieldVisitor;
 import com.strategy.api.field.WhiteStone;
+import com.strategy.util.StoneColor;
 
 /**
  * Restricts a variable in the given {@link BDD} according to the {@link Field}
@@ -19,14 +20,16 @@ public class TurnFieldVisitor implements FieldVisitor {
 
 	private BDDFactory fac;
 	private BDD win;
+	private StoneColor color;
 
-	public TurnFieldVisitor(BDD win) {
+	public TurnFieldVisitor(BDD win, StoneColor color) {
 		this.win = win;
+		this.color = color;
 		fac = win.getFactory();
 	}
 
 	public BDD getWin() {
-		return win.id();
+		return win;
 	}
 
 	@Override
@@ -36,12 +39,20 @@ public class TurnFieldVisitor implements FieldVisitor {
 
 	@Override
 	public void visit(WhiteStone field) {
-		win = win.restrict(fac.ithVar(field.getIndex())).id();
+		if (StoneColor.WHITE.equals(color)) {
+			win.restrictWith(fac.ithVar(field.getIndex()));
+		} else {
+			win.restrictWith(fac.ithVar(field.getIndex()).not());
+		}
 	}
 
 	@Override
 	public void visit(BlackStone field) {
-		win = win.restrict(fac.ithVar(field.getIndex()).not()).id();
+		if (StoneColor.WHITE.equals(color)) {
+			win.restrictWith(fac.ithVar(field.getIndex()).not());
+		} else {
+			win.restrictWith(fac.ithVar(field.getIndex()));
+		}
 	}
 
 }
