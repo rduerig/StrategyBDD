@@ -1,7 +1,5 @@
 package com.strategy.api.logic.evaluation;
 
-import java.util.Map;
-
 import com.strategy.api.logic.situation.Situation;
 
 /**
@@ -11,6 +9,8 @@ import com.strategy.api.logic.situation.Situation;
  */
 public interface Evaluation {
 
-	Map<Integer, Double> getEvaluatedFields();
+	double getAverageRating();
+
+	int getBestIndex();
 
 }

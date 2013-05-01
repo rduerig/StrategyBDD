@@ -47,7 +47,7 @@ public class SituationHavannah implements Situation {
 
 	@Override
 	public void update(int fieldIndex, StoneColor color) {
-		System.out.println("setting stone on: " + fieldIndex);
+		// System.out.println("setting stone on: " + fieldIndex);
 		Field field = FieldGenerator.create(
 				color.getPrimitive(),
 				PositionHexagon.get(fieldIndex / board.getRows(), fieldIndex

@@ -44,23 +44,21 @@ public class PredictionHavannah implements Prediction {
 		// evaluate all possible white turns
 		// System.out.println("evaluate all possible white turns");
 		Evaluation evalWhite = new EvaluationHavannah(situationWhite);
-		Map<Integer, Double> ratingWhite = evalWhite.getEvaluatedFields();
 		// System.out.println("...done");
 
 		// evaluate all possible black turns
 		// System.out.println("evaluate all possible black turns");
 		Evaluation evalBlack = new EvaluationHavannah(situationBlack);
-		final Map<Integer, Double> ratingBlack = evalBlack.getEvaluatedFields();
 		// System.out.println("...done");
 
-		Double avgRatingWhite = getAverage(ratingWhite.values());
-		Double avgRatingBlack = getAverage(ratingBlack.values());
+		Double avgRatingWhite = evalWhite.getAverageRating();
+		Double avgRatingBlack = evalBlack.getAverageRating();
 
 		Integer best = 0;
 		if (avgRatingWhite >= avgRatingBlack) {
-			best = getBestIndex(ratingWhite);
+			best = evalWhite.getBestIndex();
 		} else {
-			best = getBestIndex(ratingBlack);
+			best = evalBlack.getBestIndex();
 		}
 
 		// System.out.println("do own turn on white situation");

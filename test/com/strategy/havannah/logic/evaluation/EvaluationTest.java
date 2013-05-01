@@ -1,10 +1,5 @@
 package com.strategy.havannah.logic.evaluation;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -43,22 +38,12 @@ public class EvaluationTest {
 				StoneColor.WHITE);
 		Situation sit = new SituationHavannah(analyzer, board);
 		Evaluation eval = new EvaluationHavannah(sit);
-		Map<Integer, Double> rating = eval.getEvaluatedFields();
-		Entry<Integer, Double> max = Collections.max(rating.entrySet(),
-				new Comparator<Entry<Integer, Double>>() {
-
-					@Override
-					public int compare(Entry<Integer, Double> o1,
-							Entry<Integer, Double> o2) {
-						return o1.getValue().compareTo(o2.getValue());
-					}
-				});
 
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
 
 		int expected = 8;
-		int actual = max.getKey();
+		int actual = eval.getBestIndex();
 		Assert.assertEquals(expected, actual);
 	}
 

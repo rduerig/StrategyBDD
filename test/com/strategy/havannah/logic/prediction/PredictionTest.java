@@ -21,6 +21,7 @@ public class PredictionTest {
 	}
 
 	@Test
+	@Ignore
 	public void testNextField4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
@@ -30,7 +31,7 @@ public class PredictionTest {
 	}
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void testNextField5() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_5, 5);

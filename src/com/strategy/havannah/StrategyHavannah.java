@@ -8,6 +8,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
+import com.strategy.util.PrimitiveBoardProvider;
 import com.strategy.util.StoneColor;
 
 /**
@@ -18,16 +19,8 @@ public class StrategyHavannah {
 	public static void main(String[] args) {
 		System.setProperty("bdd", "bdd");
 
-		// int[][] rawBoard = TestBoardProvider.BOARD_4;
-		int[][] rawBoard = new int[][] {//
-		/*    */{ 0, 0, 0, 0, 1, 1, 1 },//
-				{ 0, 0, 0, 0, 0, 1, 1 },//
-				{ 0, 0, 0, 0, 0, 0, 1 },//
-				{ 0, 0, 0, 0, 0, 0, 0 },//
-				{ 1, 0, 0, 0, 0, 0, 0 },//
-				{ 1, 1, 0, 0, 0, 0, 0 },//
-				{ 1, 1, 1, 0, 0, 0, 0 } };
-		Board board = BoardHavannah.createInstance(rawBoard, 4);
+		int[][] rawBoard = PrimitiveBoardProvider.BOARD_5;
+		Board board = BoardHavannah.createInstance(rawBoard, 5);
 		System.out.println(board.toIndexString());
 
 		Prediction p = new PredictionHavannah(board);
