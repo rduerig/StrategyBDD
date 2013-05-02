@@ -1,10 +1,14 @@
 package com.strategy.havannah.logic.situation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
@@ -79,6 +83,32 @@ public class SituationHavannah implements Situation {
 	}
 
 	private void initFromScratch(BoardAnalyzer analyzer) {
+
+		win = analyzer.getFactory().zero();
+
+		// computes bdd representation of the bridge condition
+		// System.out.println("computing bridge");
+		win.orWith(getBridgeCondition(analyzer));
+		// System.out.println("...done");
+
+		// TODO fork
+		// computes bdd representation of the fork condition
+		// System.out.println("computing fork");
+		win.orWith(getForkCondition(analyzer));
+		// System.out.println("...done");
+
+		// TODO ring
+		// computes bdd representation of the ring condition
+		// win.orWith(getRingCondition(analyzer));
+
+		try {
+			analyzer.getFactory().save(getFileName(), win);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private BDD getBridgeCondition(BoardAnalyzer analyzer) {
 		/**
 		 * corners in havannah board are as follows (let b = board size):<br>
 		 * - i=0, j=0<br>
@@ -106,43 +136,60 @@ public class SituationHavannah implements Situation {
 		 * ______|5|| ||6|<br>
 		 */
 
-		win = analyzer.getFactory().zero();
+		BDD bridge = analyzer.getFactory().zero();
 		for (int i = 0; i < corners.length; i++) {
 			for (int j = i + 1; j < corners.length; j++) {
 				BDD path = analyzer.getPath(corners[i], corners[j]);
-				win = win.id().orWith(path);
+				bridge = bridge.id().orWith(path);
 			}
 		}
 
-		try {
-			analyzer.getFactory().save(getFileName(), win);
-		} catch (IOException e) {
-			e.printStackTrace();
+		return bridge;
+	}
+
+	private BDD getForkCondition(BoardAnalyzer analyzer) {
+		BDD fork = analyzer.getFactory().zero();
+		Collection<Position> allPos = board.getPositions();
+
+		ArrayList<Iterable<Position>> edgePositions = Lists.newArrayList();
+		for (EdgeFieldCategory cat : EdgeFieldCategory.values()) {
+			edgePositions.add(filterPositions(cat, allPos));
 		}
 
-		// System.out.println("Nodes: " + win.nodeCount());
-		// Double satCount = win.satCount();
-		// System.out.println("Value: " + satCount.longValue());
+		for (int i = 0; i < board.getBoardSize() - 2; i++) {
+			for (int j = i + 1; j < board.getBoardSize() - 2; j++) {
+				for (int k = j + 1; k < board.getBoardSize() - 2; k++) {
+					BDD edgesConnected = analyzer.getFactory().zero();
+					for (Position pos1 : edgePositions.get(i)) {
+						for (Position pos2 : edgePositions.get(j)) {
+							for (Position pos3 : edgePositions.get(k)) {
+								BDD path = analyzer.getPath(pos1, pos2)
+										.andWith(analyzer.getPath(pos2, pos3));
+								edgesConnected = edgesConnected.id().orWith(
+										path);
+							}
+						}
+					}
+					fork = fork.id().orWith(edgesConnected);
+				}
+			}
+		}
 
-		// win = analyzer.getPath(corners[0], corners[1]).id();
-		// win = win.orWith(analyzer.getPath(corners[0], corners[2]).id());
-		// win = win.orWith(analyzer.getPath(corners[0], corners[3]).id());
-		// win = win.orWith(analyzer.getPath(corners[0], corners[4]).id());
-		// win = win.orWith(analyzer.getPath(corners[0], corners[5]).id());
-		//
-		// win = win.orWith(analyzer.getPath(corners[1], corners[2]).id());
-		// win = win.orWith(analyzer.getPath(corners[1], corners[3]).id());
-		// win = win.orWith(analyzer.getPath(corners[1], corners[4]).id());
-		// win = win.orWith(analyzer.getPath(corners[1], corners[5]).id());
-		//
-		// win = win.orWith(analyzer.getPath(corners[2], corners[3]).id());
-		// win = win.orWith(analyzer.getPath(corners[2], corners[4]).id());
-		// win = win.orWith(analyzer.getPath(corners[2], corners[5]).id());
-		//
-		// win = win.orWith(analyzer.getPath(corners[3], corners[4]).id());
-		// win = win.orWith(analyzer.getPath(corners[3], corners[5]).id());
-		//
-		// win = win.orWith(analyzer.getPath(corners[4], corners[5]).id());
+		return fork;
+	}
+
+	private Iterable<Position> filterPositions(EdgeFieldCategory cat,
+			Collection<Position> allPos) {
+		EdgeFieldPredicate predicate = new EdgeFieldPredicate(cat, board);
+		Iterable<Position> filtered = Iterables.filter(allPos, predicate);
+
+		return filtered;
+	}
+
+	private BDD getRingCondition(BoardAnalyzer analyzer) {
+		BDD ring = analyzer.getFactory().zero();
+
+		return ring;
 	}
 
 	private String getFileName() {

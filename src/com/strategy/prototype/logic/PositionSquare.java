@@ -50,28 +50,47 @@ public class PositionSquare implements Position {
 
 	@Override
 	public boolean isNeighbour(Position other) {
-		return other.equals(this.getUpper()) || other.equals(this.getLower())
-				|| other.equals(this.getLeft())
-				|| other.equals(this.getRight())
+		return other.equals(this.getNorth()) || other.equals(this.getSouth())
+				|| other.equals(this.getWest()) || other.equals(this.getEast())
 				|| other.equals(this);
 	}
 
 	// ************************************************************************
 
-	public Position getUpper() {
+	public Position getNorth() {
 		return new PositionSquare(row - 1, col);
 	}
 
-	public Position getLower() {
+	public Position getSouth() {
 		return new PositionSquare(row + 1, col);
 	}
 
-	public Position getLeft() {
+	public Position getWest() {
 		return new PositionSquare(row, col - 1);
 	}
 
-	public Position getRight() {
+	public Position getEast() {
 		return new PositionSquare(row, col + 1);
+	}
+
+	@Override
+	public Position getNorthWest() {
+		return null;
+	}
+
+	@Override
+	public Position getNorthEast() {
+		return null;
+	}
+
+	@Override
+	public Position getSouthWest() {
+		return null;
+	}
+
+	@Override
+	public Position getSouthEast() {
+		return null;
 	}
 
 	// ************************************************************************

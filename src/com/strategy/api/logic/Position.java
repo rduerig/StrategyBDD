@@ -14,4 +14,20 @@ public interface Position {
 
 	public abstract int getRow();
 
+	public abstract Position getNorth();
+
+	public abstract Position getNorthWest();
+
+	public abstract Position getEast();
+
+	public abstract Position getNorthEast();
+
+	public abstract Position getSouth();
+
+	public abstract Position getSouthWest();
+
+	public abstract Position getWest();
+
+	public abstract Position getSouthEast();
+
 }

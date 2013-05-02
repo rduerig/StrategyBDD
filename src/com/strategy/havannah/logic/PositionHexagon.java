@@ -115,30 +115,44 @@ public class PositionHexagon implements Position {
 				|| other.equals(this.getSouthEast()) || other.equals(this);
 	}
 
-	// ************************************************************************
-
+	@Override
 	public Position getNorth() {
 		return new PositionHexagon(row + 1, col + 1);
 	}
 
+	@Override
 	public Position getSouth() {
 		return new PositionHexagon(row - 1, col - 1);
 	}
 
+	@Override
 	public Position getNorthWest() {
 		return new PositionHexagon(row + 1, col);
 	}
 
+	@Override
 	public Position getSouthWest() {
 		return new PositionHexagon(row, col - 1);
 	}
 
+	@Override
 	public Position getNorthEast() {
 		return new PositionHexagon(row, col + 1);
 	}
 
+	@Override
 	public Position getSouthEast() {
 		return new PositionHexagon(row - 1, col);
+	}
+
+	@Override
+	public Position getEast() {
+		return null;
+	}
+
+	@Override
+	public Position getWest() {
+		return null;
 	}
 
 	// ************************************************************************
