@@ -89,12 +89,14 @@ public class SituationHavannah implements Situation {
 		// computes bdd representation of the bridge condition
 		// System.out.println("computing bridge");
 		win.orWith(getBridgeCondition(analyzer));
+		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
 		// TODO fork
 		// computes bdd representation of the fork condition
 		// System.out.println("computing fork");
 		win.orWith(getForkCondition(analyzer));
+		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
 		// TODO ring
@@ -144,6 +146,8 @@ public class SituationHavannah implements Situation {
 			}
 		}
 
+		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
+
 		return bridge;
 	}
 
@@ -174,6 +178,8 @@ public class SituationHavannah implements Situation {
 				}
 			}
 		}
+
+		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 
 		return fork;
 	}

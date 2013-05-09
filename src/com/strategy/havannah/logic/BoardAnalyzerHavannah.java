@@ -35,7 +35,7 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	public BDD getPath(Position p, Position q) {
 		BDD path = getPathTransitiveClosure(p, q);
-		fac.reorder(BDDFactory.REORDER_SIFT);
+		// fac.reorder(BDDFactory.REORDER_SIFT);cvvc
 		return path;
 	}
 
@@ -62,10 +62,8 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		 * size.
 		 */
 		int dimension = board.getRows() * board.getColumns();
-		// fac = BDDFactory.init(dimension * 100000, dimension * 100000);
 		fac = MicroFactory.init(dimension * 100000, dimension * 100000);
 		fac.setVarNum(dimension);
-		fac.autoReorder(BDDFactory.REORDER_SIFT, 40);
 		fac.reorderVerbose(0);
 	}
 
@@ -105,9 +103,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		BDD mq = cache.isCached(m, q) ? cache.restore(m, q) : cache.store(m, q,
 				recursiveTransitiveClosure(i - 1, m, q));
 		BDD pmandmq = pm.andWith(mq);
-		// if (pmandmq.nodeCount() >= 100000 && fac.getReorderTimes() > 0) {
-		// fac.reorder(BDDFactory.REORDER_SIFT);
-		// }
 		return pq.orWith(pmandmq);
 	}
 
