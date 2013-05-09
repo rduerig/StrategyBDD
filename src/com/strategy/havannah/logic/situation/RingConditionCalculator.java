@@ -1,5 +1,7 @@
 package com.strategy.havannah.logic.situation;
 
+import static com.strategy.util.Output.print;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -11,8 +13,15 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
+import com.strategy.util.EmptyPositionFilter;
 
 public class RingConditionCalculator implements ConditionCalculator {
+
+	private static boolean debug = false;
+
+	public static void setDebug(boolean debug) {
+		RingConditionCalculator.debug = debug;
+	}
 
 	private BDD result;
 
@@ -30,21 +39,27 @@ public class RingConditionCalculator implements ConditionCalculator {
 
 	private void calculateResult(BoardAnalyzer analyzer,
 			BoardAnalyzer analyzerOpposite, Board board) {
-		result = analyzer.getFactory().zero();
 		Collection<Position> allPos = board.getPositions();
 
-		ArrayList<Position> innerPositions = Lists
-				.newArrayList(filterInnerPositions(allPos, board));
+		Iterable<Position> allInnerPos = filterInnerPositions(allPos, board);
+		ArrayList<Position> innerPositions = Lists.newArrayList(Iterables
+				.filter(allInnerPos, new EmptyPositionFilter(board)));
 
 		ArrayList<Position> outerPositions = Lists.newArrayList(allPos);
 		Iterables.removeAll(outerPositions, innerPositions);
 
+		print("outer: " + outerPositions.toString(), debug);
+		print("inner: " + innerPositions.toString(), debug);
+
+		BDD opposite = analyzerOpposite.getFactory().zero();
 		for (Position innerPos : innerPositions) {
 			for (Position outerPos : outerPositions) {
-				BDD path = analyzerOpposite.getPath(innerPos, outerPos);
-				result = result.id().andWith(path.not());
+				BDD path = analyzerOpposite.getPath(outerPos, innerPos);
+				opposite = opposite.id().orWith(path);
 			}
 		}
+
+		result = opposite.not();
 	}
 
 	private Iterable<Position> filterInnerPositions(

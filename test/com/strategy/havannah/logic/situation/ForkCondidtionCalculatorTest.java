@@ -24,7 +24,7 @@ public class ForkCondidtionCalculatorTest {
 	// @Ignore
 	public void testBridge() {
 		Board board = BoardHavannah.createInstance(
-				TestBoardProviderConditions.BOARD_FORK_1, 3);
+				TestBoardProviderConditions.BOARD_RING_1, 3);
 
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);

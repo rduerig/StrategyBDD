@@ -5,15 +5,13 @@ import java.util.ArrayList;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.evaluation.Evaluation;
-import com.strategy.util.ColorFieldVisitor;
-import com.strategy.util.StoneColor;
+import com.strategy.util.EmptyPositionFilter;
 
 /**
  * @author Ralph Dürig
@@ -78,21 +76,4 @@ public class EvaluationHavannah implements Evaluation {
 
 	// ************************************************************************
 
-	private static class EmptyPositionFilter implements Predicate<Position> {
-
-		private Board board;
-		private ColorFieldVisitor colorVisitor;
-
-		public EmptyPositionFilter(Board board) {
-			this.board = board;
-			this.colorVisitor = new ColorFieldVisitor();
-		}
-
-		@Override
-		public boolean apply(Position input) {
-			Field field = board.getField(input.getRow(), input.getCol());
-			field.accept(colorVisitor);
-			return StoneColor.EMPTY.equals(colorVisitor.getColor());
-		}
-	}
 }
