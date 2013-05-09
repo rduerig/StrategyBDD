@@ -111,6 +111,32 @@ public class BoardPrototype implements Board {
 		return sb.toString();
 	}
 
+	@Override
+	public String toRowColString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				sb.append(fields[i][j].getPosition().getRow() + ":"
+						+ fields[i][j].getPosition().getCol() + "");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public String toRatingString(double[] rating, int bestIndex) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				Field field = getField(i, j);
+				sb.append(rating[field.getIndex()] + "");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
 	// ************************************************************************
 
 	private void init(int[][] board) {

@@ -1,18 +1,14 @@
 package com.strategy.havannah.logic.situation;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
-import com.strategy.api.logic.Position;
+import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
@@ -28,10 +24,11 @@ public class SituationHavannah implements Situation {
 	private Board board;
 	private StoneColor color;
 
-	public SituationHavannah(BoardAnalyzer analyzer, Board board) {
+	public SituationHavannah(BoardAnalyzer analyzer,
+			BoardAnalyzer analyzerOpposite, Board board) {
 		this.board = board;
 		this.color = analyzer.getStoneColor();
-		init(analyzer);
+		init(analyzer, analyzerOpposite);
 	}
 
 	@Override
@@ -68,7 +65,7 @@ public class SituationHavannah implements Situation {
 
 	// ************************************************************************
 
-	private void init(BoardAnalyzer analyzer) {
+	private void init(BoardAnalyzer analyzer, BoardAnalyzer analyzerOpposite) {
 		// System.out.println("try loading from file: win" +
 		// board.getBoardSize()
 		// + color.name().toLowerCase());
@@ -77,31 +74,30 @@ public class SituationHavannah implements Situation {
 			// System.out.println("loaded from file: win" + board.getBoardSize()
 			// + color.name().toLowerCase());
 		} catch (IOException e) {
-			initFromScratch(analyzer);
+			initFromScratch(analyzer, analyzerOpposite);
 			// System.out.println("loaded from scratch");
 		}
 	}
 
-	private void initFromScratch(BoardAnalyzer analyzer) {
+	private void initFromScratch(BoardAnalyzer analyzer,
+			BoardAnalyzer analyzerOpposite) {
 
 		win = analyzer.getFactory().zero();
 
 		// computes bdd representation of the bridge condition
 		// System.out.println("computing bridge");
 		win.orWith(getBridgeCondition(analyzer));
-		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
+		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
-		// TODO fork
 		// computes bdd representation of the fork condition
 		// System.out.println("computing fork");
 		win.orWith(getForkCondition(analyzer));
-		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
+		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
-		// TODO ring
 		// computes bdd representation of the ring condition
-		// win.orWith(getRingCondition(analyzer));
+		win.orWith(getRingCondition(analyzer, analyzerOpposite));
 
 		try {
 			analyzer.getFactory().save(getFileName(), win);
@@ -111,91 +107,21 @@ public class SituationHavannah implements Situation {
 	}
 
 	private BDD getBridgeCondition(BoardAnalyzer analyzer) {
-		/**
-		 * corners in havannah board are as follows (let b = board size):<br>
-		 * - i=0, j=0<br>
-		 * - i=0, j=b-1<br>
-		 * - i=b-1, j=0<br>
-		 * - i=b-1, j=2b-2<br>
-		 * - i=2b-2, j=b-1<br>
-		 * - i=2b-2, j=2b-2
-		 */
-
-		int b = board.getBoardSize();
-		Position[] corners = new PositionHexagon[6];
-		corners[0] = PositionHexagon.get(0, 0);
-		corners[1] = PositionHexagon.get(0, b - 1);
-		corners[2] = PositionHexagon.get(b - 1, 0);
-		corners[3] = PositionHexagon.get(b - 1, 2 * b - 2);
-		corners[4] = PositionHexagon.get(2 * b - 2, b - 1);
-		corners[5] = PositionHexagon.get(2 * b - 2, 2 * b - 2);
-		/**
-		 * corners for a 5x5 board:<br>
-		 * |1|| ||2| <br>
-		 * | || || || | <br>
-		 * |3|| || || ||4|<br>
-		 * ___| || || || |<br>
-		 * ______|5|| ||6|<br>
-		 */
-
-		BDD bridge = analyzer.getFactory().zero();
-		for (int i = 0; i < corners.length; i++) {
-			for (int j = i + 1; j < corners.length; j++) {
-				BDD path = analyzer.getPath(corners[i], corners[j]);
-				bridge = bridge.id().orWith(path);
-			}
-		}
-
-		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
-
-		return bridge;
+		ConditionCalculator calc = new BridgeConditionCalculator(analyzer,
+				board);
+		return calc.getBdd();
 	}
 
 	private BDD getForkCondition(BoardAnalyzer analyzer) {
-		BDD fork = analyzer.getFactory().zero();
-		Collection<Position> allPos = board.getPositions();
-
-		ArrayList<Iterable<Position>> edgePositions = Lists.newArrayList();
-		for (EdgeFieldCategory cat : EdgeFieldCategory.values()) {
-			edgePositions.add(filterPositions(cat, allPos));
-		}
-
-		for (int i = 0; i < board.getBoardSize() - 2; i++) {
-			for (int j = i + 1; j < board.getBoardSize() - 2; j++) {
-				for (int k = j + 1; k < board.getBoardSize() - 2; k++) {
-					BDD edgesConnected = analyzer.getFactory().zero();
-					for (Position pos1 : edgePositions.get(i)) {
-						for (Position pos2 : edgePositions.get(j)) {
-							for (Position pos3 : edgePositions.get(k)) {
-								BDD path = analyzer.getPath(pos1, pos2)
-										.andWith(analyzer.getPath(pos2, pos3));
-								edgesConnected = edgesConnected.id().orWith(
-										path);
-							}
-						}
-					}
-					fork = fork.id().orWith(edgesConnected);
-				}
-			}
-		}
-
-		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
-
-		return fork;
+		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board);
+		return calc.getBdd();
 	}
 
-	private Iterable<Position> filterPositions(EdgeFieldCategory cat,
-			Collection<Position> allPos) {
-		EdgeFieldPredicate predicate = new EdgeFieldPredicate(cat, board);
-		Iterable<Position> filtered = Iterables.filter(allPos, predicate);
-
-		return filtered;
-	}
-
-	private BDD getRingCondition(BoardAnalyzer analyzer) {
-		BDD ring = analyzer.getFactory().zero();
-
-		return ring;
+	private BDD getRingCondition(BoardAnalyzer analyzer,
+			BoardAnalyzer analyzerOpposite) {
+		ConditionCalculator calc = new RingConditionCalculator(analyzer,
+				analyzerOpposite, board);
+		return calc.getBdd();
 	}
 
 	private String getFileName() {

@@ -9,7 +9,9 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.havannah.logic.PositionHexagon;
+import com.strategy.util.EvaluationFormatter;
 import com.strategy.util.FieldGenerator;
+import com.strategy.util.FieldIndexFormatter;
 
 /**
  * Represents a hexagonal board for the game Havannah.<br>
@@ -114,15 +116,58 @@ public class BoardHavannah implements Board {
 		return sb.toString();
 	}
 
+	@Override
 	public String toIndexString() {
+		FieldIndexFormatter formatter = new FieldIndexFormatter();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
 			for (int j = 0; j < getColumns(); j++) {
 				Field field = getField(i, j);
 				if (null != field) {
-					sb.append("|" + field.getIndex() + "|");
+					sb.append("|" + formatter.format(field.getIndex()) + "|");
+				} else {
+					sb.append(formatter.space());
+				}
+			}
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public String toRowColString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getColumns(); j++) {
+				Field field = getField(i, j);
+				if (null != field) {
+					sb.append("|" + field.getPosition().getRow() + ":"
+							+ field.getPosition().getCol() + "|");
 				} else {
 					sb.append("   ");
+				}
+			}
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public String toRatingString(double[] rating, int bestIndex) {
+		EvaluationFormatter formatter = new EvaluationFormatter();
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getColumns(); j++) {
+				Field field = getField(i, j);
+				if (null != field) {
+					String sep = field.getIndex() == bestIndex ? "!" : "|";
+					sb.append(sep + formatter.format(rating[field.getIndex()])
+							+ sep);
+					// sb.append("|" + rating[field.getIndex()] + "|");
+				} else {
+					sb.append(formatter.space());
 				}
 			}
 			sb.append("\n");

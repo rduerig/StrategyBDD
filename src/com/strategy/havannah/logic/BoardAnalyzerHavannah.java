@@ -34,8 +34,10 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	}
 
 	public BDD getPath(Position p, Position q) {
+		// cache = new BddCacheHavannah();
+		// cache.free();
 		BDD path = getPathTransitiveClosure(p, q);
-		// fac.reorder(BDDFactory.REORDER_SIFT);cvvc
+		// fac.reorder(BDDFactory.REORDER_SIFT);
 		return path;
 	}
 
@@ -96,12 +98,12 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		}
 
 		Position m = PositionHexagon.get(i / rows, i % cols);
-		BDD pq = cache.isCached(p, q) ? cache.restore(p, q) : cache.store(p, q,
-				recursiveTransitiveClosure(i - 1, p, q));
-		BDD pm = cache.isCached(p, m) ? cache.restore(p, m) : cache.store(p, m,
-				recursiveTransitiveClosure(i - 1, p, m));
-		BDD mq = cache.isCached(m, q) ? cache.restore(m, q) : cache.store(m, q,
-				recursiveTransitiveClosure(i - 1, m, q));
+		BDD pq = cache.isCached(p, q, i) ? cache.restore(p, q, i) : cache
+				.store(p, q, i, recursiveTransitiveClosure(i - 1, p, q));
+		BDD pm = cache.isCached(p, m, i) ? cache.restore(p, m, i) : cache
+				.store(p, m, i, recursiveTransitiveClosure(i - 1, p, m));
+		BDD mq = cache.isCached(m, q, i) ? cache.restore(m, q, i) : cache
+				.store(m, q, i, recursiveTransitiveClosure(i - 1, m, q));
 		BDD pmandmq = pm.andWith(mq);
 		return pq.orWith(pmandmq);
 	}

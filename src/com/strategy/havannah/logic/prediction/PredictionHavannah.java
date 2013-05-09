@@ -43,12 +43,14 @@ public class PredictionHavannah implements Prediction {
 
 		// evaluate all possible white turns
 		// System.out.println("evaluate all possible white turns");
-		Evaluation evalWhite = new EvaluationHavannah(situationWhite);
+		Evaluation evalWhite = new EvaluationHavannah(
+				situationWhite.getBoard(), situationWhite.getWinningCondition());
 		// System.out.println("...done");
 
 		// evaluate all possible black turns
 		// System.out.println("evaluate all possible black turns");
-		Evaluation evalBlack = new EvaluationHavannah(situationBlack);
+		Evaluation evalBlack = new EvaluationHavannah(
+				situationBlack.getBoard(), situationBlack.getWinningCondition());
 		// System.out.println("...done");
 
 		Double avgRatingWhite = evalWhite.getAverageRating();
@@ -76,12 +78,15 @@ public class PredictionHavannah implements Prediction {
 	private void init(Board board) {
 		BoardAnalyzer analyzerWhite = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		situationWhite = new SituationHavannah(analyzerWhite, board);
-		analyzerWhite.done();
-
 		BoardAnalyzer analyzerBlack = new BoardAnalyzerHavannah(board,
 				StoneColor.BLACK);
-		situationBlack = new SituationHavannah(analyzerBlack, board);
+
+		situationWhite = new SituationHavannah(analyzerWhite, analyzerBlack,
+				board);
+		situationBlack = new SituationHavannah(analyzerBlack, analyzerWhite,
+				board);
+
+		analyzerWhite.done();
 		analyzerBlack.done();
 	}
 

@@ -93,12 +93,12 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		}
 
 		Position m = PositionSquare.get(i / rows, i % rows);
-		BDD pq = cache.isCached(p, q) ? cache.restore(p, q) : cache.store(p, q,
-				recursiveTransitiveClosure(i - 1, p, q));
-		BDD pm = cache.isCached(p, m) ? cache.restore(p, m) : cache.store(p, m,
-				recursiveTransitiveClosure(i - 1, p, m));
-		BDD mq = cache.isCached(m, q) ? cache.restore(m, q) : cache.store(m, q,
-				recursiveTransitiveClosure(i - 1, m, q));
+		BDD pq = cache.isCached(p, q, i) ? cache.restore(p, q, i) : cache
+				.store(p, q, i, recursiveTransitiveClosure(i - 1, p, q));
+		BDD pm = cache.isCached(p, m, i) ? cache.restore(p, m, i) : cache
+				.store(p, m, i, recursiveTransitiveClosure(i - 1, p, m));
+		BDD mq = cache.isCached(m, q, i) ? cache.restore(m, q, i) : cache
+				.store(m, q, i, recursiveTransitiveClosure(i - 1, m, q));
 		return pq.orWith(pm.andWith(mq));
 	}
 

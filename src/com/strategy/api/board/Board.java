@@ -117,4 +117,21 @@ public interface Board {
 	 */
 	String toIndexString();
 
+	/**
+	 * Transforms the board to a String representation showing each field's row
+	 * and column
+	 * 
+	 * @return the row and column values of the fields as they are lying on the
+	 *         board
+	 */
+	String toRowColString();
+
+	/**
+	 * Transforms the board to a String representation showing each field's
+	 * rating
+	 * 
+	 * @return the rating of each field
+	 */
+	String toRatingString(double[] rating, int bestIndex);
+
 }

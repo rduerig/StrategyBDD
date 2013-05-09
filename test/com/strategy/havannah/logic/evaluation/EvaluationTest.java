@@ -36,8 +36,11 @@ public class EvaluationTest {
 
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
-		Evaluation eval = new EvaluationHavannah(sit);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
+		Evaluation eval = new EvaluationHavannah(board,
+				sit.getWinningCondition());
 
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());

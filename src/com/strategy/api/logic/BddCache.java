@@ -18,9 +18,11 @@ public interface BddCache {
 	 *            Position p
 	 * @param q
 	 *            Position q
+	 * @param i
+	 *            recursion index i
 	 * @return a previously cached BDD, is null if no BDD was found in the cache
 	 */
-	BDD restore(Position p, Position q);
+	BDD restore(Position p, Position q, int i);
 
 	/**
 	 * Stores a given bdd in the cache for the given {@link Position}s. The
@@ -30,11 +32,13 @@ public interface BddCache {
 	 *            Position p
 	 * @param q
 	 *            Position q
+	 * @param i
+	 *            recursion index i
 	 * @param bdd
 	 *            the bdd to store
 	 * @return the given and stored BDD
 	 */
-	BDD store(Position p, Position q, BDD bdd);
+	BDD store(Position p, Position q, int i, BDD bdd);
 
 	/**
 	 * Returns if a bdd is cached for the given {@link Position}s.
@@ -43,10 +47,12 @@ public interface BddCache {
 	 *            Position p
 	 * @param q
 	 *            Position q
+	 * @param i
+	 *            recursion index i
 	 * @return true if a bdd is cached for the given {@link Position}s, false
 	 *         otherwise
 	 */
-	boolean isCached(Position p, Position q);
+	boolean isCached(Position p, Position q, int i);
 
 	/**
 	 * Clears the cache.
@@ -64,14 +70,16 @@ public interface BddCache {
 	class BddCacheIndex {
 		private Position p;
 		private Position q;
+		private Integer i;
 
-		public static BddCacheIndex getIndex(Position p, Position q) {
-			return new BddCacheIndex(p, q);
+		public static BddCacheIndex getIndex(Position p, Position q, int i) {
+			return new BddCacheIndex(p, q, i);
 		}
 
-		private BddCacheIndex(Position p, Position q) {
+		private BddCacheIndex(Position p, Position q, int i) {
 			this.p = p;
 			this.q = q;
+			this.i = i;
 		}
 
 		@Override
@@ -80,12 +88,14 @@ public interface BddCache {
 			sb.append(p);
 			sb.append("|");
 			sb.append(q);
+			sb.append("|");
+			sb.append(i);
 			return sb.toString();
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hashCode(p, q);
+			return Objects.hashCode(p, q, i);
 		}
 
 		@Override
@@ -112,6 +122,13 @@ public interface BddCache {
 					return false;
 				}
 			} else if (!q.equals(other.q)) {
+				return false;
+			}
+			if (i == null) {
+				if (other.i != null) {
+					return false;
+				}
+			} else if (!i.equals(other.i)) {
 				return false;
 			}
 			return true;

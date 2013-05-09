@@ -28,9 +28,11 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_3, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 	}
 
 	@Test(timeout = 20000)
@@ -39,9 +41,11 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 	}
 
 	@Test(timeout = 30000)
@@ -50,9 +54,11 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_5, 5);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 	}
 
 	@Test(timeout = 60000)
@@ -61,9 +67,11 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_6, 6);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 	}
 
 	@Test(timeout = 20000)
@@ -72,9 +80,11 @@ public class SituationPerformanceTest {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_7, 7);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 	}
 
 	@Test(timeout = 20000)
@@ -85,7 +95,9 @@ public class SituationPerformanceTest {
 
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
-		Situation sit = new SituationHavannah(analyzer, board);
+		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
+				StoneColor.BLACK);
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 
 	}
 
