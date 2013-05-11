@@ -4,13 +4,15 @@ import net.sf.javabdd.BDD;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.strategy.api.HasDebugFlag;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.Position;
+import com.strategy.util.Output;
 
 /**
  * @author Ralph Dürig
  */
-public class BddCacheHavannah implements BddCache {
+public class BddCacheHavannah implements BddCache, HasDebugFlag {
 
 	private Cache<BddCacheIndex, BDD> cache;
 
@@ -47,7 +49,7 @@ public class BddCacheHavannah implements BddCache {
 	@Override
 	public void free() {
 		// cache.clear();
-		System.out.println(cache.stats());
+		Output.print(cache.stats().toString(), BddCacheHavannah.class);
 		cache.cleanUp();
 		cache.invalidateAll();
 	}

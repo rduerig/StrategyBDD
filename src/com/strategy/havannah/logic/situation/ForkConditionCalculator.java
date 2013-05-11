@@ -10,20 +10,16 @@ import net.sf.javabdd.BDDFactory;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.strategy.api.HasDebugFlag;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 
-public class ForkConditionCalculator implements ConditionCalculator {
-
-	private static boolean debug = false;
+public class ForkConditionCalculator implements ConditionCalculator,
+		HasDebugFlag {
 
 	private BDD result;
-
-	public static void setDebug(boolean debug) {
-		ForkConditionCalculator.debug = debug;
-	}
 
 	public ForkConditionCalculator(BoardAnalyzer analyzer, Board board) {
 		calculateResult(analyzer, board);
@@ -45,7 +41,7 @@ public class ForkConditionCalculator implements ConditionCalculator {
 			edgePositions.add(filterEdgePositions(cat, allPos, board));
 		}
 
-		print(edgePositions.toString(), debug);
+		print(edgePositions.toString(), ForkConditionCalculator.class);
 
 		int size = edgePositions.size();
 
@@ -56,7 +52,8 @@ public class ForkConditionCalculator implements ConditionCalculator {
 						for (Position pos2 : edgePositions.get(j)) {
 							for (Position pos3 : edgePositions.get(k)) {
 								print("checking: " + pos1 + " - " + pos2
-										+ " - " + pos3, debug);
+										+ " - " + pos3,
+										ForkConditionCalculator.class);
 								BDD path = analyzer.getPath(pos1, pos2)
 										.andWith(analyzer.getPath(pos2, pos3));
 								result = result.id().orWith(path);

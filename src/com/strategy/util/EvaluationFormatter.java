@@ -21,7 +21,8 @@ public class EvaluationFormatter {
 		// .formatToCharacterIterator(value);
 		// int end = charIt.getEndIndex();
 		// return formatter.format(value / Math.pow(10, end - 2));
-		return formatter.format(value);
+		// return formatter.format(value);
+		return Double.toString(value);
 	}
 
 	public String space() {

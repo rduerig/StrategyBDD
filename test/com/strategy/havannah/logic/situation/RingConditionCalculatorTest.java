@@ -1,12 +1,6 @@
 package com.strategy.havannah.logic.situation;
 
 import static junit.framework.Assert.assertEquals;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-
-import junit.framework.Assert;
 import net.sf.javabdd.BDD;
 
 import org.junit.AfterClass;
@@ -19,13 +13,14 @@ import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
+import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
 
 public class RingConditionCalculatorTest {
 
 	@BeforeClass
 	public static void doBefore() {
-		RingConditionCalculator.setDebug(false);
+		Output.setDebug(RingConditionCalculator.class, true);
 	}
 
 	@Test
@@ -76,7 +71,7 @@ public class RingConditionCalculatorTest {
 	// @Ignore
 	public void testEvaluationRing4() {
 		Board board = BoardHavannah.createInstance(
-				TestBoardProviderConditions.BOARD_RING_2, 3);
+				TestBoardProviderConditions.BOARD_RING_1_OTHER, 3);
 
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
@@ -89,20 +84,8 @@ public class RingConditionCalculatorTest {
 
 		Evaluation eval = new EvaluationHavannah(board, result);
 
-		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getBestIndex()));
-		StringWriter stringWriter = new StringWriter();
-		BufferedWriter out = new BufferedWriter(stringWriter);
-		try {
-			analyzer.getFactory().save(out, result);
-			out.close();
-		} catch (IOException e) {
-			Assert.fail("IOException occured!");
-		}
-
-		System.out.println(stringWriter.toString());
-		double expected = 4d;
-		double actual = result.pathCount();
+		int expected = 7;
+		int actual = eval.getBestIndex();
 		analyzer.done();
 		assertEquals(expected, actual);
 
@@ -110,7 +93,7 @@ public class RingConditionCalculatorTest {
 
 	@AfterClass
 	public static void doAfter() {
-		RingConditionCalculator.setDebug(false);
+		Output.setDebug(RingConditionCalculator.class, false);
 	}
 
 }

@@ -3,13 +3,16 @@ package com.strategy.havannah.logic.situation;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.strategy.api.HasDebugFlag;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.havannah.logic.PositionHexagon;
+import com.strategy.util.Output;
 
-public class BridgeConditionCalculator implements ConditionCalculator {
+public class BridgeConditionCalculator implements ConditionCalculator,
+		HasDebugFlag {
 
 	private BDD result;
 
@@ -55,9 +58,9 @@ public class BridgeConditionCalculator implements ConditionCalculator {
 		result = analyzer.getFactory().zero();
 		for (int i = 0; i < corners.length; i++) {
 			for (int j = i + 1; j < corners.length; j++) {
+				Output.print("path from " + corners[i] + " to " + corners[j],
+						BridgeConditionCalculator.class);
 				BDD path = analyzer.getPath(corners[i], corners[j]);
-				// System.out.println("path from " + corners[i] + " to "
-				// + corners[j]);
 				result = result.id().orWith(path);
 			}
 		}

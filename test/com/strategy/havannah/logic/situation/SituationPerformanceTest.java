@@ -1,6 +1,6 @@
 package com.strategy.havannah.logic.situation;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -10,6 +10,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
 
 /**
@@ -17,13 +18,14 @@ import com.strategy.util.StoneColor;
  */
 public class SituationPerformanceTest {
 
-	@Before
-	public void before() {
+	@BeforeClass
+	public static void before() {
 		System.setProperty("bdd", "bdd");
+		Output.setDebug(BridgeConditionCalculator.class, true);
 	}
 
 	@Test(timeout = 20000)
-	// @Ignore
+	@Ignore
 	public void testBoard3() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_3, 3);
@@ -36,7 +38,7 @@ public class SituationPerformanceTest {
 	}
 
 	@Test(timeout = 20000)
-	// @Ignore
+	@Ignore
 	public void testBoard4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
@@ -48,7 +50,7 @@ public class SituationPerformanceTest {
 		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 	}
 
-	@Test(timeout = 30000)
+	@Test
 	// @Ignore
 	public void testBoard5() {
 		Board board = BoardHavannah

@@ -1,7 +1,6 @@
 package com.strategy.havannah.logic.evaluation;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -79,10 +78,15 @@ public class EvaluationHavannah implements Evaluation {
 	}
 
 	private BDD getVarset(BDDFactory fac, Board b) {
-		List<BDD> variables = Lists.transform(
-				Lists.newArrayList(b.getPositions()),
-				new PositionToBdd(fac, b.getRows()));
-		return fac.buildCube(0, variables);
+		// List<BDD> variables = Lists.transform(
+		// Lists.newArrayList(b.getPositions()),
+		// new PositionToBdd(fac, b.getRows()));
+		int[] variables = new int[board.getPositions().size()];
+		int i = 0;
+		for (Position p : board.getPositions()) {
+			variables[i++] = board.getRows() * p.getRow() + p.getCol();
+		}
+		return fac.makeSet(variables);
 	}
 
 	// ************************************************************************

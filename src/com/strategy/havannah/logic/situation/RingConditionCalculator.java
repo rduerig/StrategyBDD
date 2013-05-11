@@ -10,18 +10,14 @@ import net.sf.javabdd.BDDFactory;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.strategy.api.HasDebugFlag;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 
-public class RingConditionCalculator implements ConditionCalculator {
-
-	private static boolean debug = false;
-
-	public static void setDebug(boolean debug) {
-		RingConditionCalculator.debug = debug;
-	}
+public class RingConditionCalculator implements ConditionCalculator,
+		HasDebugFlag {
 
 	private BDD result;
 
@@ -43,30 +39,39 @@ public class RingConditionCalculator implements ConditionCalculator {
 
 		ArrayList<Position> allInnerPos = Lists
 				.newArrayList(filterInnerPositions(allPos, board));
-		// ArrayList<Position> innerPositions = Lists.newArrayList(Iterables
-		// .filter(allInnerPos, new EmptyPositionFilter(board)));
 
 		ArrayList<Position> outerPositions = Lists.newArrayList(allPos);
 		Iterables.removeAll(outerPositions, allInnerPos);
 
-		print("outer: " + outerPositions.toString(), debug);
-		print("inner: " + allInnerPos.toString(), debug);
+		print("outer: " + outerPositions.toString(),
+				RingConditionCalculator.class);
+		print("inner: " + allInnerPos.toString(), RingConditionCalculator.class);
 
-		BDD opposite = analyzerOpposite.getFactory().zero();
+		result = analyzer.getFactory().zero();
 		for (Position innerPos : allInnerPos) {
+			BDD innerPosInRing = analyzer.getFactory().one();
 			ArrayList<Position> neighbours = Lists.newArrayList(
 					innerPos.getSouth(), innerPos.getSouthWest(),
 					innerPos.getNorthWest(), innerPos.getNorth(),
 					innerPos.getNorthEast(), innerPos.getSouthEast());
 			for (Position outerPos : outerPositions) {
 				for (Position neighbour : neighbours) {
-					BDD path = analyzerOpposite.getPath(outerPos, neighbour);
-					opposite = opposite.id().orWith(path);
+					if (board.isValidField(neighbour)) {
+						// path = there is no path for the opposite color from
+						// outerPos to neighbour
+						BDD path = analyzerOpposite
+								.getPath(outerPos, neighbour).not();
+						// print("path from " + outerPos + " to " + neighbour +
+						// ": "
+						// + path, RingConditionCalculator.class);
+						innerPosInRing = innerPosInRing.id().andWith(path);
+					}
 				}
 			}
+			result = result.id().orWith(innerPosInRing);
 		}
 
-		result = opposite.not();
+		result = result.not();
 
 		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}

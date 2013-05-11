@@ -17,11 +17,11 @@ public class PredictionTest {
 
 	@Before
 	public void before() {
-		System.setProperty("bdd", "bdd");
+		// System.setProperty("bdd", "bdd");
 	}
 
 	@Test
-	@Ignore
+	// @Ignore
 	public void testNextField4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
@@ -31,7 +31,7 @@ public class PredictionTest {
 	}
 
 	@Test
-	// @Ignore
+	@Ignore
 	public void testNextField5() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_5, 5);

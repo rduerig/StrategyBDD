@@ -11,13 +11,14 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
 
 public class ForkCondidtionCalculatorTest {
 
 	@BeforeClass
 	public static void doBefore() {
-		ForkConditionCalculator.setDebug(false);
+		Output.setDebug(RingConditionCalculator.class, true);
 	}
 
 	@Test
@@ -58,7 +59,7 @@ public class ForkCondidtionCalculatorTest {
 
 	@AfterClass
 	public static void doAfter() {
-		ForkConditionCalculator.setDebug(false);
+		Output.setDebug(RingConditionCalculator.class, false);
 	}
 
 }

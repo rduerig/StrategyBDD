@@ -1,7 +1,12 @@
 package com.strategy.api;
 
-public interface HasDebugFlag {
+import com.strategy.util.Output;
 
-	public static boolean debug = false;
+/**
+ * Marker interface, allows to set the debug flag for the {@link Output}.
+ * 
+ * @author Ralph Dürig
+ */
+public interface HasDebugFlag {
 
 }
