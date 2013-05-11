@@ -2,7 +2,6 @@ package com.strategy.havannah.logic;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
-import net.sf.javabdd.MicroFactory;
 
 import com.strategy.api.board.Board;
 import com.strategy.api.field.BDDFieldVisitor;
@@ -10,6 +9,7 @@ import com.strategy.api.field.Field;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
+import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.BlackBDDFieldVisitor;
 import com.strategy.util.StoneColor;
 import com.strategy.util.WhiteBDDFieldVisitor;
@@ -59,14 +59,17 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	// ************************************************************************
 
 	private void initFactory(Board board) {
-		/*
-		 * Generate a BDD factory with variable numbers according to the board's
-		 * size.
-		 */
-		int dimension = board.getRows() * board.getColumns();
-		fac = MicroFactory.init(dimension * 100000, dimension * 100000);
-		fac.setVarNum(dimension);
-		fac.reorderVerbose(0);
+		// /*
+		// * Generate a BDD factory with variable numbers according to the
+		// board's
+		// * size.
+		// */
+		// int dimension = board.getRows() * board.getColumns();
+		// fac = MicroFactory.init(dimension * 100000, dimension * 100000);
+		// fac.setVarNum(dimension);
+		// fac.reorderVerbose(0);
+
+		fac = BddFactoryProvider.getOrCreateBddFactory(board);
 	}
 
 	private void initBdds(Board board, BDDFactory factory) {

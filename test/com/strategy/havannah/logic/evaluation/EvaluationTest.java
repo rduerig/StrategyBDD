@@ -45,6 +45,9 @@ public class EvaluationTest {
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
 
+		System.out.println(board.toRatingString(eval.getRating(),
+				eval.getBestIndex()));
+
 		int expected = 8;
 		int actual = eval.getBestIndex();
 		Assert.assertEquals(expected, actual);

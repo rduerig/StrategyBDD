@@ -1,12 +1,5 @@
 package com.strategy.havannah.logic.prediction;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.google.common.primitives.Doubles;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.evaluation.Evaluation;
@@ -88,31 +81,6 @@ public class PredictionHavannah implements Prediction {
 
 		analyzerWhite.done();
 		analyzerBlack.done();
-	}
-
-	private Double getAverage(Collection<Double> values) {
-		Double sum = 0d;
-		Integer valueCount = values.size();
-		for (Double val : values) {
-			sum += val;
-		}
-		Double avg = sum / valueCount;
-		return avg;
-	}
-
-	private int getBestIndex(Map<Integer, Double> map) {
-		return Collections.max(map.entrySet(), new DoubleEntryComparator())
-				.getKey();
-	}
-
-	// ************************************************************************
-
-	private static class DoubleEntryComparator implements
-			Comparator<Entry<Integer, Double>> {
-		@Override
-		public int compare(Entry<Integer, Double> o1, Entry<Integer, Double> o2) {
-			return Doubles.compare(o1.getValue(), o2.getValue());
-		}
 	}
 
 }

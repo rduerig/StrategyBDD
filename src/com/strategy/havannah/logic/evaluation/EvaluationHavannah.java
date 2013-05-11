@@ -1,10 +1,12 @@
 package com.strategy.havannah.logic.evaluation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
@@ -53,6 +55,7 @@ public class EvaluationHavannah implements Evaluation {
 		ArrayList<Position> filtered = Lists.newArrayList(Iterables.filter(
 				board.getPositions(), new EmptyPositionFilter(board)));
 		BDDFactory fac = win.getFactory();
+		BDD varset = getVarset(fac, board);
 		rating = new double[board.getRows() * board.getColumns()];
 		double sum = 0d;
 		double bestValue = 0d;
@@ -62,7 +65,8 @@ public class EvaluationHavannah implements Evaluation {
 			bdd.restrictWith(fac.ithVar(field.getIndex()));
 			// fac.reorder(BDDFactory.REORDER_SIFT);
 			if (null != bdd) {
-				Double satCount = bdd.satCount();
+				Double satCount = bdd.satCount(varset);
+				// Double satCount = bdd.satCount();
 				rating[field.getIndex()] = satCount;
 				sum += satCount;
 				best = satCount > bestValue ? field.getIndex() : best;
@@ -74,6 +78,28 @@ public class EvaluationHavannah implements Evaluation {
 		avg = sum / filtered.size();
 	}
 
+	private BDD getVarset(BDDFactory fac, Board b) {
+		List<BDD> variables = Lists.transform(
+				Lists.newArrayList(b.getPositions()),
+				new PositionToBdd(fac, b.getRows()));
+		return fac.buildCube(0, variables);
+	}
+
 	// ************************************************************************
+
+	private class PositionToBdd implements Function<Position, BDD> {
+
+		private final BDDFactory fac;
+		private final int rows;
+
+		public PositionToBdd(BDDFactory fac, int rows) {
+			this.fac = fac;
+			this.rows = rows;
+		}
+
+		public BDD apply(Position p) {
+			return fac.ithVar(rows * p.getRow() + p.getCol());
+		}
+	}
 
 }

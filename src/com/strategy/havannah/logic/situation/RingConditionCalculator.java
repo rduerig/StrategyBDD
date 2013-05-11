@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -56,10 +57,14 @@ public class RingConditionCalculator implements ConditionCalculator {
 			for (Position outerPos : outerPositions) {
 				BDD path = analyzerOpposite.getPath(outerPos, innerPos);
 				opposite = opposite.id().orWith(path);
+				path.free();
 			}
 		}
 
 		result = opposite.not();
+		opposite.free();
+
+		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}
 
 	private Iterable<Position> filterInnerPositions(
