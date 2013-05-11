@@ -25,7 +25,7 @@ public class RingConditionCalculatorTest {
 
 	@BeforeClass
 	public static void doBefore() {
-		RingConditionCalculator.setDebug(true);
+		RingConditionCalculator.setDebug(false);
 	}
 
 	@Test

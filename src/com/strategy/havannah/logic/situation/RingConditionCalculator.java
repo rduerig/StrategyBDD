@@ -14,7 +14,6 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
-import com.strategy.util.EmptyPositionFilter;
 
 public class RingConditionCalculator implements ConditionCalculator {
 
@@ -42,27 +41,32 @@ public class RingConditionCalculator implements ConditionCalculator {
 			BoardAnalyzer analyzerOpposite, Board board) {
 		Collection<Position> allPos = board.getPositions();
 
-		Iterable<Position> allInnerPos = filterInnerPositions(allPos, board);
-		ArrayList<Position> innerPositions = Lists.newArrayList(Iterables
-				.filter(allInnerPos, new EmptyPositionFilter(board)));
+		ArrayList<Position> allInnerPos = Lists
+				.newArrayList(filterInnerPositions(allPos, board));
+		// ArrayList<Position> innerPositions = Lists.newArrayList(Iterables
+		// .filter(allInnerPos, new EmptyPositionFilter(board)));
 
 		ArrayList<Position> outerPositions = Lists.newArrayList(allPos);
-		Iterables.removeAll(outerPositions, innerPositions);
+		Iterables.removeAll(outerPositions, allInnerPos);
 
 		print("outer: " + outerPositions.toString(), debug);
-		print("inner: " + innerPositions.toString(), debug);
+		print("inner: " + allInnerPos.toString(), debug);
 
 		BDD opposite = analyzerOpposite.getFactory().zero();
-		for (Position innerPos : innerPositions) {
+		for (Position innerPos : allInnerPos) {
+			ArrayList<Position> neighbours = Lists.newArrayList(
+					innerPos.getSouth(), innerPos.getSouthWest(),
+					innerPos.getNorthWest(), innerPos.getNorth(),
+					innerPos.getNorthEast(), innerPos.getSouthEast());
 			for (Position outerPos : outerPositions) {
-				BDD path = analyzerOpposite.getPath(outerPos, innerPos);
-				opposite = opposite.id().orWith(path);
-				path.free();
+				for (Position neighbour : neighbours) {
+					BDD path = analyzerOpposite.getPath(outerPos, neighbour);
+					opposite = opposite.id().orWith(path);
+				}
 			}
 		}
 
 		result = opposite.not();
-		opposite.free();
 
 		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}

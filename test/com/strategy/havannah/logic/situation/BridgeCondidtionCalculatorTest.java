@@ -23,7 +23,7 @@ public class BridgeCondidtionCalculatorTest {
 
 	@Test
 	// @Ignore
-	public void testBridge() {
+	public void testBridge5() {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_BRIDGE_5, 3);
 
@@ -42,7 +42,7 @@ public class BridgeCondidtionCalculatorTest {
 
 	@Test
 	// @Ignore
-	public void testBridge2() {
+	public void testBridge14() {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_BRIDGE_14, 3);
 
