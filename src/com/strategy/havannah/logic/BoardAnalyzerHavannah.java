@@ -29,7 +29,8 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		initFactory(board);
 		this.color = color;
 		initVisitor(color, fac);
-		initBdds(board, fac);
+		rows = board.getRows();
+		cols = board.getColumns();
 		cache = new BddCacheHavannah();
 	}
 
@@ -70,11 +71,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		// fac.reorderVerbose(0);
 
 		fac = BddFactoryProvider.getOrCreateBddFactory(board);
-	}
-
-	private void initBdds(Board board, BDDFactory factory) {
-		rows = board.getRows();
-		cols = board.getColumns();
 	}
 
 	private void initVisitor(StoneColor color, BDDFactory factory) {

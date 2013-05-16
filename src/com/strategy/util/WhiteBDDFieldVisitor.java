@@ -34,7 +34,9 @@ public class WhiteBDDFieldVisitor implements BDDFieldVisitor {
 
 	@Override
 	public void visit(EmptyField field) {
+		// System.out.print("BDD for field " + field.getIndex() + " ... ");
 		result = fac.ithVar(field.getIndex());
+		// System.out.println("done");
 	}
 
 	@Override

@@ -17,6 +17,11 @@ public class BddFactoryProvider {
 		return fac;
 	}
 
+	public static void reset() {
+		fac.done();
+		fac = null;
+	}
+
 	private static BDDFactory createBddFactory(Board board) {
 		int dimension = board.getRows() * board.getColumns();
 		BDDFactory result = MicroFactory.init(dimension * 100000,

@@ -1,5 +1,6 @@
 package com.strategy.havannah.logic.situation;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
 
@@ -24,8 +26,13 @@ public class SituationPerformanceTest {
 		Output.setDebug(BridgeConditionCalculator.class, true);
 	}
 
+	@After
+	public void doAfter() {
+		BddFactoryProvider.reset();
+	}
+
 	@Test(timeout = 20000)
-	@Ignore
+	// @Ignore
 	public void testBoard3() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_3, 3);
@@ -38,7 +45,7 @@ public class SituationPerformanceTest {
 	}
 
 	@Test(timeout = 20000)
-	@Ignore
+	// @Ignore
 	public void testBoard4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
@@ -51,11 +58,11 @@ public class SituationPerformanceTest {
 	}
 
 	@Test
-	// @Ignore
+	@Ignore
 	public void testBoard5() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_5, 5);
-
+		System.out.println(board.toIndexString());
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
 		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
