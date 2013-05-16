@@ -98,16 +98,26 @@ public class BoardHavannah implements Board {
 		return fields.containsKey(p);
 	}
 
+	private int linestart(int i) {
+		return i < getBoardSize() ? 0 : i - getBoardSize() - 1;
+	}
+
+	private int lineend(int i) {
+		return i < getBoardSize() ? getBoardSize() + i : getRows();
+	}
+
 	@Override
 	public String toString() {
+		FieldIndexFormatter formatter = new FieldIndexFormatter();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getColumns(); j++) {
-				Field field = getField(i, j);
-				if (null != field) {
-					sb.append(field + "");
-				} else {
-					sb.append("   ");
+			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
+				sb.append(formatter.space() + " ");
+			}
+			for (int j = linestart(i); j < lineend(i); j++) {
+				if (isValidField(PositionHexagon.get(i, j))) {
+					Field field = getField(i, j);
+					sb.append(formatter.format(field.getIndex()) + field + " ");
 				}
 			}
 			sb.append("\n");
@@ -121,12 +131,13 @@ public class BoardHavannah implements Board {
 		FieldIndexFormatter formatter = new FieldIndexFormatter();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getColumns(); j++) {
-				Field field = getField(i, j);
-				if (null != field) {
-					sb.append("|" + formatter.format(field.getIndex()) + "|");
-				} else {
-					sb.append(formatter.space());
+			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
+				sb.append(formatter.space());
+			}
+			for (int j = linestart(i); j < lineend(i); j++) {
+				if (isValidField(PositionHexagon.get(i, j))) {
+					Field field = getField(i, j);
+					sb.append(formatter.format(field.getIndex()));
 				}
 			}
 			sb.append("\n");
@@ -139,13 +150,14 @@ public class BoardHavannah implements Board {
 	public String toRowColString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getColumns(); j++) {
-				Field field = getField(i, j);
-				if (null != field) {
+			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
+				sb.append("  ");
+			}
+			for (int j = linestart(i); j < lineend(i); j++) {
+				if (isValidField(PositionHexagon.get(i, j))) {
+					Field field = getField(i, j);
 					sb.append("|" + field.getPosition().getRow() + ":"
 							+ field.getPosition().getCol() + "|");
-				} else {
-					sb.append("   ");
 				}
 			}
 			sb.append("\n");
@@ -156,18 +168,17 @@ public class BoardHavannah implements Board {
 
 	@Override
 	public String toRatingString(double[] rating, int bestIndex) {
-		EvaluationFormatter formatter = new EvaluationFormatter();
+		EvaluationFormatter formatter = new EvaluationFormatter(bestIndex);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getColumns(); j++) {
-				Field field = getField(i, j);
-				if (null != field) {
-					String sep = field.getIndex() == bestIndex ? "!" : "|";
-					sb.append(sep + formatter.format(rating[field.getIndex()])
-							+ sep);
-					// sb.append("|" + rating[field.getIndex()] + "|");
-				} else {
-					sb.append(formatter.space());
+			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
+				sb.append(formatter.space());
+			}
+			for (int j = linestart(i); j < lineend(i); j++) {
+				if (isValidField(PositionHexagon.get(i, j))) {
+					Field field = getField(i, j);
+					Integer index = field.getIndex();
+					sb.append(formatter.format(index, rating[index]));
 				}
 			}
 			sb.append("\n");

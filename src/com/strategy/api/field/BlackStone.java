@@ -34,7 +34,7 @@ public class BlackStone implements StoneField {
 
 	@Override
 	public String toString() {
-		return "|B|";
+		return "B";
 	}
 
 }

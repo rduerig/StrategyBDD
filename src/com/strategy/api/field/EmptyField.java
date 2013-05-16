@@ -34,7 +34,7 @@ public class EmptyField implements Field {
 
 	@Override
 	public String toString() {
-		return "| |";
+		return ".";
 	}
 
 }

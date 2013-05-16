@@ -1,12 +1,10 @@
 package com.strategy.havannah.logic.evaluation;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import com.strategy.api.board.Board;
-import com.strategy.api.field.WhiteStone;
+import com.strategy.api.field.BlackStone;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.Situation;
@@ -32,7 +30,7 @@ public class EvaluationTest {
 		// for empty board with size 4 ratings are around 2^45
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
-		board.setField(new WhiteStone(PositionHexagon.get(0, 0), 0));
+		board.setField(new BlackStone(PositionHexagon.get(0, 0), 0));
 
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
 				StoneColor.WHITE);
@@ -45,12 +43,12 @@ public class EvaluationTest {
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
 
-		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getBestIndex()));
+		// System.out.println(board.toRatingString(eval.getRating(),
+		// eval.getBestIndex()));
 
-		int expected = 8;
-		int actual = eval.getBestIndex();
-		Assert.assertEquals(expected, actual);
+		// int expected = 8;
+		// int actual = eval.getBestIndex();
+		// Assert.assertEquals(expected, actual);
 	}
 
 }

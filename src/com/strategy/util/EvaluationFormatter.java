@@ -4,25 +4,30 @@ import java.text.NumberFormat;
 
 public class EvaluationFormatter {
 
-	private final static String SPACE = "        ";
+	private final static String SPACE = "    ";
 
 	private final NumberFormat formatter;
 
-	public EvaluationFormatter() {
+	private int bestIndex;
+
+	public EvaluationFormatter(int bestIndex) {
+		this.bestIndex = bestIndex;
 		formatter = NumberFormat.getInstance();
-		formatter.setMaximumFractionDigits(3);
-		formatter.setMinimumFractionDigits(3);
+		formatter.setMaximumFractionDigits(4);
+		formatter.setMinimumFractionDigits(4);
 		formatter.setMaximumIntegerDigits(2);
 		formatter.setMinimumIntegerDigits(2);
+		formatter.setGroupingUsed(false);
 	}
 
-	public String format(double value) {
-		// AttributedCharacterIterator charIt = formatter
-		// .formatToCharacterIterator(value);
-		// int end = charIt.getEndIndex();
-		// return formatter.format(value / Math.pow(10, end - 2));
-		// return formatter.format(value);
-		return Double.toString(value);
+	public String format(int index, double value) {
+		int exp = Double.valueOf(Math.log10(value)).intValue();
+		int power = exp > 1 ? exp - 1 : 0;
+		double toFormat = value / Math.pow(10, power);
+		if (index == bestIndex) {
+			return "[" + formatter.format(toFormat) + "]";
+		}
+		return " " + formatter.format(toFormat) + " ";
 	}
 
 	public String space() {

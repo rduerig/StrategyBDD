@@ -21,7 +21,7 @@ public class StrategyHavannah {
 
 		int[][] rawBoard = PrimitiveBoardProvider.BOARD_4;
 		Board board = BoardHavannah.createInstance(rawBoard, 4);
-		System.out.println(board.toIndexString());
+		// System.out.println(board.toIndexString());
 
 		Prediction p = new PredictionHavannah(board);
 

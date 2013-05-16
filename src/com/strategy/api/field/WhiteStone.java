@@ -34,7 +34,7 @@ public class WhiteStone implements StoneField {
 
 	@Override
 	public String toString() {
-		return "|W|";
+		return "W";
 	}
 
 }
