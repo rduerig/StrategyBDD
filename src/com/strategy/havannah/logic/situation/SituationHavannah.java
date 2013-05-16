@@ -1,5 +1,6 @@
 package com.strategy.havannah.logic.situation;
 
+import java.io.File;
 import java.io.IOException;
 
 import net.sf.javabdd.BDD;
@@ -12,6 +13,7 @@ import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
+import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 /**
@@ -69,13 +71,19 @@ public class SituationHavannah implements Situation {
 		// System.out.println("try loading from file: win" +
 		// board.getBoardSize()
 		// + color.name().toLowerCase());
-		try {
-			win = analyzer.getFactory().load(getFileName());
-			// System.out.println("loaded from file: win" + board.getBoardSize()
-			// + color.name().toLowerCase());
-		} catch (IOException e) {
+		File winFile = new File(getFileName());
+		if (Preferences.getInstance().isGenerateFiles() || !winFile.exists()) {
 			initFromScratch(analyzer, analyzerOpposite);
-			// System.out.println("loaded from scratch");
+		} else {
+			try {
+				win = analyzer.getFactory().load(getFileName());
+				// System.out.println("loaded from file: win" +
+				// board.getBoardSize()
+				// + color.name().toLowerCase());
+			} catch (IOException e) {
+				initFromScratch(analyzer, analyzerOpposite);
+				// System.out.println("loaded from scratch");
+			}
 		}
 	}
 
