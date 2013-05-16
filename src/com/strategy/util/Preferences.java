@@ -3,6 +3,7 @@ package com.strategy.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -30,7 +31,8 @@ public class Preferences {
 		ArrayList<String> params = Lists.newArrayList(args);
 		boolean parGenerateFiles = parseGenerateFiles(params);
 		int parBoardSize = parseBoardSize(params);
-		return new Preferences(parGenerateFiles, parBoardSize);
+		instance = new Preferences(parGenerateFiles, parBoardSize);
+		return instance;
 
 	}
 
@@ -67,15 +69,13 @@ public class Preferences {
 	}
 
 	private static boolean parseGenerateFiles(List<String> params) {
-		int parGenerateFilesIndex = Iterables.indexOf(params,
+		Optional<String> opt = Iterables.tryFind(params,
 				new ParameterGenerateFilesPredicate());
-		if (parGenerateFilesIndex < 0
-				|| parGenerateFilesIndex >= params.size() - 1) {
+		if (opt.isPresent()) {
+			return true;
+		} else {
 			return defaultGenerateFiles;
 		}
-		String value = Iterables
-				.<String> get(params, parGenerateFilesIndex + 1);
-		return Boolean.parseBoolean(value);
 	}
 
 	private static int parseBoardSize(List<String> params) {

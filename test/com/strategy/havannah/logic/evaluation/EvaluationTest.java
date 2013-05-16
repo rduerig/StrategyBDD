@@ -27,7 +27,6 @@ public class EvaluationTest {
 
 	@Test
 	public void testEvaluation() {
-		// for empty board with size 4 ratings are around 2^45
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);
 		board.setField(new BlackStone(PositionHexagon.get(0, 0), 0));
@@ -37,18 +36,19 @@ public class EvaluationTest {
 		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
 				StoneColor.BLACK);
 		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
+		// Situation sitOpp = new SituationHavannah(analyzerOpp, analyzer,
+		// board);
 		Evaluation eval = new EvaluationHavannah(board,
 				sit.getWinningCondition());
 
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
 
-		// System.out.println(board.toRatingString(eval.getRating(),
-		// eval.getBestIndex()));
+		System.out.println(board.toRatingString(eval.getRating(),
+				eval.getBestIndex()));
 
 		// int expected = 8;
 		// int actual = eval.getBestIndex();
 		// Assert.assertEquals(expected, actual);
 	}
-
 }

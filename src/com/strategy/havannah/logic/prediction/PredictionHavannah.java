@@ -1,5 +1,7 @@
 package com.strategy.havannah.logic.prediction;
 
+import net.sf.javabdd.BDD;
+
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.evaluation.Evaluation;
@@ -36,25 +38,29 @@ public class PredictionHavannah implements Prediction {
 
 		// evaluate all possible white turns
 		// System.out.println("evaluate all possible white turns");
+		BDD winningCondition = situationWhite.getWinningCondition().orWith(
+				situationBlack.getWinningCondition().id().not());
 		Evaluation evalWhite = new EvaluationHavannah(
-				situationWhite.getBoard(), situationWhite.getWinningCondition());
+				situationWhite.getBoard(), winningCondition);
 		// System.out.println("...done");
 
 		// evaluate all possible black turns
 		// System.out.println("evaluate all possible black turns");
-		Evaluation evalBlack = new EvaluationHavannah(
-				situationBlack.getBoard(), situationBlack.getWinningCondition());
+		// Evaluation evalBlack = new EvaluationHavannah(
+		// situationBlack.getBoard(), situationBlack.getWinningCondition());
 		// System.out.println("...done");
 
-		Double avgRatingWhite = evalWhite.getAverageRating();
-		Double avgRatingBlack = evalBlack.getAverageRating();
+		// Double avgRatingWhite = evalWhite.getAverageRating();
+		// Double avgRatingBlack = evalBlack.getAverageRating();
 
-		Integer best = 0;
-		if (avgRatingWhite >= avgRatingBlack) {
-			best = evalWhite.getBestIndex();
-		} else {
-			best = evalBlack.getBestIndex();
-		}
+		// Integer best = 0;
+		// if (avgRatingWhite >= avgRatingBlack) {
+		// best = evalWhite.getBestIndex();
+		// } else {
+		// best = evalBlack.getBestIndex();
+		// }
+
+		Integer best = evalWhite.getBestIndex();
 
 		// System.out.println("do own turn on white situation");
 		situationWhite.update(best, StoneColor.WHITE);
