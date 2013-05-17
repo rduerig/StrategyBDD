@@ -1,5 +1,9 @@
 package com.strategy.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.strategy.util.GameParser.GameParserException;
 
 /**
  * Stores the program's preferences that can be set through command line
@@ -19,9 +24,11 @@ public class Preferences {
 	private static Preferences instance;
 	private static boolean defaultGenerateFiles = false;
 	private static int defaultBoardSize = 4;
+	private static List<Turn> defaultTurns = null;
 
 	private final boolean generateFiles;
 	private final int boardSize;
+	private final List<Turn> turns;
 
 	public static Preferences createInstance(String[] args) {
 		if (null == args || 0 == args.length) {
@@ -31,7 +38,17 @@ public class Preferences {
 		ArrayList<String> params = Lists.newArrayList(args);
 		boolean parGenerateFiles = parseGenerateFiles(params);
 		int parBoardSize = parseBoardSize(params);
-		instance = new Preferences(parGenerateFiles, parBoardSize);
+		List<Turn> parTurns = defaultTurns;
+		try {
+			GameParser parser = getParser(params);
+			if (null != parser) {
+				parBoardSize = parser.getBoardSize();
+				parTurns = parser.getFields();
+			}
+		} catch (FileNotFoundException e) {
+		} catch (GameParserException e) {
+		}
+		instance = new Preferences(parGenerateFiles, parBoardSize, parTurns);
 		return instance;
 
 	}
@@ -43,9 +60,10 @@ public class Preferences {
 		return instance;
 	}
 
-	private Preferences(boolean generateFiles, int boardSize) {
+	private Preferences(boolean generateFiles, int boardSize, List<Turn> turns) {
 		this.generateFiles = generateFiles;
 		this.boardSize = boardSize;
+		this.turns = turns;
 	}
 
 	/**
@@ -62,10 +80,18 @@ public class Preferences {
 		return boardSize;
 	}
 
+	/**
+	 * @return the turns
+	 */
+	public List<Turn> getTurns() {
+		return turns;
+	}
+
 	// ************************************************************************
 
 	private static Preferences getDefault() {
-		return new Preferences(defaultGenerateFiles, defaultBoardSize);
+		return new Preferences(defaultGenerateFiles, defaultBoardSize,
+				defaultTurns);
 	}
 
 	private static boolean parseGenerateFiles(List<String> params) {
@@ -86,6 +112,25 @@ public class Preferences {
 		}
 		String value = Iterables.<String> get(params, parBoardSizeIndex + 1);
 		return Integer.parseInt(value);
+	}
+
+	private static GameParser getParser(List<String> params)
+			throws FileNotFoundException, GameParserException {
+		int parTurnsIndex = Iterables.indexOf(params,
+				new ParameterTurnsPredicate());
+		if (parTurnsIndex < 0 || parTurnsIndex >= params.size() - 1) {
+			return null;
+		}
+		String value = Iterables.<String> get(params, parTurnsIndex + 1);
+		File hgfFile = new File(value);
+		if (null == hgfFile || !hgfFile.exists()) {
+			return null;
+		}
+
+		InputStream in = new FileInputStream(hgfFile);
+		GameParser parser = new GameParser(in);
+
+		return parser;
 	}
 
 	// ************************************************************************
@@ -110,6 +155,17 @@ public class Preferences {
 		@Override
 		public boolean apply(String input) {
 			return input.equals(PAR_BOARD_SIZE);
+		}
+
+	}
+
+	private static class ParameterTurnsPredicate implements Predicate<String> {
+
+		private static final String PAR_TURNS = "-hgf";
+
+		@Override
+		public boolean apply(String input) {
+			return input.equals(PAR_TURNS);
 		}
 
 	}

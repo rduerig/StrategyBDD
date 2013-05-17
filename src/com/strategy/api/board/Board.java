@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
+import com.strategy.util.RowConstant;
 
 /**
  * Represents a board with fields that can be empty or contain a stone of a
@@ -133,5 +134,14 @@ public interface Board {
 	 * @return the rating of each field
 	 */
 	String toRatingString(double[] rating, int bestIndex);
+
+	String toRowConstantString();
+
+	/**
+	 * @param coord
+	 * @param coordNumber
+	 * @return
+	 */
+	Field getField(RowConstant coord, Integer coordNumber);
 
 }

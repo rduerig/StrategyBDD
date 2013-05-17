@@ -2,9 +2,12 @@ package com.strategy.havannah.board;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
@@ -12,6 +15,8 @@ import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.EvaluationFormatter;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.FieldIndexFormatter;
+import com.strategy.util.RowConstant;
+import com.strategy.util.Turn;
 
 /**
  * Represents a hexagonal board for the game Havannah.<br>
@@ -24,6 +29,7 @@ public class BoardHavannah implements Board {
 
 	private int boardSize;
 	private Map<Position, Field> fields;
+	private Table<RowConstant, Integer, Field> hgfCoordinates;
 
 	private BoardHavannah(Map<Position, Integer> board, int boardSize) {
 		if (null == board || board.isEmpty()) {
@@ -32,6 +38,7 @@ public class BoardHavannah implements Board {
 
 		this.boardSize = boardSize;
 		fields = new HashMap<Position, Field>(board.size());
+		hgfCoordinates = HashBasedTable.create();
 		init(board);
 	}
 
@@ -42,6 +49,7 @@ public class BoardHavannah implements Board {
 
 		this.boardSize = boardSize;
 		fields = new HashMap<Position, Field>();
+		hgfCoordinates = HashBasedTable.create();
 		init(board, boardSize);
 	}
 
@@ -54,12 +62,29 @@ public class BoardHavannah implements Board {
 		return new BoardHavannah(board, boardSize);
 	}
 
+	public static Board createInstance(int[][] board, int boardSize,
+			List<Turn> turns) {
+		BoardHavannah b = new BoardHavannah(board, boardSize);
+		for (Turn t : turns) {
+			Field oldField = b.getField(t.getCoord(), t.getCoordNumber());
+			Field field = FieldGenerator.create(t.getColor().getPrimitive(),
+					oldField.getPosition(), oldField.getIndex());
+			b.setField(field);
+		}
+		return b;
+	}
+
 	// ************************************************************************
 
 	@Override
 	public Field getField(int row, int col) {
 		Position key = PositionHexagon.get(row, col);
 		return fields.get(key);
+	}
+
+	@Override
+	public Field getField(RowConstant coord, Integer coordNumber) {
+		return hgfCoordinates.get(coord, coordNumber);
 	}
 
 	@Override
@@ -167,6 +192,26 @@ public class BoardHavannah implements Board {
 	}
 
 	@Override
+	public String toRowConstantString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < getRows(); i++) {
+			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
+				sb.append("  ");
+			}
+			for (int j = linestart(i); j < lineend(i); j++) {
+				if (isValidField(PositionHexagon.get(i, j))) {
+					Field field = getField(i, j);
+					sb.append(RowConstant.parse(field.getIndex(),
+							getBoardSize()) + "  ");
+				}
+			}
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
+	@Override
 	public String toRatingString(double[] rating, int bestIndex) {
 		EvaluationFormatter formatter = new EvaluationFormatter(bestIndex);
 		StringBuilder sb = new StringBuilder();
@@ -192,10 +237,13 @@ public class BoardHavannah implements Board {
 	private void init(Map<Position, Integer> board) {
 		for (Entry<Position, Integer> entry : board.entrySet()) {
 			Position pos = entry.getKey();
-			Field field = FieldGenerator.create(entry.getValue(), pos,
-					getRows() * pos.getRow() + pos.getCol());
+			int index = getRows() * pos.getRow() + pos.getCol();
+			Field field = FieldGenerator.create(entry.getValue(), pos, index);
 			fields.put(field.getPosition(), field);
+			hgfCoordinates.put(RowConstant.parse(index, boardSize),
+					RowConstant.parseToCoordNumber(index, boardSize), field);
 		}
+		System.out.println(hgfCoordinates);
 	}
 
 	private void init(int[][] board, int boardSize) {
@@ -205,23 +253,35 @@ public class BoardHavannah implements Board {
 			if (i < boardSize - 1) {
 				for (int j = 0; j < ((boardSize + i) % limit); j++) {
 					Position pos = PositionHexagon.get(i, j);
-					Field field = FieldGenerator.create(board[i][j], pos,
-							getRows() * i + j);
+					int index = getRows() * i + j;
+					Field field = FieldGenerator
+							.create(board[i][j], pos, index);
 					fields.put(pos, field);
+					hgfCoordinates.put(RowConstant.parse(index, boardSize),
+							RowConstant.parseToCoordNumber(index, boardSize),
+							field);
 				}
 			} else if (i == boardSize - 1) {
 				for (int j = 0; j < limit; j++) {
 					Position pos = PositionHexagon.get(i, j);
-					Field field = FieldGenerator.create(board[i][j], pos,
-							getRows() * i + j);
+					int index = getRows() * i + j;
+					Field field = FieldGenerator
+							.create(board[i][j], pos, index);
 					fields.put(pos, field);
+					hgfCoordinates.put(RowConstant.parse(index, boardSize),
+							RowConstant.parseToCoordNumber(index, boardSize),
+							field);
 				}
 			} else {
 				for (int j = ((boardSize + i) % limit); j < limit; j++) {
 					Position pos = PositionHexagon.get(i, j);
-					Field field = FieldGenerator.create(board[i][j], pos,
-							getRows() * i + j);
+					int index = getRows() * i + j;
+					Field field = FieldGenerator
+							.create(board[i][j], pos, index);
 					fields.put(pos, field);
+					hgfCoordinates.put(RowConstant.parse(index, boardSize),
+							RowConstant.parseToCoordNumber(index, boardSize),
+							field);
 				}
 			}
 		}

@@ -36,12 +36,40 @@ public class PredictionHavannah implements Prediction {
 		situationBlack.update(fieldIndex, color);
 		// System.out.println("...done");
 
+		if (situationWhite.getWinningCondition().isOne()) {
+			System.out.println("Computer wins!");
+			return -1;
+		}
+		if (situationBlack.getWinningCondition().isOne()) {
+			System.out.println("You win!");
+			return -1;
+		}
+
 		// evaluate all possible white turns
 		// System.out.println("evaluate all possible white turns");
-		BDD winningCondition = situationWhite.getWinningCondition().orWith(
-				situationBlack.getWinningCondition().id().not());
-		Evaluation evalWhite = new EvaluationHavannah(
-				situationWhite.getBoard(), winningCondition);
+		BDD winningCondition;
+		BDD winningConditionOpp;
+		Evaluation eval;
+		Evaluation evalOpp;
+		if (color.equals(StoneColor.BLACK)) {
+			winningCondition = situationWhite.getWinningCondition().id();
+			winningConditionOpp = situationBlack.getWinningCondition().id();
+			eval = new EvaluationHavannah(situationWhite.getBoard(),
+					winningCondition);
+			evalOpp = new EvaluationHavannah(situationBlack.getBoard(),
+					winningConditionOpp);
+			System.out.println(situationWhite.getBoard().toRatingString(
+					eval.getRating(), eval.getBestIndex()));
+		} else {
+			winningCondition = situationBlack.getWinningCondition().id();
+			winningConditionOpp = situationWhite.getWinningCondition().id();
+			eval = new EvaluationHavannah(situationBlack.getBoard(),
+					winningCondition);
+			evalOpp = new EvaluationHavannah(situationWhite.getBoard(),
+					winningConditionOpp);
+			System.out.println(situationBlack.getBoard().toRatingString(
+					eval.getRating(), eval.getBestIndex()));
+		}
 		// System.out.println("...done");
 
 		// evaluate all possible black turns
@@ -50,23 +78,21 @@ public class PredictionHavannah implements Prediction {
 		// situationBlack.getBoard(), situationBlack.getWinningCondition());
 		// System.out.println("...done");
 
-		// Double avgRatingWhite = evalWhite.getAverageRating();
-		// Double avgRatingBlack = evalBlack.getAverageRating();
+		Double avgRating = eval.getAverageRating();
+		Double avgRatingOpp = evalOpp.getAverageRating();
 
-		// Integer best = 0;
-		// if (avgRatingWhite >= avgRatingBlack) {
-		// best = evalWhite.getBestIndex();
-		// } else {
-		// best = evalBlack.getBestIndex();
-		// }
-
-		Integer best = evalWhite.getBestIndex();
+		Integer best = 0;
+		if (avgRating < avgRatingOpp) {
+			best = eval.getBestIndex();
+		} else {
+			best = evalOpp.getBestIndex();
+		}
 
 		// System.out.println("do own turn on white situation");
-		situationWhite.update(best, StoneColor.WHITE);
+		situationWhite.update(best, color.getOpposite());
 		// System.out.println("...done");
 		// System.out.println("do own turn on black situation");
-		situationBlack.update(best, StoneColor.WHITE);
+		situationBlack.update(best, color.getOpposite());
 		// System.out.println("...done");
 
 		return best;

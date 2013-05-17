@@ -29,6 +29,16 @@ public class TestBoardProviderConditions {
 			{ 1, 1, 0, 2, 2 } };
 
 	/**
+	 * Board with size 3, has already won.
+	 */
+	public static int[][] BOARD_BRIDGE_WON = new int[][] {//
+	/*    */{ 0, 2, 1, 1, 1 },//
+			{ 2, 0, 1, 2, 1 },//
+			{ 2, 2, 1, 2, 2 },//
+			{ 1, 2, 1, 2, 2 },//
+			{ 1, 1, 1, 2, 2 } };
+
+	/**
 	 * Board with size 3, has 3 path for bridge condition.
 	 */
 	public static int[][] BOARD_BRIDGE_14 = new int[][] {//

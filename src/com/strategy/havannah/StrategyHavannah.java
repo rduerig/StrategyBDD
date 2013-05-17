@@ -3,7 +3,9 @@ package com.strategy.havannah;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
+import com.google.common.collect.Iterables;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
@@ -11,6 +13,7 @@ import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.Preferences;
 import com.strategy.util.PrimitiveBoardProvider;
 import com.strategy.util.StoneColor;
+import com.strategy.util.Turn;
 
 /**
  * @author Ralph Dürig
@@ -22,11 +25,21 @@ public class StrategyHavannah {
 
 		Preferences.createInstance(args);
 
-		int[][] rawBoard = PrimitiveBoardProvider.getBoard(Preferences
-				.getInstance().getBoardSize());
-		Board board = BoardHavannah.createInstance(rawBoard, Preferences
-				.getInstance().getBoardSize());
-		// System.out.println(board.toIndexString());
+		Board board;
+		int boardSize = Preferences.getInstance().getBoardSize();
+		int[][] rawBoard = PrimitiveBoardProvider.getBoard(boardSize);
+		List<Turn> turns = Preferences.getInstance().getTurns();
+		StoneColor color;
+		if (null == turns && !turns.isEmpty()) {
+			board = BoardHavannah.createInstance(rawBoard, boardSize);
+			color = StoneColor.BLACK;
+			// System.out.println(board.toIndexString());
+		} else {
+			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);
+			Turn last = Iterables.getLast(turns);
+			color = last.getColor().getOpposite();
+
+		}
 
 		Prediction p = new PredictionHavannah(board);
 
@@ -39,7 +52,7 @@ public class StrategyHavannah {
 
 			BufferedReader console = new BufferedReader(new InputStreamReader(
 					System.in));
-			System.out.print("Your turn: ");
+			System.out.print(color + "s turn: ");
 			try {
 				line = console.readLine();
 			} catch (IOException e) {
@@ -65,11 +78,11 @@ public class StrategyHavannah {
 				continue;
 			}
 
-			// p.doNextTurn(FieldGenerator.create(2, PositionHexagon.get(
-			// fieldIndex / board.getRows(),
-			// fieldIndex % board.getColumns()), fieldIndex));
-
-			p.doNextTurn(fieldIndex, StoneColor.BLACK);
+			int next = p.doNextTurn(fieldIndex, color);
+			if (next < 0) {
+				break;
+			}
+			System.out.println(color.getOpposite() + "s turn: " + next);
 		}
 
 	}

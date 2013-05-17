@@ -26,4 +26,15 @@ public enum StoneColor {
 
 		return EMPTY;
 	}
+
+	public StoneColor getOpposite() {
+		switch (this) {
+		case BLACK:
+			return WHITE;
+		case WHITE:
+			return BLACK;
+		default:
+			return EMPTY;
+		}
+	}
 }

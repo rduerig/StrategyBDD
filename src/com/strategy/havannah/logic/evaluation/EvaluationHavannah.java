@@ -24,6 +24,7 @@ public class EvaluationHavannah implements Evaluation {
 	private int best;
 	private Board board;
 	private BDD win;
+	private boolean alreadyWon = false;
 
 	public EvaluationHavannah(Board board, BDD win) {
 		this.board = board;
@@ -68,7 +69,12 @@ public class EvaluationHavannah implements Evaluation {
 				// Double satCount = bdd.satCount();
 				rating[field.getIndex()] = satCount;
 				sum += satCount;
-				best = satCount > bestValue ? field.getIndex() : best;
+				if (!bdd.isOne() && !alreadyWon) {
+					best = satCount > bestValue ? field.getIndex() : best;
+				} else {
+					best = field.getIndex();
+					alreadyWon = true;
+				}
 				bestValue = satCount > bestValue ? satCount : bestValue;
 				bdd.free();
 			}

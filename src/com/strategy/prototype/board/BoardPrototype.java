@@ -8,6 +8,7 @@ import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.prototype.logic.PositionSquare;
 import com.strategy.util.FieldGenerator;
+import com.strategy.util.RowConstant;
 
 /**
  * Represents a square board.
@@ -46,6 +47,11 @@ public class BoardPrototype implements Board {
 			return null;
 		}
 		return fields[row][col];
+	}
+
+	@Override
+	public Field getField(RowConstant coord, Integer coordNumber) {
+		return null;
 	}
 
 	@Override
@@ -131,6 +137,19 @@ public class BoardPrototype implements Board {
 			for (int j = 0; j < columns; j++) {
 				Field field = getField(i, j);
 				sb.append(rating[field.getIndex()] + "");
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public String toRowConstantString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				sb.append(fields[i][j].getPosition().getRow() + ":"
+						+ fields[i][j].getPosition().getCol() + "");
 			}
 			sb.append("\n");
 		}
