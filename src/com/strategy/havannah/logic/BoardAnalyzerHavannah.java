@@ -10,9 +10,10 @@ import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.util.BddFactoryProvider;
-import com.strategy.util.BlackBDDFieldVisitor;
+import com.strategy.util.CpuBDDFieldVisitor;
+import com.strategy.util.PlayerBDDFieldVisitor;
+import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
-import com.strategy.util.WhiteBDDFieldVisitor;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
@@ -74,10 +75,10 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	}
 
 	private void initVisitor(StoneColor color, BDDFactory factory) {
-		if (StoneColor.BLACK.equals(color)) {
-			visitor = new BlackBDDFieldVisitor(factory);
+		if (Preferences.getInstance().getCpuColor().equals(color)) {
+			visitor = new CpuBDDFieldVisitor(factory);
 		} else {
-			visitor = new WhiteBDDFieldVisitor(factory);
+			visitor = new PlayerBDDFieldVisitor(factory);
 		}
 	}
 

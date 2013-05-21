@@ -6,7 +6,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.logic.Position;
 import com.strategy.util.AbstractBoardTransformer;
-import com.strategy.util.WhiteBDDFieldVisitor;
+import com.strategy.util.CpuBDDFieldVisitor;
 
 /**
  * Implementation for transforming a hexagonal Havannah board to BDDs.
@@ -30,7 +30,7 @@ public class BoardTransformerHavannah extends AbstractBoardTransformer {
 
 	@Override
 	protected BDDFieldVisitor getBDDFieldVisitor() {
-		return new WhiteBDDFieldVisitor(fac);
+		return new CpuBDDFieldVisitor(fac);
 	}
 
 	@Override

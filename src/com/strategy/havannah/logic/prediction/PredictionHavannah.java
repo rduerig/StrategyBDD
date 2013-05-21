@@ -10,6 +10,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
+import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 /**
@@ -20,63 +21,38 @@ import com.strategy.util.StoneColor;
  */
 public class PredictionHavannah implements Prediction {
 
-	private Situation situationWhite;
-	private Situation situationBlack;
+	private Situation situationCpu;
+	private Situation situationPlayer;
 
 	public PredictionHavannah(Board board) {
 		init(board);
 	}
 
 	@Override
-	public int doNextTurn(int fieldIndex, StoneColor color) {
-		// System.out.println("update situation white");
-		situationWhite.update(fieldIndex, color);
-		// System.out.println("...done");
-		// System.out.println("update situation black");
-		situationBlack.update(fieldIndex, color);
-		// System.out.println("...done");
+	public int doNextTurn(int fieldIndex) {
+		StoneColor cpuColor = Preferences.getInstance().getCpuColor();
+		StoneColor playerColor = cpuColor.getOpposite();
+		situationCpu.update(fieldIndex, playerColor);
+		situationPlayer.update(fieldIndex, playerColor);
 
-		if (situationWhite.getWinningCondition().isOne()) {
+		if (situationCpu.getWinningCondition().isOne()) {
 			System.out.println("Computer wins!");
 			return -1;
 		}
-		if (situationBlack.getWinningCondition().isOne()) {
+		if (situationPlayer.getWinningCondition().isOne()) {
 			System.out.println("You win!");
 			return -1;
 		}
 
 		// evaluate all possible white turns
-		// System.out.println("evaluate all possible white turns");
-		BDD winningCondition;
-		BDD winningConditionOpp;
-		Evaluation eval;
-		Evaluation evalOpp;
-		if (color.equals(StoneColor.BLACK)) {
-			winningCondition = situationWhite.getWinningCondition().id();
-			winningConditionOpp = situationBlack.getWinningCondition().id();
-			eval = new EvaluationHavannah(situationWhite.getBoard(),
-					winningCondition);
-			evalOpp = new EvaluationHavannah(situationBlack.getBoard(),
-					winningConditionOpp);
-			System.out.println(situationWhite.getBoard().toRatingString(
-					eval.getRating(), eval.getBestIndex()));
-		} else {
-			winningCondition = situationBlack.getWinningCondition().id();
-			winningConditionOpp = situationWhite.getWinningCondition().id();
-			eval = new EvaluationHavannah(situationBlack.getBoard(),
-					winningCondition);
-			evalOpp = new EvaluationHavannah(situationWhite.getBoard(),
-					winningConditionOpp);
-			System.out.println(situationBlack.getBoard().toRatingString(
-					eval.getRating(), eval.getBestIndex()));
-		}
-		// System.out.println("...done");
-
-		// evaluate all possible black turns
-		// System.out.println("evaluate all possible black turns");
-		// Evaluation evalBlack = new EvaluationHavannah(
-		// situationBlack.getBoard(), situationBlack.getWinningCondition());
-		// System.out.println("...done");
+		BDD winningCondition = situationCpu.getWinningCondition().id();
+		BDD winningConditionOpp = situationPlayer.getWinningCondition().id();
+		Evaluation eval = new EvaluationHavannah(situationCpu.getBoard(),
+				winningCondition);
+		Evaluation evalOpp = new EvaluationHavannah(situationPlayer.getBoard(),
+				winningConditionOpp);
+		// System.out.println(situationPlayer.getBoard().toRatingString(
+		// eval.getRating(), eval.getBestIndex()));
 
 		Double avgRating = eval.getAverageRating();
 		Double avgRatingOpp = evalOpp.getAverageRating();
@@ -88,31 +64,25 @@ public class PredictionHavannah implements Prediction {
 			best = evalOpp.getBestIndex();
 		}
 
-		// System.out.println("do own turn on white situation");
-		situationWhite.update(best, color.getOpposite());
-		// System.out.println("...done");
-		// System.out.println("do own turn on black situation");
-		situationBlack.update(best, color.getOpposite());
-		// System.out.println("...done");
-
+		situationCpu.update(best, cpuColor);
+		situationPlayer.update(best, cpuColor);
 		return best;
 	}
 
 	// ************************************************************************
 
 	private void init(Board board) {
-		BoardAnalyzer analyzerWhite = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
-		BoardAnalyzer analyzerBlack = new BoardAnalyzerHavannah(board,
-				StoneColor.BLACK);
+		BoardAnalyzer analyzerCpu = new BoardAnalyzerHavannah(board,
+				Preferences.getInstance().getCpuColor());
+		BoardAnalyzer analyzerPlayer = new BoardAnalyzerHavannah(board,
+				Preferences.getInstance().getCpuColor().getOpposite());
 
-		situationWhite = new SituationHavannah(analyzerWhite, analyzerBlack,
-				board);
-		situationBlack = new SituationHavannah(analyzerBlack, analyzerWhite,
+		situationCpu = new SituationHavannah(analyzerCpu, analyzerPlayer, board);
+		situationPlayer = new SituationHavannah(analyzerPlayer, analyzerCpu,
 				board);
 
-		analyzerWhite.done();
-		analyzerBlack.done();
+		analyzerCpu.done();
+		analyzerPlayer.done();
 	}
 
 }

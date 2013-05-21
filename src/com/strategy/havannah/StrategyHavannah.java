@@ -12,7 +12,6 @@ import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.Preferences;
 import com.strategy.util.PrimitiveBoardProvider;
-import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
 
 /**
@@ -29,17 +28,16 @@ public class StrategyHavannah {
 		int boardSize = Preferences.getInstance().getBoardSize();
 		int[][] rawBoard = PrimitiveBoardProvider.getBoard(boardSize);
 		List<Turn> turns = Preferences.getInstance().getTurns();
-		StoneColor color;
 		if (null == turns && !turns.isEmpty()) {
 			board = BoardHavannah.createInstance(rawBoard, boardSize);
-			color = StoneColor.BLACK;
-			// System.out.println(board.toIndexString());
 		} else {
 			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);
 			Turn last = Iterables.getLast(turns);
-			color = last.getColor().getOpposite();
-
+			Preferences.getInstance().setCpuColor(last.getColor());
 		}
+
+		System.out.println("You are playing "
+				+ Preferences.getInstance().getCpuColor().getOpposite());
 
 		Prediction p = new PredictionHavannah(board);
 
@@ -52,7 +50,9 @@ public class StrategyHavannah {
 
 			BufferedReader console = new BufferedReader(new InputStreamReader(
 					System.in));
-			System.out.print(color + "s turn: ");
+			System.out.print(Preferences.getInstance().getCpuColor()
+					.getOpposite()
+					+ "s turn: ");
 			try {
 				line = console.readLine();
 			} catch (IOException e) {
@@ -78,11 +78,12 @@ public class StrategyHavannah {
 				continue;
 			}
 
-			int next = p.doNextTurn(fieldIndex, color);
+			int next = p.doNextTurn(fieldIndex);
 			if (next < 0) {
 				break;
 			}
-			System.out.println(color.getOpposite() + "s turn: " + next);
+			System.out.println(Preferences.getInstance().getCpuColor()
+					+ "s turn: " + next);
 		}
 
 	}
