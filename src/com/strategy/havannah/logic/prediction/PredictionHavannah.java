@@ -51,8 +51,8 @@ public class PredictionHavannah implements Prediction {
 				winningCondition);
 		Evaluation evalOpp = new EvaluationHavannah(situationPlayer.getBoard(),
 				winningConditionOpp);
-		// System.out.println(situationPlayer.getBoard().toRatingString(
-		// eval.getRating(), eval.getBestIndex()));
+		System.out.println(situationPlayer.getBoard().toRatingString(
+				eval.getRating(), eval.getBestIndex()));
 
 		Double avgRating = eval.getAverageRating();
 		Double avgRatingOpp = evalOpp.getAverageRating();

@@ -27,10 +27,15 @@ public class GameParserTest {
 			return;
 		}
 
+		// Board b = BoardHavannah.createInstance(
+		// TestBoardProvider.getBoard(parser.getBoardSize()),
+		// parser.getBoardSize(), parser.getFields());
+		// System.out.println(b);
+
 		Integer expectedSize = 4;
 		Assert.assertEquals(expectedSize, parser.getBoardSize());
 
-		int expectedTurns = 16;
+		int expectedTurns = 17;
 		Assert.assertEquals(expectedTurns, parser.getFields().size());
 	}
 

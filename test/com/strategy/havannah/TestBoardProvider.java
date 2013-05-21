@@ -88,4 +88,24 @@ public class TestBoardProvider {
 			{ 0, 0, 0 },//
 			{ 1, 0, 0 } };
 
+	public static int[][] getBoard(int size) {
+		switch (size) {
+		case 2:
+			return BOARD_2;
+		case 3:
+			return BOARD_3;
+		case 5:
+			return BOARD_5;
+		case 6:
+			return BOARD_6;
+		case 7:
+			return BOARD_7;
+		case 10:
+			return BOARD_10;
+		case 4:
+		default:
+			return BOARD_4;
+		}
+	}
+
 }

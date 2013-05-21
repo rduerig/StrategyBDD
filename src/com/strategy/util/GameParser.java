@@ -9,6 +9,7 @@ import java.util.List;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
 
@@ -18,8 +19,8 @@ import com.google.common.io.CharStreams;
 public class GameParser {
 
 	private static final String PREFIX_SIZE = "SZ";
-	private static final String PREFIX_BLACK = "B";
-	private static final String PREFIX_WHITE = "W";
+	private static final String PREFIX_B = "B";
+	private static final String PREFIX_W = "W";
 	private static final String VALUE_SWAP = "swap";
 	private static final String VALUE_RESIGN = "resign";
 
@@ -77,11 +78,11 @@ public class GameParser {
 			if (s.startsWith(PREFIX_SIZE)) {
 				parseBoardSize(s);
 			}
-			if (s.startsWith(PREFIX_WHITE)) {
-				parseField(s, StoneColor.WHITE);
-			}
-			if (s.startsWith(PREFIX_BLACK)) {
+			if (s.startsWith(PREFIX_W)) {
 				parseField(s, StoneColor.BLACK);
+			}
+			if (s.startsWith(PREFIX_B)) {
+				parseField(s, StoneColor.WHITE);
 			}
 		}
 	}
@@ -128,19 +129,18 @@ public class GameParser {
 			fields.add(turn);
 		}
 
-		// TODO swap
-		// if (s.contains(VALUE_SWAP)) {
-		// Turn last = Iterables.getLast(fields);
-		// StoneColor newColor;
-		// if (last.getColor().equals(StoneColor.WHITE)) {
-		// newColor = StoneColor.BLACK;
-		// } else {
-		// newColor = StoneColor.WHITE;
-		// }
-		//
-		// fields.add(new Turn(last.getCoord(), last.getCoordNumber(),
-		// newColor));
-		// }
+		if (s.contains(VALUE_SWAP)) {
+			Turn last = Iterables.getLast(fields);
+			StoneColor newColor;
+			if (last.getColor().equals(StoneColor.WHITE)) {
+				newColor = StoneColor.BLACK;
+			} else {
+				newColor = StoneColor.WHITE;
+			}
+
+			fields.add(new Turn(last.getCoord(), last.getCoordNumber(),
+					newColor));
+		}
 
 	}
 
