@@ -28,7 +28,7 @@ public class StrategyHavannah {
 		int boardSize = Preferences.getInstance().getBoardSize();
 		int[][] rawBoard = PrimitiveBoardProvider.getBoard(boardSize);
 		List<Turn> turns = Preferences.getInstance().getTurns();
-		if (null == turns && !turns.isEmpty()) {
+		if (null == turns || turns.isEmpty()) {
 			board = BoardHavannah.createInstance(rawBoard, boardSize);
 		} else {
 			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);

@@ -58,8 +58,10 @@ public class SituationHavannah implements Situation {
 		board.setField(field);
 		BDDFactory fac = win.getFactory();
 		if (this.color.equals(color)) {
+			// System.out.println("restrict with ith");
 			win.restrictWith(fac.ithVar(field.getIndex()));
 		} else {
+			// System.out.println("restrict with nith");
 			win.restrictWith(fac.nithVar(field.getIndex()));
 		}
 

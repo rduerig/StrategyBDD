@@ -51,7 +51,7 @@ public class GameParser {
 	/**
 	 * @return
 	 */
-	public List<Turn> getFields() {
+	public List<Turn> getTurns() {
 		return fields;
 	}
 

@@ -34,19 +34,25 @@ public class CpuBDDFieldVisitor implements BDDFieldVisitor {
 
 	@Override
 	public void visit(EmptyField field) {
-		// System.out.print("BDD for field " + field.getIndex() + " ... ");
 		result = fac.ithVar(field.getIndex());
-		// System.out.println("done");
 	}
 
 	@Override
 	public void visit(WhiteStone field) {
-		result = fac.one();
+		if (Preferences.getInstance().getCpuColor().equals(StoneColor.WHITE)) {
+			result = fac.one();
+		} else {
+			result = fac.zero();
+		}
 	}
 
 	@Override
 	public void visit(BlackStone field) {
-		result = fac.zero();
+		if (Preferences.getInstance().getCpuColor().equals(StoneColor.WHITE)) {
+			result = fac.zero();
+		} else {
+			result = fac.one();
+		}
 	}
 
 }

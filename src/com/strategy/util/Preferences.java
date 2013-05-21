@@ -27,7 +27,7 @@ public class Preferences {
 	private static List<Turn> defaultTurns = null;
 	private static StoneColor defaultCpuColor = StoneColor.WHITE;
 
-	private final boolean generateFiles;
+	private boolean generateFiles;
 	private final int boardSize;
 	private final List<Turn> turns;
 	private StoneColor cpuColor;
@@ -45,7 +45,7 @@ public class Preferences {
 			GameParser parser = getParser(params);
 			if (null != parser) {
 				parBoardSize = parser.getBoardSize();
-				parTurns = parser.getFields();
+				parTurns = parser.getTurns();
 			}
 		} catch (FileNotFoundException e) {
 		} catch (GameParserException e) {
@@ -74,6 +74,14 @@ public class Preferences {
 	 */
 	public boolean isGenerateFiles() {
 		return generateFiles;
+	}
+
+	/**
+	 * @param generateFiles
+	 *            the generateFiles to set
+	 */
+	public void setGenerateFiles(boolean generateFiles) {
+		this.generateFiles = generateFiles;
 	}
 
 	/**

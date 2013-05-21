@@ -39,12 +39,20 @@ public class PlayerBDDFieldVisitor implements BDDFieldVisitor {
 
 	@Override
 	public void visit(WhiteStone field) {
-		result = fac.zero();
+		if (Preferences.getInstance().getCpuColor().equals(StoneColor.WHITE)) {
+			result = fac.zero();
+		} else {
+			result = fac.one();
+		}
 	}
 
 	@Override
 	public void visit(BlackStone field) {
-		result = fac.one();
+		if (Preferences.getInstance().getCpuColor().equals(StoneColor.WHITE)) {
+			result = fac.one();
+		} else {
+			result = fac.zero();
+		}
 	}
 
 }
