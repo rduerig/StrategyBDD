@@ -15,4 +15,16 @@ public interface Prediction {
 	 */
 	int doNextTurn(int fieldIndex);
 
+	/**
+	 * 
+	 * @return true if the computer has won, false otherwise
+	 */
+	boolean isWinCpu();
+
+	/**
+	 * 
+	 * @return true if the player has won, false otherwise
+	 */
+	boolean isWinPlayer();
+
 }

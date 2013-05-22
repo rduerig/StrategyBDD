@@ -19,6 +19,28 @@ import com.strategy.util.Turn;
  */
 public class StrategyHavannah {
 
+	/**
+	 * @param args
+	 *            Command line arguments:
+	 *            <table>
+	 *            <th><b>Argument</b></th>
+	 *            <th><b>Effect</b></th>
+	 *            <tr>
+	 *            <td>-f</td>
+	 *            <td>force generating new bdds and according files</td>
+	 *            </tr>
+	 *            <tr>
+	 *            <td>-hgf [PATH]</td>
+	 *            <td>load the hgf file defined by PATH, also forces generating
+	 *            new bdds ignoring if -f is present or not</td>
+	 *            </tr>
+	 *            <tr>
+	 *            <td>-s [NUMBER]</td>
+	 *            <td>use NUMBER as size for the board, ignored when an hgf file
+	 *            is given</td>
+	 *            </tr>
+	 *            </table>
+	 */
 	public static void main(String[] args) {
 		System.setProperty("bdd", "bdd");
 
@@ -34,6 +56,7 @@ public class StrategyHavannah {
 			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);
 			Turn last = Iterables.getLast(turns);
 			Preferences.getInstance().setCpuColor(last.getColor());
+			Preferences.getInstance().setGenerateFiles(true);
 		}
 
 		System.out.println("You are playing "
@@ -47,6 +70,15 @@ public class StrategyHavannah {
 		while (!"exit".equals(line)) {
 
 			System.out.println(board);
+
+			if (p.isWinCpu()) {
+				System.out.println("Computer wins!");
+				break;
+			}
+			if (p.isWinPlayer()) {
+				System.out.println("You win!");
+				break;
+			}
 
 			BufferedReader console = new BufferedReader(new InputStreamReader(
 					System.in));
@@ -79,9 +111,6 @@ public class StrategyHavannah {
 			}
 
 			int next = p.doNextTurn(fieldIndex);
-			if (next < 0) {
-				break;
-			}
 			System.out.println(Preferences.getInstance().getCpuColor()
 					+ "s turn: " + next);
 		}

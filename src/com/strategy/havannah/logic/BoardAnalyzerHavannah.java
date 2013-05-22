@@ -12,7 +12,6 @@ import com.strategy.api.logic.Position;
 import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.CpuBDDFieldVisitor;
 import com.strategy.util.PlayerBDDFieldVisitor;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
@@ -75,7 +74,7 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	}
 
 	private void initVisitor(StoneColor color, BDDFactory factory) {
-		if (Preferences.getInstance().getCpuColor().equals(color)) {
+		if (this.color.equals(color)) {
 			visitor = new CpuBDDFieldVisitor(factory);
 		} else {
 			visitor = new PlayerBDDFieldVisitor(factory);

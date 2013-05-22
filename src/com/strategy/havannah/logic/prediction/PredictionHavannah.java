@@ -21,11 +21,26 @@ import com.strategy.util.StoneColor;
  */
 public class PredictionHavannah implements Prediction {
 
+	public static int WIN_CPU = -1;
+	public static int WIN_PLAYER = -2;
+
 	private Situation situationCpu;
 	private Situation situationPlayer;
+	private boolean winCpu = false;
+	private boolean winPlayer = false;
 
 	public PredictionHavannah(Board board) {
 		init(board);
+	}
+
+	@Override
+	public boolean isWinCpu() {
+		return winCpu;
+	}
+
+	@Override
+	public boolean isWinPlayer() {
+		return winPlayer;
 	}
 
 	@Override
@@ -35,15 +50,6 @@ public class PredictionHavannah implements Prediction {
 		situationCpu.update(fieldIndex, playerColor);
 		situationPlayer.update(fieldIndex, playerColor);
 
-		if (situationCpu.getWinningCondition().isOne()) {
-			System.out.println("Computer wins!");
-			return -1;
-		}
-		if (situationPlayer.getWinningCondition().isOne()) {
-			System.out.println("You win!");
-			return -1;
-		}
-
 		// evaluate all possible white turns
 		BDD winningCondition = situationCpu.getWinningCondition().id();
 		BDD winningConditionOpp = situationPlayer.getWinningCondition().id();
@@ -51,8 +57,6 @@ public class PredictionHavannah implements Prediction {
 				winningCondition);
 		Evaluation evalOpp = new EvaluationHavannah(situationPlayer.getBoard(),
 				winningConditionOpp);
-		System.out.println(situationPlayer.getBoard().toRatingString(
-				eval.getRating(), eval.getBestIndex()));
 
 		Double avgRating = eval.getAverageRating();
 		Double avgRatingOpp = evalOpp.getAverageRating();
@@ -65,7 +69,13 @@ public class PredictionHavannah implements Prediction {
 		}
 
 		situationCpu.update(best, cpuColor);
+		if (situationCpu.getWinningCondition().isOne()) {
+			winCpu = true;
+		}
 		situationPlayer.update(best, cpuColor);
+		if (situationPlayer.getWinningCondition().isOne()) {
+			winPlayer = true;
+		}
 		return best;
 	}
 
