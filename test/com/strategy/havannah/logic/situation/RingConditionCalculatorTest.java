@@ -15,6 +15,7 @@ import com.strategy.AbstractTest;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.ConditionCalculator;
+import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
@@ -29,7 +30,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 	@BeforeClass
 	public static void doBefore() {
-		// Output.setDebug(RingConditionCalculator.class, true);
+		Output.setDebug(RingConditionCalculator.class, false);
 	}
 
 	@Test
@@ -119,6 +120,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		ConditionCalculator calc = new RingConditionCalculator(analyzer,
 				analyzerOpp, board);
 		BDD result = calc.getBdd();
+		System.out.println(result);
 		Assert.assertTrue(result.isOne());
 	}
 
@@ -136,9 +138,11 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzerOpp = new BoardAnalyzerHavannah(board,
 				Preferences.getInstance().getCpuColor().getOpposite());
 
-		ConditionCalculator calc = new RingConditionCalculator(analyzer,
-				analyzerOpp, board);
-		BDD result = calc.getBdd();
+		// ConditionCalculator calc = new RingConditionCalculator(analyzer,
+		// analyzerOpp, board);
+		// BDD result = calc.getBdd();
+		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
+		BDD result = sit.getWinningCondition();
 
 		Evaluation eval = new EvaluationHavannah(board, result);
 		System.out.println(board);
@@ -148,8 +152,9 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		int actual = eval.getBestIndex();
 		Assert.assertEquals(expected, actual);
 
-		result.restrictWith(analyzer.getFactory().ithVar(actual));
-		Assert.assertTrue(result.isOne());
+		result.restrictWith(analyzer.getFactory().nithVar(actual));
+		// System.out.println(result);
+		Assert.assertTrue(result.not().isOne());
 	}
 
 	@AfterClass

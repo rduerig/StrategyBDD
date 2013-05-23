@@ -18,7 +18,9 @@ public class BddFactoryProvider {
 	}
 
 	public static void reset() {
-		fac.done();
+		if (null != fac) {
+			fac.done();
+		}
 		fac = null;
 	}
 

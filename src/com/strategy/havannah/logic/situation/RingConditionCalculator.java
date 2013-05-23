@@ -48,31 +48,33 @@ public class RingConditionCalculator implements ConditionCalculator,
 		print("inner: " + allInnerPos.toString(), RingConditionCalculator.class);
 
 		result = analyzer.getFactory().zero();
+
 		for (Position innerPos : allInnerPos) {
-			BDD innerPosInRing = analyzer.getFactory().one();
+			BDD innerPosReachableFromOut = analyzer.getFactory().zero();
 			ArrayList<Position> neighbours = Lists.newArrayList(
 					innerPos.getSouth(), innerPos.getSouthWest(),
 					innerPos.getNorthWest(), innerPos.getNorth(),
 					innerPos.getNorthEast(), innerPos.getSouthEast());
 			for (Position outerPos : outerPositions) {
-				BDD outerPosCannotReachInnerPos = analyzer.getFactory().one();
+				BDD outerPosCanReachInnerPos = analyzer.getFactory().zero();
 				for (Position neighbour : neighbours) {
 					if (board.isValidField(neighbour)) {
 						// path = there is no path for the opposite color from
 						// outerPos to neighbour
 						BDD path = analyzerOpposite
 								.getPath(outerPos, neighbour);
-						// print("path from " + outerPos + " to " + neighbour +
-						// ": "
-						// + path, RingConditionCalculator.class);
-						outerPosCannotReachInnerPos = outerPosCannotReachInnerPos
-								.id().andWith(path.not());
+
+						// print("path from " + outerPos + " to " + neighbor
+						// + ": " + path.isZero(),
+						// RingConditionCalculator.class);
+						outerPosCanReachInnerPos = outerPosCanReachInnerPos
+								.id().orWith(path);
 					}
 				}
-				innerPosInRing = innerPosInRing.id().andWith(
-						outerPosCannotReachInnerPos);
+				innerPosReachableFromOut = innerPosReachableFromOut.id()
+						.orWith(outerPosCanReachInnerPos);
 			}
-			result = result.id().orWith(innerPosInRing);
+			result = result.id().orWith(innerPosReachableFromOut.not());
 		}
 
 		result = result.not();

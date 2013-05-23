@@ -32,6 +32,12 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		return path;
 	}
 
+	@Deprecated
+	public BDD getPath(Position p, Position q, boolean forCpu) {
+		BDD path = getPathTransitiveClosure(p, q);
+		return path;
+	}
+
 	public void done() {
 		freeAll();
 		fac.done();

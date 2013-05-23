@@ -13,10 +13,10 @@ public class EvaluationFormatter {
 	public EvaluationFormatter(int bestIndex) {
 		this.bestIndex = bestIndex;
 		formatter = NumberFormat.getInstance();
-		formatter.setMaximumFractionDigits(4);
-		formatter.setMinimumFractionDigits(4);
-		formatter.setMaximumIntegerDigits(2);
-		formatter.setMinimumIntegerDigits(2);
+		formatter.setMaximumFractionDigits(3);
+		formatter.setMinimumFractionDigits(3);
+		formatter.setMaximumIntegerDigits(3);
+		formatter.setMinimumIntegerDigits(3);
 		formatter.setGroupingUsed(false);
 	}
 
