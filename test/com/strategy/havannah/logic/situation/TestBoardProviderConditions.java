@@ -69,7 +69,7 @@ public class TestBoardProviderConditions {
 			{ 1, 1, 2, 0, 2 } };
 
 	/**
-	 * Board with size 3, has 1 path for ring condition.
+	 * Board with size 3, has 2 path for ring condition.
 	 */
 	public static int[][] BOARD_RING_1 = new int[][] {//
 	/*    */{ 2, 2, 2, 1, 1 },//

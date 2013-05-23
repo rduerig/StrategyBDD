@@ -5,6 +5,7 @@ import net.sf.javabdd.BDD;
 
 import org.junit.Test;
 
+import com.strategy.AbstractTest;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.ConditionCalculator;
@@ -13,13 +14,7 @@ import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.util.StoneColor;
 
-public class BridgeCondidtionCalculatorTest {
-
-	// @BeforeClass
-	// public static void doBefore() {
-	// System.setProperty("bdd", "bdd");
-	// AnsiConsole.systemInstall();
-	// }
+public class BridgeCondidtionCalculatorTest extends AbstractTest {
 
 	@Test
 	// @Ignore

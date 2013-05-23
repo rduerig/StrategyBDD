@@ -7,6 +7,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.strategy.AbstractTest;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.havannah.board.BoardHavannah;
@@ -14,11 +15,11 @@ import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
 
-public class ForkCondidtionCalculatorTest {
+public class ForkCondidtionCalculatorTest extends AbstractTest {
 
 	@BeforeClass
 	public static void doBefore() {
-		Output.setDebug(RingConditionCalculator.class, true);
+		// Output.setDebug(ForkConditionCalculator.class, true);
 	}
 
 	@Test

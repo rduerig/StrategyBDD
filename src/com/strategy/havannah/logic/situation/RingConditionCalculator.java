@@ -55,18 +55,22 @@ public class RingConditionCalculator implements ConditionCalculator,
 					innerPos.getNorthWest(), innerPos.getNorth(),
 					innerPos.getNorthEast(), innerPos.getSouthEast());
 			for (Position outerPos : outerPositions) {
+				BDD outerPosCannotReachInnerPos = analyzer.getFactory().one();
 				for (Position neighbour : neighbours) {
 					if (board.isValidField(neighbour)) {
 						// path = there is no path for the opposite color from
 						// outerPos to neighbour
 						BDD path = analyzerOpposite
-								.getPath(outerPos, neighbour).not();
+								.getPath(outerPos, neighbour);
 						// print("path from " + outerPos + " to " + neighbour +
 						// ": "
 						// + path, RingConditionCalculator.class);
-						innerPosInRing = innerPosInRing.id().andWith(path);
+						outerPosCannotReachInnerPos = outerPosCannotReachInnerPos
+								.id().andWith(path.not());
 					}
 				}
+				innerPosInRing = innerPosInRing.id().andWith(
+						outerPosCannotReachInnerPos);
 			}
 			result = result.id().orWith(innerPosInRing);
 		}

@@ -12,6 +12,7 @@ import com.strategy.api.logic.Position;
 import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.CpuBDDFieldVisitor;
 import com.strategy.util.PlayerBDDFieldVisitor;
+import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
@@ -28,7 +29,7 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		this.board = board;
 		initFactory(board);
 		this.color = color;
-		initVisitor(color, fac);
+		initVisitor();
 		rows = board.getRows();
 		cols = board.getColumns();
 		cache = new BddCacheHavannah();
@@ -73,11 +74,11 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		fac = BddFactoryProvider.getOrCreateBddFactory(board);
 	}
 
-	private void initVisitor(StoneColor color, BDDFactory factory) {
-		if (this.color.equals(color)) {
-			visitor = new CpuBDDFieldVisitor(factory);
+	private void initVisitor() {
+		if (Preferences.getInstance().getCpuColor().equals(this.color)) {
+			visitor = new CpuBDDFieldVisitor(fac);
 		} else {
-			visitor = new PlayerBDDFieldVisitor(factory);
+			visitor = new PlayerBDDFieldVisitor(fac);
 		}
 	}
 
@@ -96,7 +97,8 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 			}
 		}
 
-		Position m = PositionHexagon.get(i / rows, i % cols);
+		Position m = getValidIntermediatePosition(i);
+
 		BDD pq = cache.isCached(p, q, i) ? cache.restore(p, q, i) : cache
 				.store(p, q, i, recursiveTransitiveClosure(i - 1, p, q));
 		BDD pm = cache.isCached(p, m, i) ? cache.restore(p, m, i) : cache
@@ -105,6 +107,18 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 				.store(m, q, i, recursiveTransitiveClosure(i - 1, m, q));
 		BDD pmandmq = pm.andWith(mq);
 		return pq.orWith(pmandmq);
+	}
+
+	private Position getValidIntermediatePosition(int i) {
+		Position m;
+		do {
+			m = PositionHexagon.get(i / rows, i % cols);
+			if (!board.isValidField(m)) {
+				i = i - 1;
+			}
+		} while (!board.isValidField(m) && i > 0);
+
+		return m;
 	}
 
 	private BDD getBDDForPosition(Position p) {
