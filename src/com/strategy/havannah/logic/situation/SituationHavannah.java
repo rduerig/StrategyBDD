@@ -1,6 +1,5 @@
 package com.strategy.havannah.logic.situation;
 
-import java.io.File;
 import java.io.IOException;
 
 import net.sf.javabdd.BDD;
@@ -22,7 +21,9 @@ import com.strategy.util.StoneColor;
 public class SituationHavannah implements Situation {
 
 	private static final String BDD_FILE_PREFIX = "win";
-	private BDD win;
+	private BDD winFork;
+	private BDD winBridge;
+	private BDD winRing;
 	private Board board;
 	private StoneColor color;
 
@@ -34,8 +35,33 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
-	public BDD getWinningCondition() {
-		return win;
+	public BDD getWinningConditionFork() {
+		return winFork;
+	}
+
+	@Override
+	public BDD getWinningConditionBridge() {
+		return winBridge;
+	}
+
+	@Override
+	public BDD getWinningConditionRing() {
+		return winRing;
+	}
+
+	@Override
+	public boolean hasFork() {
+		return winFork.isOne();
+	}
+
+	@Override
+	public boolean hasBridge() {
+		return winBridge.isOne();
+	}
+
+	@Override
+	public boolean hasRing() {
+		return winRing.isZero();
 	}
 
 	@Override
@@ -56,13 +82,17 @@ public class SituationHavannah implements Situation {
 				PositionHexagon.get(fieldIndex / board.getRows(), fieldIndex
 						% board.getColumns()), fieldIndex);
 		board.setField(field);
-		BDDFactory fac = win.getFactory();
+		BDDFactory fac = winFork.getFactory();
 		if (this.color.equals(color)) {
 			// System.out.println("restrict with ith");
-			win.restrictWith(fac.ithVar(field.getIndex()));
+			winFork.restrictWith(fac.ithVar(field.getIndex()));
+			winBridge.restrictWith(fac.ithVar(field.getIndex()));
+			winRing.restrictWith(fac.nithVar(field.getIndex()));
 		} else {
 			// System.out.println("restrict with nith");
-			win.restrictWith(fac.nithVar(field.getIndex()));
+			winFork.restrictWith(fac.nithVar(field.getIndex()));
+			winBridge.restrictWith(fac.nithVar(field.getIndex()));
+			winRing.restrictWith(fac.ithVar(field.getIndex()));
 		}
 
 	}
@@ -73,12 +103,16 @@ public class SituationHavannah implements Situation {
 		// System.out.println("try loading from file: win" +
 		// board.getBoardSize()
 		// + color.name().toLowerCase());
-		File winFile = new File(getFileName());
-		if (Preferences.getInstance().isGenerateFiles() || !winFile.exists()) {
+		// File winFileFork = new File(getFileName() + "fork");
+		// File winFileBridge = new File(getFileName() + "bridge");
+		// File winFileRing = new File(getFileName() + "ring");
+		if (Preferences.getInstance().isGenerateFiles()) {
 			initFromScratch(analyzer, analyzerOpposite);
 		} else {
 			try {
-				win = analyzer.getFactory().load(getFileName());
+				winFork = analyzer.getFactory().load(getFileName() + "fork");
+				winFork = analyzer.getFactory().load(getFileName() + "bridge");
+				winFork = analyzer.getFactory().load(getFileName() + "ring");
 				// System.out.println("loaded from file: win" +
 				// board.getBoardSize()
 				// + color.name().toLowerCase());
@@ -92,25 +126,25 @@ public class SituationHavannah implements Situation {
 	private void initFromScratch(BoardAnalyzer analyzer,
 			BoardAnalyzer analyzerOpposite) {
 
-		win = analyzer.getFactory().zero();
-
 		// computes bdd representation of the bridge condition
 		// System.out.println("computing bridge");
-		win.orWith(getBridgeCondition(analyzer));
+		winFork = getBridgeCondition(analyzer);
 		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
 		// computes bdd representation of the fork condition
 		// System.out.println("computing fork");
-		win.orWith(getForkCondition(analyzer));
+		winBridge = getForkCondition(analyzer);
 		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
 		// computes bdd representation of the ring condition
-		win.orWith(getRingCondition(analyzer, analyzerOpposite));
+		winRing = getRingCondition(analyzer, analyzerOpposite);
 
 		try {
-			analyzer.getFactory().save(getFileName(), win);
+			analyzer.getFactory().save(getFileName(), winFork);
+			analyzer.getFactory().save(getFileName(), winBridge);
+			analyzer.getFactory().save(getFileName(), winRing);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

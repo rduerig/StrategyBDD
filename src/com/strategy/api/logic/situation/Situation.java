@@ -10,7 +10,17 @@ import com.strategy.util.StoneColor;
  */
 public interface Situation {
 
-	BDD getWinningCondition();
+	BDD getWinningConditionFork();
+
+	BDD getWinningConditionBridge();
+
+	BDD getWinningConditionRing();
+
+	boolean hasFork();
+
+	boolean hasBridge();
+
+	boolean hasRing();
 
 	Board getBoard();
 

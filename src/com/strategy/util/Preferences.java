@@ -50,7 +50,9 @@ public class Preferences {
 		} catch (FileNotFoundException e) {
 		} catch (GameParserException e) {
 		}
-		instance = new Preferences(parGenerateFiles, parBoardSize, parTurns);
+		instance = new Preferences(
+				null == parTurns || parTurns.isEmpty() ? parGenerateFiles
+						: false, parBoardSize, parTurns);
 		return instance;
 
 	}

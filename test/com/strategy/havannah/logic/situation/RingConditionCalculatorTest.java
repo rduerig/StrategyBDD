@@ -14,12 +14,14 @@ import org.junit.Test;
 import com.strategy.AbstractTest;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.evaluation.Evaluation;
+import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
+import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
 import com.strategy.util.Output;
@@ -142,7 +144,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		// analyzerOpp, board);
 		// BDD result = calc.getBdd();
 		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
-		BDD result = sit.getWinningCondition();
+		BDD result = sit.getWinningConditionRing();
 
 		Evaluation eval = new EvaluationHavannah(board, result);
 		System.out.println(board);
@@ -155,6 +157,23 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		result.restrictWith(analyzer.getFactory().nithVar(actual));
 		// System.out.println(result);
 		Assert.assertTrue(result.not().isOne());
+	}
+
+	@Test
+	public void testHgfPredictRingInOneTurn() throws GameParserException {
+		String game = "SZ[4];W[D2];B[C1];W[C2];B[E1];W[E2];B[F2];W[E3];B[C3];W[D4];B[D5];W[C4];B[A3];W[B3];B[A2]";
+		GameParser parser = new GameParser(new ByteArrayInputStream(
+				game.getBytes()));
+		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
+				parser.getBoardSize(), parser.getTurns());
+
+		Preferences.getInstance().setCpuColor(StoneColor.BLACK);
+
+		Prediction p = new PredictionHavannah(board);
+		int expected = 38;
+		int actual = p.doNextTurn(0);
+		Assert.assertEquals(expected, actual);
+		Assert.assertTrue(p.isWinCpu());
 	}
 
 	@AfterClass

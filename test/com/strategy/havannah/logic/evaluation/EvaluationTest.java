@@ -42,7 +42,7 @@ public class EvaluationTest extends AbstractTest {
 		// Situation sitOpp = new SituationHavannah(analyzerOpp, analyzer,
 		// board);
 		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningCondition());
+				sit.getWinningConditionFork());
 
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
@@ -67,7 +67,7 @@ public class EvaluationTest extends AbstractTest {
 				Preferences.getInstance().getCpuColor().getOpposite());
 		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningCondition());
+				sit.getWinningConditionFork());
 
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -77,7 +77,7 @@ public class EvaluationTest extends AbstractTest {
 		Assert.assertEquals(expectedBest, actualBest);
 
 		sit.update(actualBest, Preferences.getInstance().getCpuColor());
-		Assert.assertTrue(sit.getWinningCondition().isOne());
+		Assert.assertTrue(sit.getWinningConditionFork().isOne());
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class EvaluationTest extends AbstractTest {
 		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
 		sit.update(46, Preferences.getInstance().getCpuColor().getOpposite());
 		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningCondition());
+				sit.getWinningConditionFork());
 
 		// System.out.println(board.toRatingString(eval.getRating(),
 		// eval.getBestIndex()));

@@ -31,7 +31,7 @@ public class StrategyHavannah {
 	 *            </tr>
 	 *            <tr>
 	 *            <td>-hgf [PATH]</td>
-	 *            <td>load the hgf file defined by PATH, also forces generating
+	 *            <td>load the hgf file defined by PATH, never forces generating
 	 *            new bdds ignoring if -f is present or not</td>
 	 *            </tr>
 	 *            <tr>
@@ -56,7 +56,6 @@ public class StrategyHavannah {
 			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);
 			Turn last = Iterables.getLast(turns);
 			Preferences.getInstance().setCpuColor(last.getColor());
-			Preferences.getInstance().setGenerateFiles(true);
 		}
 
 		System.out.println("You are playing "

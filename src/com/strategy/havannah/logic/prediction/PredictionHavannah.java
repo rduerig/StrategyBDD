@@ -1,7 +1,12 @@
 package com.strategy.havannah.logic.prediction;
 
+import java.util.Collections;
+import java.util.Map;
+
 import net.sf.javabdd.BDD;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.evaluation.Evaluation;
@@ -20,9 +25,6 @@ import com.strategy.util.StoneColor;
  * @author Ralph Dürig
  */
 public class PredictionHavannah implements Prediction {
-
-	public static int WIN_CPU = -1;
-	public static int WIN_PLAYER = -2;
 
 	private Situation situationCpu;
 	private Situation situationPlayer;
@@ -50,32 +52,30 @@ public class PredictionHavannah implements Prediction {
 		situationCpu.update(fieldIndex, playerColor);
 		situationPlayer.update(fieldIndex, playerColor);
 
-		// evaluate all possible white turns
-		BDD winningCondition = situationCpu.getWinningCondition().id();
-		BDD winningConditionOpp = situationPlayer.getWinningCondition().id();
-		Evaluation eval = new EvaluationHavannah(situationCpu.getBoard(),
-				winningCondition);
-		Evaluation evalOpp = new EvaluationHavannah(situationPlayer.getBoard(),
-				winningConditionOpp);
-
-		Double avgRating = eval.getAverageRating();
-		Double avgRatingOpp = evalOpp.getAverageRating();
-
-		Integer best = 0;
-		if (avgRating < avgRatingOpp) {
-			best = eval.getBestIndex();
-		} else {
-			best = evalOpp.getBestIndex();
-		}
+		// evaluate all possible cpu turns
+		Map<Double, Evaluation> mappingCpu = getMapping(situationCpu);
+		Double maxCpu = Collections
+				.max(Lists.newArrayList(mappingCpu.keySet()));
+		// evaluate all possible player turns
+		Map<Double, Evaluation> mappingPlayer = getMapping(situationPlayer);
+		Double maxPlayer = Collections.max(Lists.newArrayList(mappingPlayer
+				.keySet()));
+		System.out
+				.println("max cpu: " + maxCpu + " | max player: " + maxPlayer);
+		Integer best = maxCpu >= maxPlayer ? mappingCpu.get(maxCpu)
+				.getBestIndex() : mappingPlayer.get(maxPlayer).getBestIndex();
 
 		situationCpu.update(best, cpuColor);
-		if (situationCpu.getWinningCondition().isOne()) {
+		if (situationCpu.hasFork() || situationCpu.hasBridge()
+				|| situationCpu.hasRing()) {
 			winCpu = true;
 		}
 		situationPlayer.update(best, cpuColor);
-		if (situationPlayer.getWinningCondition().isOne()) {
+		if (situationPlayer.hasFork() || situationPlayer.hasBridge()
+				|| situationPlayer.hasRing()) {
 			winPlayer = true;
 		}
+
 		return best;
 	}
 
@@ -93,6 +93,30 @@ public class PredictionHavannah implements Prediction {
 
 		analyzerCpu.done();
 		analyzerPlayer.done();
+	}
+
+	private Map<Double, Evaluation> getMapping(Situation sit) {
+		BDD winningConditionFork = sit.getWinningConditionFork().id();
+		BDD winningConditionBridge = sit.getWinningConditionBridge().id();
+		BDD winningConditionRing = sit.getWinningConditionRing().id();
+		Evaluation evalFork = new EvaluationHavannah(sit.getBoard(),
+				winningConditionFork);
+		Evaluation evalBridge = new EvaluationHavannah(sit.getBoard(),
+				winningConditionBridge);
+		Evaluation evalRing = new EvaluationHavannah(sit.getBoard(),
+				winningConditionRing);
+
+		double bestRatingFork = evalFork.getRating()[evalFork.getBestIndex()];
+		double bestRatingBridge = evalBridge.getRating()[evalBridge
+				.getBestIndex()];
+		double bestRatingRing = evalRing.getRating()[evalRing.getBestIndex()];
+
+		Map<Double, Evaluation> mapping = Maps.newHashMap();
+		mapping.put(bestRatingFork, evalFork);
+		mapping.put(bestRatingBridge, evalBridge);
+		mapping.put(bestRatingRing, evalRing);
+
+		return mapping;
 	}
 
 }
