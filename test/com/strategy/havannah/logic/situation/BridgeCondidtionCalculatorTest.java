@@ -22,11 +22,10 @@ public class BridgeCondidtionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_BRIDGE_5, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		ConditionCalculator calc = new BridgeConditionCalculator(analyzer,
-				board);
+				board, StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
 		double expected = 5d;
@@ -41,11 +40,10 @@ public class BridgeCondidtionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_BRIDGE_14, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		ConditionCalculator calc = new BridgeConditionCalculator(analyzer,
-				board);
+				board, StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
 		double expected = 14d;
@@ -60,11 +58,10 @@ public class BridgeCondidtionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_BRIDGE_14, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		ConditionCalculator calc = new BridgeConditionCalculator(analyzer,
-				board);
+				board, StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
 		Evaluation eval = new EvaluationHavannah(board, result);

@@ -4,15 +4,12 @@ import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
 import com.strategy.api.board.Board;
-import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.util.BddFactoryProvider;
-import com.strategy.util.CpuBDDFieldVisitor;
-import com.strategy.util.PlayerBDDFieldVisitor;
-import com.strategy.util.Preferences;
+import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.StoneColor;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
@@ -22,23 +19,19 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	private BDDFactory fac;
 	private BddCache cache;
 	private Board board;
-	private BDDFieldVisitor visitor;
-	private StoneColor color;
 
-	public BoardAnalyzerHavannah(Board board, StoneColor color) {
+	public BoardAnalyzerHavannah(Board board) {
 		this.board = board;
 		initFactory(board);
-		this.color = color;
-		initVisitor();
 		rows = board.getRows();
 		cols = board.getColumns();
 		cache = new BddCacheHavannah();
 	}
 
-	public BDD getPath(Position p, Position q) {
+	public BDD getPath(Position p, Position q, StoneColor color) {
 		// cache = new BddCacheHavannah();
 		// cache.free();
-		BDD path = getPathTransitiveClosure(p, q);
+		BDD path = getPathTransitiveClosure(p, q, color);
 		// fac.reorder(BDDFactory.REORDER_SIFT);
 		return path;
 	}
@@ -51,11 +44,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	@Override
 	public BDDFactory getFactory() {
 		return fac;
-	}
-
-	@Override
-	public StoneColor getStoneColor() {
-		return color;
 	}
 
 	// ************************************************************************
@@ -74,37 +62,38 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		fac = BddFactoryProvider.getOrCreateBddFactory(board);
 	}
 
-	private void initVisitor() {
-		if (Preferences.getInstance().getCpuColor().equals(this.color)) {
-			visitor = new CpuBDDFieldVisitor(fac);
-		} else {
-			visitor = new PlayerBDDFieldVisitor(fac);
-		}
-	}
-
-	private BDD getPathTransitiveClosure(Position p, Position q) {
+	private BDD getPathTransitiveClosure(Position p, Position q,
+			StoneColor color) {
 		int i = rows * cols - 1;
-		return recursiveTransitiveClosure(i, p, q);
+		return recursiveTransitiveClosure(i, p, q, color);
 	}
 
-	private BDD recursiveTransitiveClosure(int i, Position p, Position q) {
+	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
+			StoneColor color) {
 		if (i == 0) {
 			if (p.isNeighbour(q) && board.isValidField(p)
 					&& board.isValidField(q)) {
-				return getBDDForPosition(p).andWith(getBDDForPosition(q));
+				return getBDDForPosition(p, color).andWith(
+						getBDDForPosition(q, color));
 			} else {
 				return fac.zero();
 			}
 		}
+		if (cache.isCached(color, p, q, i)) {
+			return cache.restore(color, p, q, i);
+		}
 
 		Position m = getValidIntermediatePosition(i);
 
-		BDD pq = cache.isCached(p, q, i) ? cache.restore(p, q, i) : cache
-				.store(p, q, i, recursiveTransitiveClosure(i - 1, p, q));
-		BDD pm = cache.isCached(p, m, i) ? cache.restore(p, m, i) : cache
-				.store(p, m, i, recursiveTransitiveClosure(i - 1, p, m));
-		BDD mq = cache.isCached(m, q, i) ? cache.restore(m, q, i) : cache
-				.store(m, q, i, recursiveTransitiveClosure(i - 1, m, q));
+		BDD pq = cache.isCached(color, p, q, i) ? cache.restore(color, p, q, i)
+				: cache.store(color, p, q, i,
+						recursiveTransitiveClosure(i - 1, p, q, color));
+		BDD pm = cache.isCached(color, p, m, i) ? cache.restore(color, p, m, i)
+				: cache.store(color, p, m, i,
+						recursiveTransitiveClosure(i - 1, p, m, color));
+		BDD mq = cache.isCached(color, m, q, i) ? cache.restore(color, m, q, i)
+				: cache.store(color, m, q, i,
+						recursiveTransitiveClosure(i - 1, m, q, color));
 		BDD pmandmq = pm.andWith(mq);
 		return pq.orWith(pmandmq);
 	}
@@ -121,8 +110,10 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		return m;
 	}
 
-	private BDD getBDDForPosition(Position p) {
+	private BDD getBDDForPosition(Position p, StoneColor color) {
 		Field field = board.getField(p.getRow(), p.getCol());
+		ColorDependingBDDFieldVisitor visitor = new ColorDependingBDDFieldVisitor(
+				fac, color);
 		field.accept(visitor);
 		return visitor.getBDD();
 	}

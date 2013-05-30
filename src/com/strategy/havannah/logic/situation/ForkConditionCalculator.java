@@ -15,13 +15,17 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
+import com.strategy.util.StoneColor;
 
 public class ForkConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
 
 	private BDD result;
+	private StoneColor color;
 
-	public ForkConditionCalculator(BoardAnalyzer analyzer, Board board) {
+	public ForkConditionCalculator(BoardAnalyzer analyzer, Board board,
+			StoneColor color) {
+		this.color = color;
 		calculateResult(analyzer, board);
 	}
 
@@ -54,8 +58,10 @@ public class ForkConditionCalculator implements ConditionCalculator,
 								print("checking: " + pos1 + " - " + pos2
 										+ " - " + pos3,
 										ForkConditionCalculator.class);
-								BDD path = analyzer.getPath(pos1, pos2)
-										.andWith(analyzer.getPath(pos2, pos3));
+								BDD path = analyzer.getPath(pos1, pos2, color)
+										.andWith(
+												analyzer.getPath(pos2, pos3,
+														color));
 								result = result.id().orWith(path);
 							}
 						}

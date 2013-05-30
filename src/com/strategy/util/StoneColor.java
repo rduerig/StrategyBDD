@@ -27,6 +27,16 @@ public enum StoneColor {
 		return EMPTY;
 	}
 
+	public static StoneColor parse(String colorStr) {
+		for (StoneColor color : values()) {
+			if (color.name().equalsIgnoreCase(colorStr)) {
+				return color;
+			}
+		}
+
+		return EMPTY;
+	}
+
 	public StoneColor getOpposite() {
 		switch (this) {
 		case BLACK:

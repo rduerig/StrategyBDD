@@ -7,7 +7,8 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.BDDFieldVisitor;
 import com.strategy.api.logic.Position;
 import com.strategy.util.AbstractBoardTransformer;
-import com.strategy.util.CpuBDDFieldVisitor;
+import com.strategy.util.ColorDependingBDDFieldVisitor;
+import com.strategy.util.StoneColor;
 
 /**
  * Transforms a given {@link Board} to a map between {@link Position}s and
@@ -32,7 +33,7 @@ public class BoardTransformerPrototype extends AbstractBoardTransformer {
 
 	@Override
 	protected BDDFieldVisitor getBDDFieldVisitor() {
-		return new CpuBDDFieldVisitor(fac);
+		return new ColorDependingBDDFieldVisitor(fac, StoneColor.WHITE);
 	}
 
 	@Override

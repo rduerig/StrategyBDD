@@ -10,13 +10,17 @@ import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.Output;
+import com.strategy.util.StoneColor;
 
 public class BridgeConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
 
 	private BDD result;
+	private StoneColor color;
 
-	public BridgeConditionCalculator(BoardAnalyzer analyzer, Board board) {
+	public BridgeConditionCalculator(BoardAnalyzer analyzer, Board board,
+			StoneColor color) {
+		this.color = color;
 		calculateResult(analyzer, board);
 	}
 
@@ -60,7 +64,7 @@ public class BridgeConditionCalculator implements ConditionCalculator,
 			for (int j = i + 1; j < corners.length; j++) {
 				Output.print("path from " + corners[i] + " to " + corners[j],
 						BridgeConditionCalculator.class);
-				BDD path = analyzer.getPath(corners[i], corners[j]);
+				BDD path = analyzer.getPath(corners[i], corners[j], color);
 				result = result.id().orWith(path);
 			}
 		}

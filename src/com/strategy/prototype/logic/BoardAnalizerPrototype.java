@@ -48,11 +48,6 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		return fac;
 	}
 
-	@Override
-	public StoneColor getStoneColor() {
-		return StoneColor.WHITE;
-	}
-
 	// ************************************************************************
 
 	private void initFactory(Board board) {
@@ -99,12 +94,15 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		}
 
 		Position m = PositionSquare.get(i / rows, i % rows);
-		BDD pq = cache.isCached(p, q, i) ? cache.restore(p, q, i) : cache
-				.store(p, q, i, recursiveTransitiveClosure(i - 1, p, q));
-		BDD pm = cache.isCached(p, m, i) ? cache.restore(p, m, i) : cache
-				.store(p, m, i, recursiveTransitiveClosure(i - 1, p, m));
-		BDD mq = cache.isCached(m, q, i) ? cache.restore(m, q, i) : cache
-				.store(m, q, i, recursiveTransitiveClosure(i - 1, m, q));
+		BDD pq = cache.isCached(StoneColor.WHITE, p, q, i) ? cache.restore(
+				StoneColor.WHITE, p, q, i) : cache.store(StoneColor.WHITE, p,
+				q, i, recursiveTransitiveClosure(i - 1, p, q));
+		BDD pm = cache.isCached(StoneColor.WHITE, p, m, i) ? cache.restore(
+				StoneColor.WHITE, p, m, i) : cache.store(StoneColor.WHITE, p,
+				m, i, recursiveTransitiveClosure(i - 1, p, m));
+		BDD mq = cache.isCached(StoneColor.WHITE, m, q, i) ? cache.restore(
+				StoneColor.WHITE, m, q, i) : cache.store(StoneColor.WHITE, m,
+				q, i, recursiveTransitiveClosure(i - 1, m, q));
 		return pq.orWith(pm.andWith(mq));
 	}
 
@@ -112,6 +110,11 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		for (Entry<Position, BDD> entry : bdds.entrySet()) {
 			entry.getValue().free();
 		}
+	}
+
+	@Override
+	public BDD getPath(Position p, Position q, StoneColor color) {
+		return getPath(p, q, StoneColor.WHITE);
 	}
 
 }

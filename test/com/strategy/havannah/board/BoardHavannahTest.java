@@ -144,9 +144,8 @@ public class BoardHavannahTest {
 
 		Position p = PositionHexagon.get(0, 0);
 		Position q = PositionHexagon.get(4, 4);
-		BoardAnalyzerHavannah analizer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
-		BDD path = analizer.getPath(p, q);
+		BoardAnalyzerHavannah analizer = new BoardAnalyzerHavannah(board);
+		BDD path = analizer.getPath(p, q, StoneColor.WHITE);
 		int actual = path.allsat().size();
 		analizer.done();
 		path.free();

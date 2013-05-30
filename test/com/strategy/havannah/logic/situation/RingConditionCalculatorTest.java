@@ -25,7 +25,6 @@ import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
 import com.strategy.util.Output;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 public class RingConditionCalculatorTest extends AbstractTest {
@@ -41,13 +40,10 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_RING_1, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
-		BoardAnalyzerHavannah analyzerOpp = new BoardAnalyzerHavannah(board,
-				StoneColor.BLACK);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		ConditionCalculator calc = new RingConditionCalculator(analyzer,
-				analyzerOpp, board);
+		ConditionCalculator calc = new RingConditionCalculator(analyzer, board,
+				StoneColor.WHITE);
 		BDD result = calc.getBdd();
 		System.out.println(result);
 
@@ -64,13 +60,10 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_RING_2, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
-		BoardAnalyzerHavannah analyzerOpp = new BoardAnalyzerHavannah(board,
-				StoneColor.BLACK);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		ConditionCalculator calc = new RingConditionCalculator(analyzer,
-				analyzerOpp, board);
+		ConditionCalculator calc = new RingConditionCalculator(analyzer, board,
+				StoneColor.WHITE);
 		BDD result = calc.getBdd();
 		System.out.println(result);
 
@@ -87,13 +80,10 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_RING_1_OTHER, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
-		BoardAnalyzerHavannah analyzerOpp = new BoardAnalyzerHavannah(board,
-				StoneColor.BLACK);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		ConditionCalculator calc = new RingConditionCalculator(analyzer,
-				analyzerOpp, board);
+		ConditionCalculator calc = new RingConditionCalculator(analyzer, board,
+				StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
 		Evaluation eval = new EvaluationHavannah(board, result);
@@ -113,14 +103,10 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
 				parser.getBoardSize(), parser.getTurns());
 
-		Preferences.getInstance().setCpuColor(StoneColor.BLACK);
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor());
-		BoardAnalyzerHavannah analyzerOpp = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor().getOpposite());
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		ConditionCalculator calc = new RingConditionCalculator(analyzer,
-				analyzerOpp, board);
+		ConditionCalculator calc = new RingConditionCalculator(analyzer, board,
+				StoneColor.BLACK);
 		BDD result = calc.getBdd();
 		System.out.println(result);
 		Assert.assertTrue(result.isOne());
@@ -134,16 +120,12 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
 				parser.getBoardSize(), parser.getTurns());
 
-		Preferences.getInstance().setCpuColor(StoneColor.BLACK);
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor());
-		BoardAnalyzerHavannah analyzerOpp = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor().getOpposite());
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		// ConditionCalculator calc = new RingConditionCalculator(analyzer,
 		// analyzerOpp, board);
 		// BDD result = calc.getBdd();
-		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 		BDD result = sit.getWinningConditionRing();
 
 		Evaluation eval = new EvaluationHavannah(board, result);
@@ -167,17 +149,20 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
 				parser.getBoardSize(), parser.getTurns());
 
-		Preferences.getInstance().setCpuColor(StoneColor.BLACK);
+		Output.setDebug(PredictionHavannah.class, true);
+
+		System.out.println(board);
 
 		Prediction p = new PredictionHavannah(board);
 		int expected = 38;
-		int actual = p.doNextTurn(0);
+		int actual = p.answerTurn(0, StoneColor.WHITE);
 		Assert.assertEquals(expected, actual);
-		Assert.assertTrue(p.isWinCpu());
+		Assert.assertTrue(p.isWinBlack());
 	}
 
 	@AfterClass
 	public static void doAfter() {
+		Output.setDebug(PredictionHavannah.class, false);
 		Output.setDebug(RingConditionCalculator.class, false);
 	}
 

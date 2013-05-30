@@ -11,7 +11,7 @@ public interface BoardAnalyzer {
 	 * Returns the bdd representation of the reachability problem of the given
 	 * positions.
 	 */
-	public BDD getPath(Position p, Position q);
+	public BDD getPath(Position p, Position q, StoneColor color);
 
 	/**
 	 * Releases all used BDDs and frees memory.
@@ -19,10 +19,5 @@ public interface BoardAnalyzer {
 	public void done();
 
 	public BDDFactory getFactory();
-
-	/**
-	 * @return
-	 */
-	public StoneColor getStoneColor();
 
 }

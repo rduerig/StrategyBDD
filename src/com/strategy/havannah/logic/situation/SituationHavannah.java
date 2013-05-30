@@ -24,14 +24,20 @@ public class SituationHavannah implements Situation {
 	private BDD winFork;
 	private BDD winBridge;
 	private BDD winRing;
+	private BDD win;
 	private Board board;
 	private StoneColor color;
 
-	public SituationHavannah(BoardAnalyzer analyzer,
-			BoardAnalyzer analyzerOpposite, Board board) {
+	public SituationHavannah(BoardAnalyzer analyzer, Board board,
+			StoneColor color) {
 		this.board = board;
-		this.color = analyzer.getStoneColor();
-		init(analyzer, analyzerOpposite);
+		this.color = color;
+		init(analyzer);
+	}
+
+	@Override
+	public BDD getWinningCondition() {
+		return win;
 	}
 
 	@Override
@@ -50,6 +56,11 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
+	public boolean hasVictory() {
+		return win.isOne();
+	}
+
+	@Override
 	public boolean hasFork() {
 		return winFork.isOne();
 	}
@@ -61,7 +72,7 @@ public class SituationHavannah implements Situation {
 
 	@Override
 	public boolean hasRing() {
-		return winRing.isZero();
+		return winRing.isOne();
 	}
 
 	@Override
@@ -85,21 +96,23 @@ public class SituationHavannah implements Situation {
 		BDDFactory fac = winFork.getFactory();
 		if (this.color.equals(color)) {
 			// System.out.println("restrict with ith");
+			win.restrictWith(fac.ithVar(field.getIndex()));
 			winFork.restrictWith(fac.ithVar(field.getIndex()));
 			winBridge.restrictWith(fac.ithVar(field.getIndex()));
-			winRing.restrictWith(fac.nithVar(field.getIndex()));
+			winRing.restrictWith(fac.ithVar(field.getIndex()));
 		} else {
 			// System.out.println("restrict with nith");
+			win.restrictWith(fac.nithVar(field.getIndex()));
 			winFork.restrictWith(fac.nithVar(field.getIndex()));
 			winBridge.restrictWith(fac.nithVar(field.getIndex()));
-			winRing.restrictWith(fac.ithVar(field.getIndex()));
+			winRing.restrictWith(fac.nithVar(field.getIndex()));
 		}
 
 	}
 
 	// ************************************************************************
 
-	private void init(BoardAnalyzer analyzer, BoardAnalyzer analyzerOpposite) {
+	private void init(BoardAnalyzer analyzer) {
 		// System.out.println("try loading from file: win" +
 		// board.getBoardSize()
 		// + color.name().toLowerCase());
@@ -107,7 +120,7 @@ public class SituationHavannah implements Situation {
 		// File winFileBridge = new File(getFileName() + "bridge");
 		// File winFileRing = new File(getFileName() + "ring");
 		if (Preferences.getInstance().isGenerateFiles()) {
-			initFromScratch(analyzer, analyzerOpposite);
+			initFromScratch(analyzer);
 		} else {
 			try {
 				winFork = analyzer.getFactory().load(getFileName() + "fork");
@@ -117,14 +130,13 @@ public class SituationHavannah implements Situation {
 				// board.getBoardSize()
 				// + color.name().toLowerCase());
 			} catch (IOException e) {
-				initFromScratch(analyzer, analyzerOpposite);
+				initFromScratch(analyzer);
 				// System.out.println("loaded from scratch");
 			}
 		}
 	}
 
-	private void initFromScratch(BoardAnalyzer analyzer,
-			BoardAnalyzer analyzerOpposite) {
+	private void initFromScratch(BoardAnalyzer analyzer) {
 
 		// computes bdd representation of the bridge condition
 		// System.out.println("computing bridge");
@@ -139,7 +151,9 @@ public class SituationHavannah implements Situation {
 		// System.out.println("...done");
 
 		// computes bdd representation of the ring condition
-		winRing = getRingCondition(analyzer, analyzerOpposite);
+		winRing = getRingCondition(analyzer);
+
+		win = winBridge.or(winFork).or(winRing);
 
 		try {
 			analyzer.getFactory().save(getFileName(), winFork);
@@ -152,19 +166,19 @@ public class SituationHavannah implements Situation {
 
 	private BDD getBridgeCondition(BoardAnalyzer analyzer) {
 		ConditionCalculator calc = new BridgeConditionCalculator(analyzer,
-				board);
+				board, color);
 		return calc.getBdd();
 	}
 
 	private BDD getForkCondition(BoardAnalyzer analyzer) {
-		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board);
+		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board,
+				color);
 		return calc.getBdd();
 	}
 
-	private BDD getRingCondition(BoardAnalyzer analyzer,
-			BoardAnalyzer analyzerOpposite) {
-		ConditionCalculator calc = new RingConditionCalculator(analyzer,
-				analyzerOpposite, board);
+	private BDD getRingCondition(BoardAnalyzer analyzer) {
+		ConditionCalculator calc = new RingConditionCalculator(analyzer, board,
+				color);
 		return calc.getBdd();
 	}
 

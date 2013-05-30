@@ -18,7 +18,7 @@ public class FieldIndexFormatter {
 	}
 
 	public String format(int value) {
-		return "|" + formatter.format(value) + "|";
+		return " " + formatter.format(value) + " ";
 	}
 
 	public String space() {

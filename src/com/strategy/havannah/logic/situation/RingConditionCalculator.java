@@ -15,15 +15,18 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
+import com.strategy.util.StoneColor;
 
 public class RingConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
 
 	private BDD result;
+	private StoneColor color;
 
-	public RingConditionCalculator(BoardAnalyzer analyzer,
-			BoardAnalyzer analyzerOpposite, Board board) {
-		calculateResult(analyzer, analyzerOpposite, board);
+	public RingConditionCalculator(BoardAnalyzer analyzer, Board board,
+			StoneColor color) {
+		this.color = color;
+		calculateResult(analyzer, board);
 	}
 
 	@Override
@@ -33,8 +36,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 
 	// ************************************************************************
 
-	private void calculateResult(BoardAnalyzer analyzer,
-			BoardAnalyzer analyzerOpposite, Board board) {
+	private void calculateResult(BoardAnalyzer analyzer, Board board) {
 		Collection<Position> allPos = board.getPositions();
 
 		ArrayList<Position> allInnerPos = Lists
@@ -61,8 +63,8 @@ public class RingConditionCalculator implements ConditionCalculator,
 					if (board.isValidField(neighbour)) {
 						// path = there is no path for the opposite color from
 						// outerPos to neighbour
-						BDD path = analyzerOpposite
-								.getPath(outerPos, neighbour);
+						BDD path = analyzer.getPath(outerPos, neighbour,
+								color.getOpposite());
 
 						// print("path from " + outerPos + " to " + neighbor
 						// + ": " + path.isZero(),

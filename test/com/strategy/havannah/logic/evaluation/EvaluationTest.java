@@ -34,11 +34,8 @@ public class EvaluationTest extends AbstractTest {
 				.createInstance(TestBoardProvider.BOARD_4, 4);
 		board.setField(new BlackStone(PositionHexagon.get(0, 0), 0));
 
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
-		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
-				StoneColor.BLACK);
-		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
 		// Situation sitOpp = new SituationHavannah(analyzerOpp, analyzer,
 		// board);
 		Evaluation eval = new EvaluationHavannah(board,
@@ -61,11 +58,8 @@ public class EvaluationTest extends AbstractTest {
 				TestBoardEvaluationProvider.BOARD_FORK, 3);
 		System.out.println(board);
 
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board, Preferences
-				.getInstance().getCpuColor());
-		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor().getOpposite());
-		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
 		Evaluation eval = new EvaluationHavannah(board,
 				sit.getWinningConditionFork());
 
@@ -76,7 +70,7 @@ public class EvaluationTest extends AbstractTest {
 		int actualBest = eval.getBestIndex();
 		Assert.assertEquals(expectedBest, actualBest);
 
-		sit.update(actualBest, Preferences.getInstance().getCpuColor());
+		sit.update(actualBest, StoneColor.WHITE);
 		Assert.assertTrue(sit.getWinningConditionFork().isOne());
 	}
 
@@ -93,17 +87,13 @@ public class EvaluationTest extends AbstractTest {
 			return;
 		}
 		Preferences.getInstance().setGenerateFiles(true);
-		Preferences.getInstance().setCpuColor(StoneColor.BLACK);
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
 				parser.getBoardSize(), parser.getTurns());
 		// System.out.println(board);
 
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board, Preferences
-				.getInstance().getCpuColor());
-		BoardAnalyzer analyzerOpp = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor().getOpposite());
-		Situation sit = new SituationHavannah(analyzer, analyzerOpp, board);
-		sit.update(46, Preferences.getInstance().getCpuColor().getOpposite());
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
+		sit.update(46, StoneColor.WHITE);
 		Evaluation eval = new EvaluationHavannah(board,
 				sit.getWinningConditionFork());
 

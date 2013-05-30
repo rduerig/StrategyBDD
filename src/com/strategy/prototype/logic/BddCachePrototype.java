@@ -7,6 +7,7 @@ import net.sf.javabdd.BDD;
 import com.google.common.collect.Maps;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.Position;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -20,21 +21,21 @@ public class BddCachePrototype implements BddCache {
 	}
 
 	@Override
-	public BDD restore(Position p, Position q, int i) {
-		BddCacheIndex key = BddCacheIndex.getIndex(p, q, i);
+	public BDD restore(StoneColor color, Position p, Position q, int i) {
+		BddCacheIndex key = BddCacheIndex.getIndex(color, p, q, i);
 		return cache.get(key).id();
 	}
 
 	@Override
-	public BDD store(Position p, Position q, int i, BDD bdd) {
-		BddCacheIndex key = BddCacheIndex.getIndex(p, q, i);
+	public BDD store(StoneColor color, Position p, Position q, int i, BDD bdd) {
+		BddCacheIndex key = BddCacheIndex.getIndex(color, p, q, i);
 		cache.put(key, bdd.id());
 		return bdd.id();
 	}
 
 	@Override
-	public boolean isCached(Position p, Position q, int i) {
-		BddCacheIndex key = BddCacheIndex.getIndex(p, q, i);
+	public boolean isCached(StoneColor color, Position p, Position q, int i) {
+		BddCacheIndex key = BddCacheIndex.getIndex(color, p, q, i);
 		return cache.containsKey(key);
 	}
 

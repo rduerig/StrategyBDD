@@ -14,12 +14,14 @@ import com.strategy.api.field.WhiteStone;
 /**
  * @author Ralph Dürig
  */
-public class CpuBDDFieldVisitor implements BDDFieldVisitor {
+public class ColorDependingBDDFieldVisitor implements BDDFieldVisitor {
 
-	private final BDDFactory fac;
+	private final StoneColor color;
 	private BDD result;
+	private BDDFactory fac;
 
-	public CpuBDDFieldVisitor(BDDFactory fac) {
+	public ColorDependingBDDFieldVisitor(BDDFactory fac, StoneColor color) {
+		this.color = color;
 		this.fac = fac;
 	}
 
@@ -39,7 +41,7 @@ public class CpuBDDFieldVisitor implements BDDFieldVisitor {
 
 	@Override
 	public void visit(WhiteStone field) {
-		if (Preferences.getInstance().getCpuColor().equals(StoneColor.WHITE)) {
+		if (StoneColor.WHITE.equals(color)) {
 			result = fac.one();
 		} else {
 			result = fac.zero();
@@ -48,7 +50,7 @@ public class CpuBDDFieldVisitor implements BDDFieldVisitor {
 
 	@Override
 	public void visit(BlackStone field) {
-		if (Preferences.getInstance().getCpuColor().equals(StoneColor.WHITE)) {
+		if (StoneColor.WHITE.equals(color)) {
 			result = fac.zero();
 		} else {
 			result = fac.one();

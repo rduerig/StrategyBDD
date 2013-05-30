@@ -133,16 +133,15 @@ public class BoardHavannah implements Board {
 
 	@Override
 	public String toString() {
-		FieldIndexFormatter formatter = new FieldIndexFormatter();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
 			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
-				sb.append(formatter.space() + " ");
+				sb.append(" ");
 			}
 			for (int j = linestart(i); j < lineend(i); j++) {
 				if (isValidField(PositionHexagon.get(i, j))) {
 					Field field = getField(i, j);
-					sb.append(formatter.format(field.getIndex()) + field + " ");
+					sb.append(" " + field);
 				}
 			}
 			sb.append("\n");
@@ -201,8 +200,11 @@ public class BoardHavannah implements Board {
 			for (int j = linestart(i); j < lineend(i); j++) {
 				if (isValidField(PositionHexagon.get(i, j))) {
 					Field field = getField(i, j);
-					sb.append(RowConstant.parse(field.getIndex(),
-							getBoardSize()) + "  ");
+					RowConstant coord = RowConstant.parse(field.getIndex(),
+							getBoardSize());
+					Integer coordNumber = RowConstant.parseToCoordNumber(
+							field.getIndex(), getBoardSize());
+					sb.append(coord.name() + coordNumber + "  ");
 				}
 			}
 			sb.append("\n");
@@ -237,13 +239,17 @@ public class BoardHavannah implements Board {
 	private void init(Map<Position, Integer> board) {
 		for (Entry<Position, Integer> entry : board.entrySet()) {
 			Position pos = entry.getKey();
-			int index = getRows() * pos.getRow() + pos.getCol();
+			int index = getIndex(pos);
 			Field field = FieldGenerator.create(entry.getValue(), pos, index);
 			fields.put(field.getPosition(), field);
 			hgfCoordinates.put(RowConstant.parse(index, boardSize),
 					RowConstant.parseToCoordNumber(index, boardSize), field);
 		}
 		System.out.println(hgfCoordinates);
+	}
+
+	private int getIndex(Position p) {
+		return getRows() * p.getRow() + p.getCol();
 	}
 
 	private void init(int[][] board, int boardSize) {

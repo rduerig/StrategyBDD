@@ -1,5 +1,7 @@
 package com.strategy.havannah.logic.prediction;
 
+import static com.strategy.util.Output.print;
+
 import java.util.Collections;
 import java.util.Map;
 
@@ -15,7 +17,6 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 /**
@@ -26,73 +27,76 @@ import com.strategy.util.StoneColor;
  */
 public class PredictionHavannah implements Prediction {
 
-	private Situation situationCpu;
-	private Situation situationPlayer;
-	private boolean winCpu = false;
-	private boolean winPlayer = false;
+	private Situation situationWhite;
+	private Situation situationBlack;
+	private boolean winWite = false;
+	private boolean winBlack = false;
 
 	public PredictionHavannah(Board board) {
 		init(board);
 	}
 
 	@Override
-	public boolean isWinCpu() {
-		return winCpu;
+	public boolean isWinWhite() {
+		return winWite;
 	}
 
 	@Override
-	public boolean isWinPlayer() {
-		return winPlayer;
+	public boolean isWinBlack() {
+		return winBlack;
 	}
 
 	@Override
-	public int doNextTurn(int fieldIndex) {
-		StoneColor cpuColor = Preferences.getInstance().getCpuColor();
-		StoneColor playerColor = cpuColor.getOpposite();
-		situationCpu.update(fieldIndex, playerColor);
-		situationPlayer.update(fieldIndex, playerColor);
-
-		// evaluate all possible cpu turns
-		Map<Double, Evaluation> mappingCpu = getMapping(situationCpu);
-		Double maxCpu = Collections
-				.max(Lists.newArrayList(mappingCpu.keySet()));
-		// evaluate all possible player turns
-		Map<Double, Evaluation> mappingPlayer = getMapping(situationPlayer);
-		Double maxPlayer = Collections.max(Lists.newArrayList(mappingPlayer
+	public int doTurn(StoneColor colorToUse) {
+		// evaluate all possible white turns
+		Map<Double, Evaluation> mappingWhite = getMapping(situationWhite);
+		Double maxWhite = Collections.max(Lists.newArrayList(mappingWhite
 				.keySet()));
-		System.out
-				.println("max cpu: " + maxCpu + " | max player: " + maxPlayer);
-		Integer best = maxCpu >= maxPlayer ? mappingCpu.get(maxCpu)
-				.getBestIndex() : mappingPlayer.get(maxPlayer).getBestIndex();
+		// evaluate all possible black turns
+		Map<Double, Evaluation> mappingBlack = getMapping(situationBlack);
+		Double maxBlack = Collections.max(Lists.newArrayList(mappingBlack
+				.keySet()));
+		print("max " + StoneColor.WHITE + ": " + maxWhite + " | max "
+				+ StoneColor.BLACK + ": " + maxBlack, PredictionHavannah.class);
+		Integer best = maxWhite >= maxBlack ? mappingWhite.get(maxWhite)
+				.getBestIndex() : mappingBlack.get(maxBlack).getBestIndex();
 
-		situationCpu.update(best, cpuColor);
-		if (situationCpu.hasFork() || situationCpu.hasBridge()
-				|| situationCpu.hasRing()) {
-			winCpu = true;
+		situationWhite.update(best, colorToUse);
+		if (situationWhite.hasFork() || situationWhite.hasBridge()
+				|| situationWhite.hasRing()) {
+			winWite = true;
 		}
-		situationPlayer.update(best, cpuColor);
-		if (situationPlayer.hasFork() || situationPlayer.hasBridge()
-				|| situationPlayer.hasRing()) {
-			winPlayer = true;
+		situationBlack.update(best, colorToUse);
+		if (situationBlack.hasFork() || situationBlack.hasBridge()
+				|| situationBlack.hasRing()) {
+			winBlack = true;
 		}
 
 		return best;
 	}
 
+	@Override
+	public int answerTurn(int fieldIndex, StoneColor colorLastSet) {
+		StoneColor cpuColor = colorLastSet.getOpposite();
+		StoneColor playerColor = colorLastSet;
+		situationWhite.update(fieldIndex, playerColor);
+		situationBlack.update(fieldIndex, playerColor);
+
+		return doTurn(cpuColor);
+
+	}
+
 	// ************************************************************************
 
 	private void init(Board board) {
-		BoardAnalyzer analyzerCpu = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor());
-		BoardAnalyzer analyzerPlayer = new BoardAnalyzerHavannah(board,
-				Preferences.getInstance().getCpuColor().getOpposite());
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 
-		situationCpu = new SituationHavannah(analyzerCpu, analyzerPlayer, board);
-		situationPlayer = new SituationHavannah(analyzerPlayer, analyzerCpu,
-				board);
+		situationWhite = new SituationHavannah(analyzer, board,
+				StoneColor.WHITE);
+		situationBlack = new SituationHavannah(analyzer, board,
+				StoneColor.BLACK);
 
-		analyzerCpu.done();
-		analyzerPlayer.done();
+		analyzer.done();
 	}
 
 	private Map<Double, Evaluation> getMapping(Situation sit) {
@@ -107,9 +111,18 @@ public class PredictionHavannah implements Prediction {
 				winningConditionRing);
 
 		double bestRatingFork = evalFork.getRating()[evalFork.getBestIndex()];
+		print("best rating fork for " + sit.getStoneColor() + ": "
+				+ bestRatingFork + " - best index: " + evalFork.getBestIndex(),
+				PredictionHavannah.class);
 		double bestRatingBridge = evalBridge.getRating()[evalBridge
 				.getBestIndex()];
+		print("best rating bridge for " + sit.getStoneColor() + ": "
+				+ bestRatingBridge + " - best index: "
+				+ evalBridge.getBestIndex(), PredictionHavannah.class);
 		double bestRatingRing = evalRing.getRating()[evalRing.getBestIndex()];
+		print("best rating ring for " + sit.getStoneColor() + ": "
+				+ bestRatingRing + " - best index: " + evalRing.getBestIndex(),
+				PredictionHavannah.class);
 
 		Map<Double, Evaluation> mapping = Maps.newHashMap();
 		mapping.put(bestRatingFork, evalFork);

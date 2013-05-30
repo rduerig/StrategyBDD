@@ -3,6 +3,7 @@ package com.strategy.api.logic;
 import net.sf.javabdd.BDD;
 
 import com.google.common.base.Objects;
+import com.strategy.util.StoneColor;
 
 /**
  * Provides methods to store and to restore bdds from a cache.
@@ -22,7 +23,7 @@ public interface BddCache {
 	 *            recursion index i
 	 * @return a previously cached BDD, is null if no BDD was found in the cache
 	 */
-	BDD restore(Position p, Position q, int i);
+	BDD restore(StoneColor color, Position p, Position q, int i);
 
 	/**
 	 * Stores a given bdd in the cache for the given {@link Position}s. The
@@ -38,7 +39,7 @@ public interface BddCache {
 	 *            the bdd to store
 	 * @return the given and stored BDD
 	 */
-	BDD store(Position p, Position q, int i, BDD bdd);
+	BDD store(StoneColor color, Position p, Position q, int i, BDD bdd);
 
 	/**
 	 * Returns if a bdd is cached for the given {@link Position}s.
@@ -52,7 +53,7 @@ public interface BddCache {
 	 * @return true if a bdd is cached for the given {@link Position}s, false
 	 *         otherwise
 	 */
-	boolean isCached(Position p, Position q, int i);
+	boolean isCached(StoneColor color, Position p, Position q, int i);
 
 	/**
 	 * Clears the cache.
@@ -68,15 +69,17 @@ public interface BddCache {
 	 * @author Ralph Dürig
 	 */
 	class BddCacheIndex {
+		private StoneColor color;
 		private Position p;
 		private Position q;
 		private Integer i;
 
-		public static BddCacheIndex getIndex(Position p, Position q, int i) {
-			return new BddCacheIndex(p, q, i);
+		public static BddCacheIndex getIndex(StoneColor color, Position p,
+				Position q, int i) {
+			return new BddCacheIndex(color, p, q, i);
 		}
 
-		private BddCacheIndex(Position p, Position q, int i) {
+		private BddCacheIndex(StoneColor color, Position p, Position q, int i) {
 			this.p = p;
 			this.q = q;
 			this.i = i;
@@ -85,6 +88,8 @@ public interface BddCache {
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder();
+			sb.append(color);
+			sb.append("|");
 			sb.append(p);
 			sb.append("|");
 			sb.append(q);
@@ -95,7 +100,7 @@ public interface BddCache {
 
 		@Override
 		public int hashCode() {
-			return Objects.hashCode(p, q, i);
+			return Objects.hashCode(color, p, q, i);
 		}
 
 		@Override
@@ -110,6 +115,13 @@ public interface BddCache {
 				return false;
 			}
 			BddCacheIndex other = (BddCacheIndex) obj;
+			if (color == null) {
+				if (other.color != null) {
+					return false;
+				}
+			} else if (!color.equals(other.color)) {
+				return false;
+			}
 			if (p == null) {
 				if (other.p != null) {
 					return false;

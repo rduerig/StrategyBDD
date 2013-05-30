@@ -25,12 +25,10 @@ public class Preferences {
 	private static boolean defaultGenerateFiles = false;
 	private static int defaultBoardSize = 4;
 	private static List<Turn> defaultTurns = null;
-	private static StoneColor defaultCpuColor = StoneColor.WHITE;
 
 	private boolean generateFiles;
 	private final int boardSize;
 	private final List<Turn> turns;
-	private StoneColor cpuColor;
 
 	public static Preferences createInstance(String[] args) {
 		if (null == args || 0 == args.length) {
@@ -68,7 +66,6 @@ public class Preferences {
 		this.generateFiles = generateFiles;
 		this.boardSize = boardSize;
 		this.turns = turns;
-		this.cpuColor = defaultCpuColor;
 	}
 
 	/**
@@ -98,21 +95,6 @@ public class Preferences {
 	 */
 	public List<Turn> getTurns() {
 		return turns;
-	}
-
-	/**
-	 * @return the cpuColor
-	 */
-	public StoneColor getCpuColor() {
-		return cpuColor;
-	}
-
-	/**
-	 * @param cpuColor
-	 *            the cpuColor to set
-	 */
-	public void setCpuColor(StoneColor cpuColor) {
-		this.cpuColor = cpuColor;
 	}
 
 	// ************************************************************************

@@ -1,9 +1,12 @@
 package com.strategy.api.logic.prediction;
 
+import com.strategy.api.HasDebugFlag;
+import com.strategy.util.StoneColor;
+
 /**
  * @author Ralph Dürig
  */
-public interface Prediction {
+public interface Prediction extends HasDebugFlag {
 
 	/**
 	 * Player has set on given field, updates the board according to that and
@@ -13,18 +16,25 @@ public interface Prediction {
 	 *            index of the field
 	 * @return the index of the field the cpu set on
 	 */
-	int doNextTurn(int fieldIndex);
+	int answerTurn(int fieldIndex, StoneColor colorLastSet);
+
+	/**
+	 * Make cpu turn.
+	 * 
+	 * @return field index the cpu has set on
+	 */
+	int doTurn(StoneColor colorToUse);
 
 	/**
 	 * 
 	 * @return true if the computer has won, false otherwise
 	 */
-	boolean isWinCpu();
+	boolean isWinWhite();
 
 	/**
 	 * 
 	 * @return true if the player has won, false otherwise
 	 */
-	boolean isWinPlayer();
+	boolean isWinBlack();
 
 }

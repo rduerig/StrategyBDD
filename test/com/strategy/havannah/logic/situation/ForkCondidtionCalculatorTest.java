@@ -28,10 +28,10 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_FORK_1, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board);
+		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board,
+				StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
 		double expected = 1d;
@@ -46,10 +46,10 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_FORK_6, 3);
 
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board,
-				StoneColor.WHITE);
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board);
+		ConditionCalculator calc = new ForkConditionCalculator(analyzer, board,
+				StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
 		double expected = 6d;

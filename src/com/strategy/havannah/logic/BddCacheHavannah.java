@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import com.strategy.api.HasDebugFlag;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.Position;
+import com.strategy.util.StoneColor;
 
 /**
  * @author Ralph Dürig
@@ -26,24 +27,24 @@ public class BddCacheHavannah implements BddCache, HasDebugFlag {
 	}
 
 	@Override
-	public BDD restore(Position p, Position q, int i) {
+	public BDD restore(StoneColor color, Position p, Position q, int i) {
 		// return cache.getIfPresent(BddCacheIndex.getIndex(p, q, i)).id();
-		return cache.get(BddCacheIndex.getIndex(p, q, i)).id();
+		return cache.get(BddCacheIndex.getIndex(color, p, q, i)).id();
 	}
 
 	@Override
-	public BDD store(Position p, Position q, int i, BDD bdd) {
+	public BDD store(StoneColor color, Position p, Position q, int i, BDD bdd) {
 		if (null == bdd) {
 			return null;
 		}
-		cache.put(BddCacheIndex.getIndex(p, q, i), bdd);
+		cache.put(BddCacheIndex.getIndex(color, p, q, i), bdd);
 		return bdd.id();
 	}
 
 	@Override
-	public boolean isCached(Position p, Position q, int i) {
+	public boolean isCached(StoneColor color, Position p, Position q, int i) {
 		// return null != cache.getIfPresent(BddCacheIndex.getIndex(p, q, i));
-		return cache.containsKey(BddCacheIndex.getIndex(p, q, i));
+		return cache.containsKey(BddCacheIndex.getIndex(color, p, q, i));
 	}
 
 	@Override
