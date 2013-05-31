@@ -50,7 +50,7 @@ public class Preferences {
 		}
 		instance = new Preferences(
 				null == parTurns || parTurns.isEmpty() ? parGenerateFiles
-						: false, parBoardSize, parTurns);
+						: true, parBoardSize, parTurns);
 		return instance;
 
 	}

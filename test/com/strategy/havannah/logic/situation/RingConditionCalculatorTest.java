@@ -136,9 +136,9 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		int actual = eval.getBestIndex();
 		Assert.assertEquals(expected, actual);
 
-		result.restrictWith(analyzer.getFactory().nithVar(actual));
+		result.restrictWith(analyzer.getFactory().ithVar(actual));
 		// System.out.println(result);
-		Assert.assertTrue(result.not().isOne());
+		Assert.assertTrue(result.isOne());
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 		Prediction p = new PredictionHavannah(board);
 		int expected = 38;
-		int actual = p.answerTurn(0, StoneColor.WHITE);
+		int actual = p.doTurn(StoneColor.BLACK);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(p.isWinBlack());
 	}

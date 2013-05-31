@@ -15,11 +15,13 @@ import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
+import com.strategy.havannah.logic.BddCacheHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
+import com.strategy.util.Output;
 import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
@@ -58,10 +60,19 @@ public class EvaluationTest extends AbstractTest {
 				TestBoardEvaluationProvider.BOARD_FORK, 3);
 		System.out.println(board);
 
+		Output.setDebug(BddCacheHavannah.class, true);
+
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
 		Evaluation eval = new EvaluationHavannah(board,
 				sit.getWinningConditionFork());
+		analyzer.done();
+
+		// ConditionCalculator calc = new ForkConditionCalculator(analyzer,
+		// board,
+		// StoneColor.WHITE);
+		// BDD result = calc.getBdd();
+		// Evaluation eval = new EvaluationHavannah(board, result);
 
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -71,7 +82,9 @@ public class EvaluationTest extends AbstractTest {
 		Assert.assertEquals(expectedBest, actualBest);
 
 		sit.update(actualBest, StoneColor.WHITE);
+		// result.restrictWith(analyzer.getFactory().ithVar(actualBest));
 		Assert.assertTrue(sit.getWinningConditionFork().isOne());
+		// Assert.assertTrue(result.isOne());
 	}
 
 	@Test
@@ -89,16 +102,16 @@ public class EvaluationTest extends AbstractTest {
 		Preferences.getInstance().setGenerateFiles(true);
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
 				parser.getBoardSize(), parser.getTurns());
-		// System.out.println(board);
+		System.out.println(board);
 
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 		sit.update(46, StoneColor.WHITE);
 		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningConditionFork());
+				sit.getWinningConditionBridge());
 
-		// System.out.println(board.toRatingString(eval.getRating(),
-		// eval.getBestIndex()));
+		System.out.println(board.toRatingString(eval.getRating(),
+				eval.getBestIndex()));
 
 		int expectedBest = 10;
 		int actualBest = eval.getBestIndex();

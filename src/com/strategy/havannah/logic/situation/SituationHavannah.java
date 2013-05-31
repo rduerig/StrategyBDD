@@ -97,14 +97,14 @@ public class SituationHavannah implements Situation {
 		if (this.color.equals(color)) {
 			// System.out.println("restrict with ith");
 			win.restrictWith(fac.ithVar(field.getIndex()));
-			winFork.restrictWith(fac.ithVar(field.getIndex()));
 			winBridge.restrictWith(fac.ithVar(field.getIndex()));
+			winFork.restrictWith(fac.ithVar(field.getIndex()));
 			winRing.restrictWith(fac.ithVar(field.getIndex()));
 		} else {
 			// System.out.println("restrict with nith");
 			win.restrictWith(fac.nithVar(field.getIndex()));
-			winFork.restrictWith(fac.nithVar(field.getIndex()));
 			winBridge.restrictWith(fac.nithVar(field.getIndex()));
+			winFork.restrictWith(fac.nithVar(field.getIndex()));
 			winRing.restrictWith(fac.nithVar(field.getIndex()));
 		}
 
@@ -123,15 +123,17 @@ public class SituationHavannah implements Situation {
 			initFromScratch(analyzer);
 		} else {
 			try {
+				winBridge = analyzer.getFactory()
+						.load(getFileName() + "bridge");
 				winFork = analyzer.getFactory().load(getFileName() + "fork");
-				winFork = analyzer.getFactory().load(getFileName() + "bridge");
-				winFork = analyzer.getFactory().load(getFileName() + "ring");
+				winRing = analyzer.getFactory().load(getFileName() + "ring");
 				// System.out.println("loaded from file: win" +
 				// board.getBoardSize()
 				// + color.name().toLowerCase());
 			} catch (IOException e) {
+				System.out
+						.println("Could not load files, BDDs are generated vom scratch.");
 				initFromScratch(analyzer);
-				// System.out.println("loaded from scratch");
 			}
 		}
 	}
@@ -140,13 +142,13 @@ public class SituationHavannah implements Situation {
 
 		// computes bdd representation of the bridge condition
 		// System.out.println("computing bridge");
-		winFork = getBridgeCondition(analyzer);
+		winBridge = getBridgeCondition(analyzer);
 		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
 		// computes bdd representation of the fork condition
 		// System.out.println("computing fork");
-		winBridge = getForkCondition(analyzer);
+		winFork = getForkCondition(analyzer);
 		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 		// System.out.println("...done");
 
@@ -156,9 +158,9 @@ public class SituationHavannah implements Situation {
 		win = winBridge.or(winFork).or(winRing);
 
 		try {
-			analyzer.getFactory().save(getFileName(), winFork);
-			analyzer.getFactory().save(getFileName(), winBridge);
-			analyzer.getFactory().save(getFileName(), winRing);
+			analyzer.getFactory().save(getFileName() + "fork", winFork);
+			analyzer.getFactory().save(getFileName() + "bridge", winBridge);
+			analyzer.getFactory().save(getFileName() + "ring", winRing);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

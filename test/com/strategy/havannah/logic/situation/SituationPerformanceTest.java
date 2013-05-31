@@ -31,7 +31,7 @@ public class SituationPerformanceTest {
 	}
 
 	@Test(timeout = 20000)
-	// @Ignore
+	@Ignore
 	public void testBoard3() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_3, 3);
@@ -41,7 +41,7 @@ public class SituationPerformanceTest {
 	}
 
 	@Test(timeout = 20000)
-	// @Ignore
+	@Ignore
 	public void testBoard4() {
 		Board board = BoardHavannah
 				.createInstance(TestBoardProvider.BOARD_4, 4);

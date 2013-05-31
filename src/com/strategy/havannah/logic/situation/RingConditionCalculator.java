@@ -79,7 +79,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 			result = result.id().orWith(innerPosReachableFromOut.not());
 		}
 
-		result = result.not();
+		// result = result.not();
 
 		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}

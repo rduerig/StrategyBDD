@@ -3,6 +3,7 @@ package com.strategy.api.logic;
 import net.sf.javabdd.BDD;
 
 import com.google.common.base.Objects;
+import com.strategy.api.HasDebugFlag;
 import com.strategy.util.StoneColor;
 
 /**
@@ -10,7 +11,7 @@ import com.strategy.util.StoneColor;
  * 
  * @author Ralph Dürig
  */
-public interface BddCache {
+public interface BddCache extends HasDebugFlag {
 
 	/**
 	 * Returns a bdd that was cached before for the given {@link Position}s.
@@ -80,6 +81,7 @@ public interface BddCache {
 		}
 
 		private BddCacheIndex(StoneColor color, Position p, Position q, int i) {
+			this.color = color;
 			this.p = p;
 			this.q = q;
 			this.i = i;
@@ -146,6 +148,35 @@ public interface BddCache {
 			return true;
 		}
 
+	}
+
+	class BDDCacheStatus {
+		private long stores;
+		private long restores;
+
+		public BDDCacheStatus() {
+			stores = 0;
+			restores = 0;
+		}
+
+		public void incrementStores() {
+			stores++;
+		}
+
+		public void incrementRestores() {
+			restores++;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Stores: ");
+			sb.append(stores);
+			sb.append(" | ");
+			sb.append("Restores: ");
+			sb.append(restores);
+			return sb.toString();
+		}
 	}
 
 }
