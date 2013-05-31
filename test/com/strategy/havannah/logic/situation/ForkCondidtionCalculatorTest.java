@@ -1,5 +1,7 @@
 package com.strategy.havannah.logic.situation;
 
+import java.io.ByteArrayInputStream;
+
 import junit.framework.Assert;
 import net.sf.javabdd.BDD;
 
@@ -9,9 +11,14 @@ import org.junit.Test;
 
 import com.strategy.AbstractTest;
 import com.strategy.api.board.Board;
+import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.ConditionCalculator;
+import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.havannah.logic.prediction.PredictionHavannah;
+import com.strategy.util.GameParser;
+import com.strategy.util.GameParser.GameParserException;
 import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
 
@@ -56,6 +63,25 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 		double actual = result.pathCount();
 		analyzer.done();
 		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testHgfPredictForkInOneTurn() throws GameParserException {
+		String game = "SZ[4];W[C6];B[C5];W[D6];B[B3];W[D5];B[E6];W[E5];B[C4];W[F5];B[E4];W[F4];B[D4];";
+		GameParser parser = new GameParser(new ByteArrayInputStream(
+				game.getBytes()));
+		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
+				parser.getBoardSize(), parser.getTurns());
+
+		Output.setDebug(PredictionHavannah.class, true);
+
+		System.out.println(board);
+
+		Prediction p = new PredictionHavannah(board);
+		int expected = 11;
+		int actual = p.doTurn(StoneColor.BLACK);
+		Assert.assertEquals(expected, actual);
+		Assert.assertTrue(p.isWinBlack());
 	}
 
 	@AfterClass

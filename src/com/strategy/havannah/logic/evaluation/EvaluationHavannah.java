@@ -24,6 +24,7 @@ public class EvaluationHavannah implements Evaluation {
 	private int best;
 	private Board board;
 	private BDD win;
+	private BDD bestBdd;
 
 	public EvaluationHavannah(Board board, BDD win) {
 		this.board = board;
@@ -48,6 +49,11 @@ public class EvaluationHavannah implements Evaluation {
 		return rating;
 	}
 
+	@Override
+	public BDD getBestBdd() {
+		return bestBdd;
+	}
+
 	// ************************************************************************
 
 	private void init() {
@@ -64,12 +70,17 @@ public class EvaluationHavannah implements Evaluation {
 			bdd.restrictWith(fac.ithVar(field.getIndex()));
 			// fac.reorder(BDDFactory.REORDER_SIFT);
 			if (null != bdd) {
-				// Double satCount = bdd.satCount(varset);
-				Double satCount = bdd.satCount();
+				Double satCount = bdd.satCount(varset);
+				// Double satCount = bdd.satCount();
 				rating[field.getIndex()] = satCount;
 				sum += satCount;
-				best = satCount > bestValue ? field.getIndex() : best;
-				bestValue = satCount > bestValue ? satCount : bestValue;
+				if (satCount > bestValue) {
+					best = field.getIndex();
+					bestValue = satCount;
+					bestBdd = bdd.id();
+				}
+				// best = satCount > bestValue ? field.getIndex() : best;
+				// bestValue = satCount > bestValue ? satCount : bestValue;
 				bdd.free();
 			}
 		}

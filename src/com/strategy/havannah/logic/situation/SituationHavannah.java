@@ -72,7 +72,7 @@ public class SituationHavannah implements Situation {
 
 	@Override
 	public boolean hasRing() {
-		return winRing.isOne();
+		return winRing.isZero();
 	}
 
 	@Override
@@ -99,13 +99,13 @@ public class SituationHavannah implements Situation {
 			win.restrictWith(fac.ithVar(field.getIndex()));
 			winBridge.restrictWith(fac.ithVar(field.getIndex()));
 			winFork.restrictWith(fac.ithVar(field.getIndex()));
-			winRing.restrictWith(fac.ithVar(field.getIndex()));
+			winRing.restrictWith(fac.nithVar(field.getIndex()));
 		} else {
 			// System.out.println("restrict with nith");
 			win.restrictWith(fac.nithVar(field.getIndex()));
 			winBridge.restrictWith(fac.nithVar(field.getIndex()));
 			winFork.restrictWith(fac.nithVar(field.getIndex()));
-			winRing.restrictWith(fac.nithVar(field.getIndex()));
+			winRing.restrictWith(fac.ithVar(field.getIndex()));
 		}
 
 	}

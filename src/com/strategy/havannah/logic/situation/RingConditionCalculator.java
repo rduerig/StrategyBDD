@@ -20,7 +20,7 @@ import com.strategy.util.StoneColor;
 public class RingConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
 
-	private BDD result;
+	private BDD opponentCanReachAllInnerPos;
 	private StoneColor color;
 
 	public RingConditionCalculator(BoardAnalyzer analyzer, Board board,
@@ -31,7 +31,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 
 	@Override
 	public BDD getBdd() {
-		return result;
+		return opponentCanReachAllInnerPos;
 	}
 
 	// ************************************************************************
@@ -49,7 +49,8 @@ public class RingConditionCalculator implements ConditionCalculator,
 				RingConditionCalculator.class);
 		print("inner: " + allInnerPos.toString(), RingConditionCalculator.class);
 
-		result = analyzer.getFactory().zero();
+		// result = analyzer.getFactory().zero();
+		opponentCanReachAllInnerPos = analyzer.getFactory().one();
 
 		for (Position innerPos : allInnerPos) {
 			BDD innerPosReachableFromOut = analyzer.getFactory().zero();
@@ -61,22 +62,25 @@ public class RingConditionCalculator implements ConditionCalculator,
 				BDD outerPosCanReachInnerPos = analyzer.getFactory().zero();
 				for (Position neighbour : neighbours) {
 					if (board.isValidField(neighbour)) {
-						// path = there is no path for the opposite color from
+						// outerPosCanReachNeighbour = there is a path for the
+						// opposite color from
 						// outerPos to neighbour
-						BDD path = analyzer.getPath(outerPos, neighbour,
-								color.getOpposite());
+						BDD outerPosCanReachNeighbour = analyzer.getPath(
+								outerPos, neighbour, color.getOpposite());
 
 						// print("path from " + outerPos + " to " + neighbor
 						// + ": " + path.isZero(),
 						// RingConditionCalculator.class);
 						outerPosCanReachInnerPos = outerPosCanReachInnerPos
-								.id().orWith(path);
+								.id().orWith(outerPosCanReachNeighbour);
 					}
 				}
 				innerPosReachableFromOut = innerPosReachableFromOut.id()
 						.orWith(outerPosCanReachInnerPos);
 			}
-			result = result.id().orWith(innerPosReachableFromOut.not());
+			// result = result.id().orWith(innerPosReachableFromOut.not());
+			opponentCanReachAllInnerPos = opponentCanReachAllInnerPos.id()
+					.andWith(innerPosReachableFromOut);
 		}
 
 		// result = result.not();

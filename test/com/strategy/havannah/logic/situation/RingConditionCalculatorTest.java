@@ -36,26 +36,6 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 	@Test
 	// @Ignore
-	public void testRing1() {
-		Board board = BoardHavannah.createInstance(
-				TestBoardProviderConditions.BOARD_RING_1, 3);
-
-		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
-
-		ConditionCalculator calc = new RingConditionCalculator(analyzer, board,
-				StoneColor.WHITE);
-		BDD result = calc.getBdd();
-		System.out.println(result);
-
-		double expected = 2d;
-		double actual = result.pathCount();
-		analyzer.done();
-		assertEquals(expected, actual);
-
-	}
-
-	@Test
-	// @Ignore
 	public void testRing4() {
 		Board board = BoardHavannah.createInstance(
 				TestBoardProviderConditions.BOARD_RING_2, 3);
@@ -67,8 +47,8 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BDD result = calc.getBdd();
 		System.out.println(result);
 
-		double expected = 4d;
-		double actual = result.pathCount();
+		double expected = Math.pow(2, 21);
+		double actual = result.satCount();
 		analyzer.done();
 		assertEquals(expected, actual);
 
@@ -109,7 +89,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 				StoneColor.BLACK);
 		BDD result = calc.getBdd();
 		System.out.println(result);
-		Assert.assertTrue(result.isOne());
+		Assert.assertTrue(result.isZero());
 	}
 
 	@Test
@@ -123,7 +103,8 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		// ConditionCalculator calc = new RingConditionCalculator(analyzer,
-		// analyzerOpp, board);
+		// board,
+		// StoneColor.BLACK);
 		// BDD result = calc.getBdd();
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 		BDD result = sit.getWinningConditionRing();
@@ -136,9 +117,46 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		int actual = eval.getBestIndex();
 		Assert.assertEquals(expected, actual);
 
-		result.restrictWith(analyzer.getFactory().ithVar(actual));
+		// BDDFactory fac = analyzer.getFactory();
+		// result.restrictWith(fac.nithVar(actual));
+		sit.update(actual, StoneColor.BLACK);
 		// System.out.println(result);
-		Assert.assertTrue(result.isOne());
+		// Assert.assertTrue(result.isZero());
+		Assert.assertTrue(sit.hasRing());
+	}
+
+	@Test
+	public void testHgfHasRingInOneTurnWithAllConditions()
+			throws GameParserException {
+		String game = "SZ[4];W[D2];B[C1];W[C2];B[E1];W[E2];B[F2];W[E3];B[C3];W[D4];B[D5];W[C4];B[A3];W[B3];B[A2]";
+		GameParser parser = new GameParser(new ByteArrayInputStream(
+				game.getBytes()));
+		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
+				parser.getBoardSize(), parser.getTurns());
+
+		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
+
+		// ConditionCalculator calc = new RingConditionCalculator(analyzer,
+		// board,
+		// StoneColor.BLACK);
+		// BDD result = calc.getBdd();
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
+		BDD result = sit.getWinningCondition();
+
+		Evaluation eval = new EvaluationHavannah(board, result);
+		System.out.println(board);
+		System.out.println(board.toRatingString(eval.getRating(),
+				eval.getBestIndex()));
+		int expected = 38;
+		int actual = eval.getBestIndex();
+		Assert.assertEquals(expected, actual);
+
+		// BDDFactory fac = analyzer.getFactory();
+		// result.restrictWith(fac.nithVar(actual));
+		sit.update(actual, StoneColor.BLACK);
+		// System.out.println(result);
+		// Assert.assertTrue(result.isZero());
+		Assert.assertTrue(sit.hasRing());
 	}
 
 	@Test
