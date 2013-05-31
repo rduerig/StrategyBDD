@@ -76,14 +76,19 @@ public class PredictionHavannah implements Prediction {
 	@Override
 	public int doTurn(StoneColor colorToUse) {
 
+		// Evaluation evalWhite = new EvaluationHavannah(
+		// situationWhite.getBoard(),
+		// situationWhite.getWinningCondition().orWith(
+		// situationBlack.getWinningCondition().id().not()));
+		// Evaluation evalBlack = new EvaluationHavannah(
+		// situationBlack.getBoard(),
+		// situationBlack.getWinningCondition().orWith(
+		// situationWhite.getWinningCondition().id().not()));
+
 		Evaluation evalWhite = new EvaluationHavannah(
-				situationWhite.getBoard(),
-				situationWhite.getWinningCondition().orWith(
-						situationBlack.getWinningCondition().id().not()));
+				situationWhite.getBoard(), situationWhite.getWinningCondition());
 		Evaluation evalBlack = new EvaluationHavannah(
-				situationBlack.getBoard(),
-				situationBlack.getWinningCondition().orWith(
-						situationWhite.getWinningCondition().id().not()));
+				situationBlack.getBoard(), situationBlack.getWinningCondition());
 
 		print("Rating WHITE:\n"
 				+ situationWhite.getBoard().toRatingString(
@@ -96,12 +101,20 @@ public class PredictionHavannah implements Prediction {
 
 		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
 		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
-		Integer best = maxWhite >= maxBlack ? evalWhite.getBestIndex()
+		Integer best = maxWhite < maxBlack ? evalWhite.getBestIndex()
 				: evalBlack.getBestIndex();
 
 		print("Nodes BDD WHITE:\n" + evalWhite.getBestBdd().nodeCount(),
 				PredictionHavannah.class);
 		print("Nodes BDD BLACK:\n" + evalBlack.getBestBdd().nodeCount(),
+				PredictionHavannah.class);
+		print("Satcount BDD WHITE:\n" + evalWhite.getBestBdd().satCount(),
+				PredictionHavannah.class);
+		print("Satcount BDD BLACK:\n" + evalBlack.getBestBdd().satCount(),
+				PredictionHavannah.class);
+		print("Paths BDD WHITE:\n" + evalWhite.getBestBdd().pathCount(),
+				PredictionHavannah.class);
+		print("Paths BDD BLACK:\n" + evalBlack.getBestBdd().pathCount(),
 				PredictionHavannah.class);
 
 		situationWhite.update(best, colorToUse);

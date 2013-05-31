@@ -178,6 +178,27 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Assert.assertTrue(p.isWinBlack());
 	}
 
+	@Test
+	public void testSamplePredictRingInOneTurn() {
+		int[][] raw = new int[][] {//
+		/*    */{ 0, 0, 0, 1, 1 },//
+				{ 0, 0, 0, 0, 1 },//
+				{ 0, 0, 2, 2, 2 },//
+				{ 1, 0, 0, 0, 2 },//
+				{ 1, 1, 2, 2, 2 } };
+		Board board = BoardHavannah.createInstance(raw, 3);
+
+		Output.setDebug(PredictionHavannah.class, true);
+
+		System.out.println(board);
+
+		Prediction p = new PredictionHavannah(board);
+		int expected = 17;
+		int actual = p.doTurn(StoneColor.BLACK);
+		Assert.assertEquals(expected, actual);
+		Assert.assertTrue(p.isWinBlack());
+	}
+
 	@AfterClass
 	public static void doAfter() {
 		Output.setDebug(PredictionHavannah.class, false);

@@ -2,10 +2,10 @@ package com.strategy.havannah.logic.situation;
 
 import java.io.ByteArrayInputStream;
 
-import junit.framework.Assert;
 import net.sf.javabdd.BDD;
 
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,6 +63,27 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 		double actual = result.pathCount();
 		analyzer.done();
 		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testSamplePredictForkInOneTurn() {
+		int[][] raw = new int[][] {//
+		/*    */{ 0, 2, 0, 1, 1 },//
+				{ 0, 0, 2, 2, 1 },//
+				{ 0, 0, 2, 0, 0 },//
+				{ 1, 0, 0, 0, 0 },//
+				{ 1, 1, 0, 2, 0 } };
+		Board board = BoardHavannah.createInstance(raw, 3);
+
+		Output.setDebug(PredictionHavannah.class, true);
+
+		System.out.println(board);
+
+		Prediction p = new PredictionHavannah(board);
+		int expected = 17;
+		int actual = p.doTurn(StoneColor.BLACK);
+		Assert.assertEquals(expected, actual);
+		Assert.assertTrue(p.isWinBlack());
 	}
 
 	@Test
