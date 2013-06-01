@@ -155,7 +155,7 @@ public class SituationHavannah implements Situation {
 		// computes bdd representation of the ring condition
 		winRing = getRingCondition(analyzer);
 
-		win = winRing.xor(winFork).xor(winBridge);
+		win = winRing.or(winFork).or(winBridge);
 
 		try {
 			analyzer.getFactory().save(getFileName() + "fork", winFork);

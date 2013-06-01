@@ -69,20 +69,18 @@ public class EvaluationHavannah implements Evaluation {
 			BDD bdd = win.id();
 			bdd.restrictWith(fac.ithVar(field.getIndex()));
 			// fac.reorder(BDDFactory.REORDER_SIFT);
-			if (null != bdd) {
-				Double satCount = bdd.satCount(varset);
-				// Double satCount = bdd.satCount();
-				rating[field.getIndex()] = satCount;
-				sum += satCount;
-				if (satCount > bestValue) {
-					best = field.getIndex();
-					bestValue = satCount;
-					bestBdd = bdd.id();
-				}
-				// best = satCount > bestValue ? field.getIndex() : best;
-				// bestValue = satCount > bestValue ? satCount : bestValue;
-				bdd.free();
+			Double satCount = bdd.satCount(varset);
+			// Double satCount = bdd.satCount();
+			rating[field.getIndex()] = satCount;
+			sum += satCount;
+			if (satCount > bestValue) {
+				best = field.getIndex();
+				bestValue = satCount;
+				bestBdd = bdd.id();
 			}
+			// best = satCount > bestValue ? field.getIndex() : best;
+			// bestValue = satCount > bestValue ? satCount : bestValue;
+			bdd.free();
 		}
 
 		avg = sum / filtered.size();

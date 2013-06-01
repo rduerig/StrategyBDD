@@ -101,8 +101,13 @@ public class PredictionHavannah implements Prediction {
 
 		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
 		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
-		Integer best = maxWhite < maxBlack ? evalWhite.getBestIndex()
-				: evalBlack.getBestIndex();
+		Integer best = 0;
+		if (StoneColor.WHITE.equals(colorToUse) && maxWhite >= maxBlack) {
+			best = evalWhite.getBestIndex();
+		}
+		if (StoneColor.BLACK.equals(colorToUse) && maxBlack >= maxWhite) {
+			best = evalBlack.getBestIndex();
+		}
 
 		print("Nodes BDD WHITE:\n" + evalWhite.getBestBdd().nodeCount(),
 				PredictionHavannah.class);
