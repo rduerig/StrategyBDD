@@ -54,6 +54,29 @@ public interface Board {
 	Field getField(int row, int col);
 
 	/**
+	 * Returns the field specified by its {@link RowConstant} and the row
+	 * number. Such coordinates are used on little golem for instance.
+	 * 
+	 * @param coord
+	 *            the {@link RowConstant}
+	 * @param coordNumber
+	 *            the row number
+	 * @return the specified field
+	 */
+	Field getField(RowConstant coord, Integer coordNumber);
+
+	/**
+	 * Returns the field spedified by its index when the board is represented as
+	 * a two-dimensional array.
+	 * 
+	 * @param index
+	 *            the fields index on the board when represented as
+	 *            two-dimensional array
+	 * @return the specified field
+	 */
+	Field getField(int index);
+
+	/**
 	 * Overwrites a field on the board on the same position as the given field.
 	 * 
 	 * @param newField
@@ -111,6 +134,15 @@ public interface Board {
 	boolean isValidField(Position p);
 
 	/**
+	 * Checks if there is an empty field on the board.
+	 * 
+	 * @param index
+	 *            index of the field to check
+	 * @return true if there is an empty field at the specified index
+	 */
+	boolean isEmptyField(int index);
+
+	/**
 	 * Transforms the board to a String representation showing each field's
 	 * index
 	 * 
@@ -136,12 +168,5 @@ public interface Board {
 	String toRatingString(double[] rating, int bestIndex);
 
 	String toRowConstantString();
-
-	/**
-	 * @param coord
-	 * @param coordNumber
-	 * @return
-	 */
-	Field getField(RowConstant coord, Integer coordNumber);
 
 }

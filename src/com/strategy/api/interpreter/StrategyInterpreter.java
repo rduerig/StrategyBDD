@@ -1,9 +1,7 @@
 package com.strategy.api.interpreter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.Scanner;
 
 import com.google.common.base.CharMatcher;
 import com.strategy.api.board.Board;
@@ -37,12 +35,14 @@ public class StrategyInterpreter extends Thread {
 
 	private StoneColor cpuColor;
 	private String lastLine = null;
+	private Scanner scanner;
 
 	public StrategyInterpreter(Board board, StoneColor cpuColor, Prediction p) {
 		super("Interpreter");
 		this.board = board;
 		this.cpuColor = cpuColor;
 		this.p = p;
+		this.scanner = new Scanner(System.in);
 	}
 
 	public void run() {
@@ -53,19 +53,17 @@ public class StrategyInterpreter extends Thread {
 
 		if (p.isWinWhite()) {
 			out.println("WHITE wins!");
-			interrupt();
-			InterpreterManager.exit();
+			exit();
 			return;
 		}
 		if (p.isWinBlack()) {
 			out.println("BLACK wins!");
-			interrupt();
-			InterpreterManager.exit();
+			exit();
 			return;
 		}
 
 		out.print(cpuColor.getOpposite() + "s turn: ");
-		line = readLine();
+		line = scanner.nextLine();
 
 		if (CMD_REDO.equals(line)) {
 			line = lastLine;
@@ -73,16 +71,14 @@ public class StrategyInterpreter extends Thread {
 			lastLine = line;
 		}
 
-		if (null == line) {
+		if (null == line || line.trim().isEmpty()) {
 			return;
 		}
 
 		if (line.startsWith(CMD_PREFIX)) {
 
 			if (CMD_EXIT.equals(line)) {
-				out.println("Bye");
-				interrupt();
-				InterpreterManager.exit();
+				exit();
 				return;
 			}
 
@@ -123,6 +119,12 @@ public class StrategyInterpreter extends Thread {
 
 			Integer fieldIndex = readIndex(line, board);
 			if (null == fieldIndex) {
+				printInputError();
+				return;
+			}
+
+			if (!board.isEmptyField(fieldIndex)) {
+				printFieldError();
 				return;
 			}
 
@@ -134,21 +136,6 @@ public class StrategyInterpreter extends Thread {
 
 	// ************************************************************************
 
-	private String readLine() {
-		BufferedReader console = new BufferedReader(new InputStreamReader(
-				System.in));
-		String line;
-		try {
-			line = console.readLine();
-		} catch (IOException e) {
-			out.println("Error reading from stdin");
-			e.printStackTrace();
-			line = null;
-		}
-
-		return line;
-	}
-
 	private Integer readIndex(String line, Board board) {
 		int limit = board.getRows() * board.getColumns();
 		Integer fieldIndex;
@@ -156,7 +143,6 @@ public class StrategyInterpreter extends Thread {
 			RowConstant coord = RowConstant.parseToConstant(line
 					.substring(0, 1));
 			if (null == coord) {
-				printError();
 				return null;
 			}
 			Integer coordNumber;
@@ -166,7 +152,6 @@ public class StrategyInterpreter extends Thread {
 					throw new NumberFormatException();
 				}
 			} catch (NumberFormatException e) {
-				printError();
 				return null;
 			}
 			fieldIndex = board.getField(coord, coordNumber).getIndex();
@@ -177,12 +162,19 @@ public class StrategyInterpreter extends Thread {
 					throw new NumberFormatException();
 				}
 			} catch (NumberFormatException e) {
-				printError();
 				return null;
 			}
 		}
 
 		return fieldIndex;
+
+	}
+
+	private void exit() {
+		out.println("Bye");
+		interrupt();
+		scanner.close();
+		InterpreterManager.exit();
 	}
 
 	private void printCpuTurn(int turnIndex, int boardSize, StoneColor cpuColor) {
@@ -193,8 +185,12 @@ public class StrategyInterpreter extends Thread {
 				+ coordNumber);
 	}
 
-	private void printError() {
+	private void printInputError() {
 		out.println("Input must be either a possible field number on the board starting with '0' or the word 'exit'");
+	}
+
+	private void printFieldError() {
+		out.println("The selected field is not emtpy. Please choose another one.");
 	}
 
 	private void printUsage() {

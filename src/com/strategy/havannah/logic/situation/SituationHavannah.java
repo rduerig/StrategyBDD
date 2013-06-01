@@ -72,7 +72,7 @@ public class SituationHavannah implements Situation {
 
 	@Override
 	public boolean hasRing() {
-		return winRing.isZero();
+		return winRing.isOne();
 	}
 
 	@Override
@@ -99,13 +99,13 @@ public class SituationHavannah implements Situation {
 			win.restrictWith(fac.ithVar(field.getIndex()));
 			winBridge.restrictWith(fac.ithVar(field.getIndex()));
 			winFork.restrictWith(fac.ithVar(field.getIndex()));
-			winRing.restrictWith(fac.nithVar(field.getIndex()));
+			winRing.restrictWith(fac.ithVar(field.getIndex()));
 		} else {
 			// System.out.println("restrict with nith");
 			win.restrictWith(fac.nithVar(field.getIndex()));
 			winBridge.restrictWith(fac.nithVar(field.getIndex()));
 			winFork.restrictWith(fac.nithVar(field.getIndex()));
-			winRing.restrictWith(fac.ithVar(field.getIndex()));
+			winRing.restrictWith(fac.nithVar(field.getIndex()));
 		}
 
 	}
@@ -155,7 +155,7 @@ public class SituationHavannah implements Situation {
 		// computes bdd representation of the ring condition
 		winRing = getRingCondition(analyzer);
 
-		win = winBridge.or(winFork).or(winRing);
+		win = winRing.xor(winFork).xor(winBridge);
 
 		try {
 			analyzer.getFactory().save(getFileName() + "fork", winFork);

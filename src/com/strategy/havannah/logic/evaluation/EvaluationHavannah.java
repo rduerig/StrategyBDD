@@ -70,8 +70,8 @@ public class EvaluationHavannah implements Evaluation {
 			bdd.restrictWith(fac.ithVar(field.getIndex()));
 			// fac.reorder(BDDFactory.REORDER_SIFT);
 			if (null != bdd) {
-				// Double satCount = bdd.satCount(varset);
-				Double satCount = bdd.satCount();
+				Double satCount = bdd.satCount(varset);
+				// Double satCount = bdd.satCount();
 				rating[field.getIndex()] = satCount;
 				sum += satCount;
 				if (satCount > bestValue) {

@@ -116,6 +116,10 @@ public class PredictionHavannah implements Prediction {
 				PredictionHavannah.class);
 		print("Paths BDD BLACK:\n" + evalBlack.getBestBdd().pathCount(),
 				PredictionHavannah.class);
+		print("One sat BDD WHITE:\n" + evalWhite.getBestBdd().satOne(),
+				PredictionHavannah.class);
+		print("One sat BDD BLACK:\n" + evalBlack.getBestBdd().satOne(),
+				PredictionHavannah.class);
 
 		situationWhite.update(best, colorToUse);
 		if (situationWhite.hasFork() || situationWhite.hasBridge()

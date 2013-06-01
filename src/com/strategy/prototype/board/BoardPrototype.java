@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import com.strategy.api.board.Board;
+import com.strategy.api.field.EmptyField;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.prototype.logic.PositionSquare;
@@ -55,6 +56,11 @@ public class BoardPrototype implements Board {
 	}
 
 	@Override
+	public Field getField(int index) {
+		return getField(index / getRows(), index % getRows());
+	}
+
+	@Override
 	public void setField(Field newField) {
 		int row = newField.getPosition().getRow();
 		int col = newField.getPosition().getCol();
@@ -91,6 +97,11 @@ public class BoardPrototype implements Board {
 	@Override
 	public boolean isValidField(Position p) {
 		return positions.contains(p);
+	}
+
+	@Override
+	public boolean isEmptyField(int index) {
+		return getField(index) instanceof EmptyField;
 	}
 
 	@Override

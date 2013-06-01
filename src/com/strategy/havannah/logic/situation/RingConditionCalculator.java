@@ -20,7 +20,7 @@ import com.strategy.util.StoneColor;
 public class RingConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
 
-	private BDD opponentCanReachAllInnerPos;
+	private BDD result;
 	private StoneColor color;
 
 	public RingConditionCalculator(BoardAnalyzer analyzer, Board board,
@@ -31,7 +31,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 
 	@Override
 	public BDD getBdd() {
-		return opponentCanReachAllInnerPos;
+		return result;
 	}
 
 	// ************************************************************************
@@ -50,7 +50,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 		print("inner: " + allInnerPos.toString(), RingConditionCalculator.class);
 
 		// result = analyzer.getFactory().zero();
-		opponentCanReachAllInnerPos = analyzer.getFactory().one();
+		BDD opponentCanReachAllInnerPos = analyzer.getFactory().one();
 
 		for (Position innerPos : allInnerPos) {
 			BDD innerPosReachableFromOut = analyzer.getFactory().zero();
@@ -83,7 +83,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 					.andWith(innerPosReachableFromOut);
 		}
 
-		// result = result.not();
+		result = opponentCanReachAllInnerPos.not();
 
 		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}

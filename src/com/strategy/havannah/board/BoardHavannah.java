@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.strategy.api.board.Board;
+import com.strategy.api.field.EmptyField;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.havannah.logic.PositionHexagon;
@@ -88,6 +89,13 @@ public class BoardHavannah implements Board {
 	}
 
 	@Override
+	public Field getField(int index) {
+		Position key = PositionHexagon
+				.get(index / getRows(), index % getRows());
+		return fields.get(key);
+	}
+
+	@Override
 	public void setField(Field newField) {
 		Position key = newField.getPosition();
 		fields.put(key, newField);
@@ -121,6 +129,11 @@ public class BoardHavannah implements Board {
 	@Override
 	public boolean isValidField(Position p) {
 		return fields.containsKey(p);
+	}
+
+	@Override
+	public boolean isEmptyField(int index) {
+		return getField(index) instanceof EmptyField;
 	}
 
 	private int linestart(int i) {
