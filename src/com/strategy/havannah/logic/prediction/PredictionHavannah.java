@@ -102,11 +102,12 @@ public class PredictionHavannah implements Prediction {
 		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
 		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
 		Integer best = 0;
-		if (StoneColor.WHITE.equals(colorToUse) && maxWhite >= maxBlack) {
-			best = evalWhite.getBestIndex();
-		}
-		if (StoneColor.BLACK.equals(colorToUse) && maxBlack >= maxWhite) {
-			best = evalBlack.getBestIndex();
+		if (StoneColor.WHITE.equals(colorToUse)) {
+			best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
+					.getBestIndex();
+		} else {
+			best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
+					.getBestIndex();
 		}
 
 		print("Nodes BDD WHITE:\n" + evalWhite.getBestBdd().nodeCount(),
@@ -121,9 +122,15 @@ public class PredictionHavannah implements Prediction {
 				PredictionHavannah.class);
 		print("Paths BDD BLACK:\n" + evalBlack.getBestBdd().pathCount(),
 				PredictionHavannah.class);
-		print("One sat BDD WHITE:\n" + evalWhite.getBestBdd().satOne(),
+		print("Support BDD WHITE:\n" + evalWhite.getBestBdd().fullSatOne(),
 				PredictionHavannah.class);
-		print("One sat BDD BLACK:\n" + evalBlack.getBestBdd().satOne(),
+		print("Support BDD BLACK:\n" + evalBlack.getBestBdd().fullSatOne(),
+				PredictionHavannah.class);
+		print("Support size BDD WHITE:\n"
+				+ evalWhite.getBestBdd().support().nodeCount(),
+				PredictionHavannah.class);
+		print("Support size BDD BLACK:\n"
+				+ evalBlack.getBestBdd().support().nodeCount(),
 				PredictionHavannah.class);
 
 		situationWhite.update(best, colorToUse);

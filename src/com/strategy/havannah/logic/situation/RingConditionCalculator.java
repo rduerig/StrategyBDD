@@ -67,15 +67,18 @@ public class RingConditionCalculator implements ConditionCalculator,
 						// outerPos to neighbour
 						BDD outerPosCanReachNeighbour = analyzer.getPath(
 								outerPos, neighbour, color.getOpposite());
-						BDD test = analyzer.getPath(outerPos, neighbour, color);
-						BDD testRestricted = outerPosCanReachNeighbour.id()
-								.restrict(test);
+						// BDD test = analyzer.getPath(outerPos, neighbour,
+						// color);
+						// BDD testRestricted = outerPosCanReachNeighbour.id()
+						// .restrict(test);
 
 						// print("path from " + outerPos + " to " + neighbor
 						// + ": " + path.isZero(),
 						// RingConditionCalculator.class);
 						outerPosCanReachInnerPos = outerPosCanReachInnerPos
-								.id().orWith(testRestricted);
+								.id().orWith(outerPosCanReachNeighbour);
+						// outerPosCanReachInnerPos = outerPosCanReachInnerPos
+						// .id().orWith(testRestricted);
 					}
 				}
 				innerPosReachableFromOut = innerPosReachableFromOut.id()

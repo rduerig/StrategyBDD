@@ -60,7 +60,8 @@ public class EvaluationHavannah implements Evaluation {
 		ArrayList<Position> filtered = Lists.newArrayList(Iterables.filter(
 				board.getPositions(), new EmptyPositionFilter(board)));
 		BDDFactory fac = win.getFactory();
-		BDD varset = getVarset(fac, board);
+		// BDD varset = getVarset(fac, board);
+		BDD varset = win.fullSatOne();
 		rating = new double[board.getRows() * board.getColumns()];
 		double sum = 0d;
 		double bestValue = 0d;
