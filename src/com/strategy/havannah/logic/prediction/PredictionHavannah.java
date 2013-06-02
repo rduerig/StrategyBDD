@@ -30,8 +30,14 @@ public class PredictionHavannah implements Prediction {
 	private Situation situationBlack;
 	private boolean winWhite = false;
 	private boolean winBlack = false;
+	private int lastTurn = 0;
 
 	public PredictionHavannah(Board board) {
+		init(board);
+	}
+
+	public PredictionHavannah(Board board, int lastTurn) {
+		this.lastTurn = lastTurn;
 		init(board);
 	}
 
@@ -43,6 +49,11 @@ public class PredictionHavannah implements Prediction {
 	@Override
 	public boolean isWinBlack() {
 		return winBlack;
+	}
+
+	@Override
+	public int getLastTurn() {
+		return lastTurn;
 	}
 
 	@Override
@@ -66,7 +77,7 @@ public class PredictionHavannah implements Prediction {
 				situationBlack.getWinningConditionFork(),
 				situationWhite.getWinningConditionOpponentHasRing());
 
-		// debug(evalWhite, evalBlack);
+		debug(evalWhite, evalBlack);
 
 		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
 		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];

@@ -38,4 +38,11 @@ public interface Prediction extends HasDebugFlag {
 	 */
 	boolean isWinBlack();
 
+	/**
+	 * Returns the index the last turn happened on.
+	 * 
+	 * @return the last turn's field index
+	 */
+	int getLastTurn();
+
 }

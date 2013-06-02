@@ -117,6 +117,23 @@ public class BoardPrototype implements Board {
 	}
 
 	@Override
+	public String toMarkLastTurnString(int index) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < columns; j++) {
+				Field field = fields[i][j];
+				if (index == field.getIndex()) {
+					sb.append("(" + field + ")");
+				} else {
+					sb.append(field + "");
+				}
+			}
+			sb.append("\n");
+		}
+		return sb.toString();
+	}
+
+	@Override
 	public String toIndexString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < rows; i++) {

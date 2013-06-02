@@ -2,10 +2,10 @@ package com.strategy.havannah.logic.situation;
 
 import java.io.ByteArrayInputStream;
 
+import junit.framework.Assert;
 import net.sf.javabdd.BDD;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,7 +44,7 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 		double expected = 1d;
 		double actual = result.pathCount();
 		analyzer.done();
-		Assert.assertEquals(expected, actual);
+		Assert.assertEquals(expected, actual, 0d);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 		double expected = 6d;
 		double actual = result.pathCount();
 		analyzer.done();
-		Assert.assertEquals(expected, actual);
+		Assert.assertEquals(expected, actual, 0d);
 	}
 
 	@Test

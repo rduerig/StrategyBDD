@@ -49,7 +49,7 @@ public class StrategyInterpreter extends Thread {
 		out.println("You are playing " + cpuColor.getOpposite());
 		String line = null;
 
-		out.println(board);
+		out.println(board.toMarkLastTurnString(p.getLastTurn()));
 
 		if (p.isWinWhite()) {
 			win(StoneColor.WHITE);

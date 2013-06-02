@@ -169,4 +169,13 @@ public interface Board {
 
 	String toRowConstantString();
 
+	/**
+	 * Returns the same String representation of the board as
+	 * {@link Board#toString()} but marks the field the latest stone was set.
+	 * 
+	 * @param index
+	 *            field index where the latest move happened
+	 * @return the board's fields
+	 */
+	String toMarkLastTurnString(int index);
 }

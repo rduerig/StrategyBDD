@@ -51,16 +51,19 @@ public class StrategyHavannah {
 		int[][] rawBoard = PrimitiveBoardProvider.getBoard(boardSize);
 		List<Turn> turns = Preferences.getInstance().getTurns();
 		StoneColor cpuColor;
+		Prediction p;
 		if (null == turns || turns.isEmpty()) {
 			board = BoardHavannah.createInstance(rawBoard, boardSize);
 			cpuColor = StoneColor.WHITE;
+			p = new PredictionHavannah(board);
 		} else {
 			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);
 			Turn last = Iterables.getLast(turns);
 			cpuColor = last.getColor();
+			int lastIndex = board.getField(last.getCoord(),
+					last.getCoordNumber()).getIndex();
+			p = new PredictionHavannah(board, lastIndex);
 		}
-
-		Prediction p = new PredictionHavannah(board);
 
 		Thread interpreter = new StrategyInterpreter(board, cpuColor, p);
 		InterpreterManager.scheduleInterpreter(interpreter);
