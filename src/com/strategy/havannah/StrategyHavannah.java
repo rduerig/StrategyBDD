@@ -9,7 +9,6 @@ import com.strategy.api.interpreter.StrategyInterpreter;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
-import com.strategy.util.Output;
 import com.strategy.util.Preferences;
 import com.strategy.util.PrimitiveBoardProvider;
 import com.strategy.util.StoneColor;
@@ -44,7 +43,7 @@ public class StrategyHavannah {
 	 */
 	public static void main(String[] args) {
 		System.setProperty("bdd", "bdd");
-		Output.setDebug(PredictionHavannah.class, true);
+		// Output.setDebug(PredictionHavannah.class, true);
 		Preferences.createInstance(args);
 
 		Board board;

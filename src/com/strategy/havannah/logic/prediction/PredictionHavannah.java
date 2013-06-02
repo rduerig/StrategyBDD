@@ -46,18 +46,25 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
-	public int doTurn(StoneColor colorToUse) {
+	public Integer doTurn(StoneColor colorToUse) {
+
+		// has someone already won?
+		checkVictory();
+		if (winWhite || winBlack) {
+			// no need to go any further
+			return null;
+		}
 
 		Evaluation evalWhite = new EvaluationHavannah(
 				situationWhite.getBoard(),
 				situationWhite.getWinningConditionBridge(),
 				situationWhite.getWinningConditionFork(),
-				situationBlack.getWinningConditionRing());
+				situationBlack.getWinningConditionOpponentHasRing());
 		Evaluation evalBlack = new EvaluationHavannah(
 				situationBlack.getBoard(),
 				situationBlack.getWinningConditionBridge(),
 				situationBlack.getWinningConditionFork(),
-				situationWhite.getWinningConditionRing());
+				situationWhite.getWinningConditionOpponentHasRing());
 
 		// debug(evalWhite, evalBlack);
 
@@ -67,28 +74,15 @@ public class PredictionHavannah implements Prediction {
 		if (StoneColor.WHITE.equals(colorToUse)) {
 			best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
 					.getBestIndex();
-			winWhite = evalWhite.getBestBdd().isOne();
 		} else {
 			best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
 					.getBestIndex();
-			winBlack = evalBlack.getBestBdd().isOne();
 		}
 
 		situationWhite.update(best, colorToUse);
 		situationBlack.update(best, colorToUse);
 
-		print("WHITE win ring is zero: "
-				+ situationWhite.getWinningConditionRing().not().isOne(),
-				PredictionHavannah.class);
-		print("BLACK win ring is zero: "
-				+ situationBlack.getWinningConditionRing().not().isOne(),
-				PredictionHavannah.class);
-		print("WHITE win fork is one: "
-				+ situationWhite.getWinningConditionFork().isOne(),
-				PredictionHavannah.class);
-		print("BLACK win fork is one: "
-				+ situationBlack.getWinningConditionFork().isOne(),
-				PredictionHavannah.class);
+		checkVictory();
 
 		return best;
 	}
@@ -114,7 +108,43 @@ public class PredictionHavannah implements Prediction {
 		situationBlack = new SituationHavannah(analyzer, board,
 				StoneColor.BLACK);
 
+		debugInit();
+
 		analyzer.done();
+
+	}
+
+	private void checkVictory() {
+		if (situationWhite.hasBridge() || situationWhite.hasFork()
+				|| situationBlack.hasOpponentRing()) {
+			winWhite = true;
+		}
+		if (situationBlack.hasBridge() || situationBlack.hasFork()
+				|| situationWhite.hasOpponentRing()) {
+			winBlack = true;
+		}
+	}
+
+	private void debugInit() {
+		print("init:\n", PredictionHavannah.class);
+		print("WHITE opponent has ring is one: "
+				+ situationWhite.getWinningConditionOpponentHasRing().isOne(),
+				PredictionHavannah.class);
+		print("BLACK opponent has ring is one: "
+				+ situationBlack.getWinningConditionOpponentHasRing().isOne(),
+				PredictionHavannah.class);
+		print("WHITE win fork is one: "
+				+ situationWhite.getWinningConditionFork().isOne(),
+				PredictionHavannah.class);
+		print("BLACK win fork is one: "
+				+ situationBlack.getWinningConditionFork().isOne(),
+				PredictionHavannah.class);
+		print("WHITE win bridge is one: "
+				+ situationWhite.getWinningConditionBridge().isOne(),
+				PredictionHavannah.class);
+		print("BLACK win bridge is one: "
+				+ situationBlack.getWinningConditionBridge().isOne(),
+				PredictionHavannah.class);
 	}
 
 	private void debug(Evaluation evalWhite, Evaluation evalBlack) {

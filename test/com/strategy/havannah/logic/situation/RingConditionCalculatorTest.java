@@ -108,7 +108,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		// StoneColor.BLACK);
 		// BDD result = calc.getBdd();
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
-		BDD result = sit.getWinningConditionRing();
+		BDD result = sit.getWinningConditionOpponentHasRing();
 
 		Evaluation eval = new EvaluationHavannah(board, result, analyzer
 				.getFactory().zero(), analyzer.getFactory().zero());
@@ -143,10 +143,12 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		// StoneColor.BLACK);
 		// BDD result = calc.getBdd();
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
-		BDD result = sit.getWinningCondition();
+		Situation sitOpp = new SituationHavannah(analyzer, board,
+				StoneColor.WHITE);
 
-		Evaluation eval = new EvaluationHavannah(board, result, analyzer
-				.getFactory().zero(), analyzer.getFactory().zero());
+		Evaluation eval = new EvaluationHavannah(board,
+				sit.getWinningConditionBridge(), sit.getWinningConditionFork(),
+				sitOpp.getWinningConditionOpponentHasRing());
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));

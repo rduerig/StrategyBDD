@@ -49,8 +49,7 @@ public class RingConditionCalculator implements ConditionCalculator,
 				RingConditionCalculator.class);
 		print("inner: " + allInnerPos.toString(), RingConditionCalculator.class);
 
-		// result = analyzer.getFactory().zero();
-		BDD opponentCanReachAllInnerPos = analyzer.getFactory().one();
+		BDD selfCanReachAllInnerPos = analyzer.getFactory().one();
 
 		for (Position innerPos : allInnerPos) {
 			BDD innerPosReachableFromOut = analyzer.getFactory().zero();
@@ -63,16 +62,11 @@ public class RingConditionCalculator implements ConditionCalculator,
 				for (Position neighbour : neighbours) {
 					if (board.isValidField(neighbour)) {
 						// outerPosCanReachNeighbour = there is a path for the
-						// opposite color from
+						// color from
 						// outerPos to neighbour
-						// BDD outerPosCanReachNeighbour = analyzer.getPath(
-						// outerPos, neighbour, color.getOpposite());
 						BDD outerPosCanReachNeighbour = analyzer.getPath(
 								outerPos, neighbour, color);
 
-						// print("path from " + outerPos + " to " + neighbor
-						// + ": " + path.isZero(),
-						// RingConditionCalculator.class);
 						outerPosCanReachInnerPos = outerPosCanReachInnerPos
 								.id().orWith(outerPosCanReachNeighbour);
 					}
@@ -80,12 +74,12 @@ public class RingConditionCalculator implements ConditionCalculator,
 				innerPosReachableFromOut = innerPosReachableFromOut.id()
 						.orWith(outerPosCanReachInnerPos);
 			}
-			// result = result.id().orWith(innerPosReachableFromOut.not());
-			opponentCanReachAllInnerPos = opponentCanReachAllInnerPos.id()
-					.andWith(innerPosReachableFromOut);
+
+			selfCanReachAllInnerPos = selfCanReachAllInnerPos.id().andWith(
+					innerPosReachableFromOut);
 		}
 
-		result = opponentCanReachAllInnerPos.not();
+		result = selfCanReachAllInnerPos.not();
 
 		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}

@@ -21,9 +21,10 @@ public interface Prediction extends HasDebugFlag {
 	/**
 	 * Make cpu turn.
 	 * 
-	 * @return field index the cpu has set on
+	 * @return field index the cpu has set on, null if no decision was made due
+	 *         to victory of one side
 	 */
-	int doTurn(StoneColor colorToUse);
+	Integer doTurn(StoneColor colorToUse);
 
 	/**
 	 * 

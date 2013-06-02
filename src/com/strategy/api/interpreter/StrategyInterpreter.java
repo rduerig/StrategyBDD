@@ -52,13 +52,11 @@ public class StrategyInterpreter extends Thread {
 		out.println(board);
 
 		if (p.isWinWhite()) {
-			out.println("WHITE wins!");
-			exit();
+			win(StoneColor.WHITE);
 			return;
 		}
 		if (p.isWinBlack()) {
-			out.println("BLACK wins!");
-			exit();
+			win(StoneColor.BLACK);
 			return;
 		}
 
@@ -94,10 +92,22 @@ public class StrategyInterpreter extends Thread {
 			}
 
 			if (line.equals(CMD_THINK)) {
-				int next = p.doTurn(cpuColor.getOpposite());
-				printCpuTurn(next, board.getBoardSize(), cpuColor.getOpposite());
-				cpuColor = cpuColor.getOpposite();
-				return;
+				Integer next = p.doTurn(cpuColor.getOpposite());
+				if (null != next) {
+					printCpuTurn(next, board.getBoardSize(),
+							cpuColor.getOpposite());
+					cpuColor = cpuColor.getOpposite();
+					return;
+				} else {
+					if (p.isWinWhite()) {
+						win(StoneColor.WHITE);
+						return;
+					}
+					if (p.isWinBlack()) {
+						win(StoneColor.BLACK);
+						return;
+					}
+				}
 			}
 
 			if (CMD_HELP.equals(line)) {
@@ -168,6 +178,11 @@ public class StrategyInterpreter extends Thread {
 
 		return fieldIndex;
 
+	}
+
+	private void win(StoneColor color) {
+		out.println(color + " wins!");
+		exit();
 	}
 
 	private void exit() {

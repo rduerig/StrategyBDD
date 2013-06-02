@@ -23,8 +23,7 @@ public class SituationHavannah implements Situation {
 	private static final String BDD_FILE_PREFIX = "win";
 	private BDD winFork;
 	private BDD winBridge;
-	private BDD winRing;
-	private BDD win;
+	private BDD winOpponentHasRing;
 	private Board board;
 	private StoneColor color;
 
@@ -33,11 +32,6 @@ public class SituationHavannah implements Situation {
 		this.board = board;
 		this.color = color;
 		init(analyzer);
-	}
-
-	@Override
-	public BDD getWinningCondition() {
-		return win;
 	}
 
 	@Override
@@ -51,8 +45,8 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
-	public BDD getWinningConditionRing() {
-		return winRing;
+	public BDD getWinningConditionOpponentHasRing() {
+		return winOpponentHasRing;
 	}
 
 	@Override
@@ -66,6 +60,21 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
+	public boolean hasBridge() {
+		return winBridge.isOne();
+	}
+
+	@Override
+	public boolean hasFork() {
+		return winFork.isOne();
+	}
+
+	@Override
+	public boolean hasOpponentRing() {
+		return winOpponentHasRing.isOne();
+	}
+
+	@Override
 	public void update(int fieldIndex, StoneColor color) {
 		// System.out.println("setting stone on: " + fieldIndex);
 		Field field = FieldGenerator.create(
@@ -75,15 +84,13 @@ public class SituationHavannah implements Situation {
 		board.setField(field);
 		BDDFactory fac = winFork.getFactory();
 		if (this.color.equals(color)) {
-			win.restrictWith(fac.ithVar(field.getIndex()));
 			winBridge.restrictWith(fac.ithVar(field.getIndex()));
 			winFork.restrictWith(fac.ithVar(field.getIndex()));
-			winRing.restrictWith(fac.nithVar(field.getIndex()));
+			winOpponentHasRing.restrictWith(fac.ithVar(field.getIndex()));
 		} else {
-			win.restrictWith(fac.nithVar(field.getIndex()));
 			winBridge.restrictWith(fac.nithVar(field.getIndex()));
 			winFork.restrictWith(fac.nithVar(field.getIndex()));
-			winRing.restrictWith(fac.ithVar(field.getIndex()));
+			winOpponentHasRing.restrictWith(fac.nithVar(field.getIndex()));
 		}
 
 	}
@@ -98,7 +105,8 @@ public class SituationHavannah implements Situation {
 				winBridge = analyzer.getFactory()
 						.load(getFileName() + "bridge");
 				winFork = analyzer.getFactory().load(getFileName() + "fork");
-				winRing = analyzer.getFactory().load(getFileName() + "ring");
+				winOpponentHasRing = analyzer.getFactory().load(
+						getFileName() + "ring");
 			} catch (IOException e) {
 				System.out
 						.println("Could not load files, BDDs are generated vom scratch.");
@@ -116,14 +124,13 @@ public class SituationHavannah implements Situation {
 		winFork = getForkCondition(analyzer);
 
 		// computes bdd representation of the ring condition
-		winRing = getRingCondition(analyzer);
-
-		win = winRing.or(winFork).or(winBridge);
+		winOpponentHasRing = getRingCondition(analyzer);
 
 		try {
 			analyzer.getFactory().save(getFileName() + "fork", winFork);
 			analyzer.getFactory().save(getFileName() + "bridge", winBridge);
-			analyzer.getFactory().save(getFileName() + "ring", winRing);
+			analyzer.getFactory().save(getFileName() + "ring",
+					winOpponentHasRing);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
