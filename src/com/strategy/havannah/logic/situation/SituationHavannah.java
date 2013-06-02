@@ -56,26 +56,6 @@ public class SituationHavannah implements Situation {
 	}
 
 	@Override
-	public boolean hasVictory() {
-		return win.isOne();
-	}
-
-	@Override
-	public boolean hasFork() {
-		return winFork.isOne();
-	}
-
-	@Override
-	public boolean hasBridge() {
-		return winBridge.isOne();
-	}
-
-	@Override
-	public boolean hasRing() {
-		return winRing.isOne();
-	}
-
-	@Override
 	public Board getBoard() {
 		return board;
 	}
@@ -95,17 +75,15 @@ public class SituationHavannah implements Situation {
 		board.setField(field);
 		BDDFactory fac = winFork.getFactory();
 		if (this.color.equals(color)) {
-			// System.out.println("restrict with ith");
 			win.restrictWith(fac.ithVar(field.getIndex()));
 			winBridge.restrictWith(fac.ithVar(field.getIndex()));
 			winFork.restrictWith(fac.ithVar(field.getIndex()));
-			winRing.restrictWith(fac.ithVar(field.getIndex()));
+			winRing.restrictWith(fac.nithVar(field.getIndex()));
 		} else {
-			// System.out.println("restrict with nith");
 			win.restrictWith(fac.nithVar(field.getIndex()));
 			winBridge.restrictWith(fac.nithVar(field.getIndex()));
 			winFork.restrictWith(fac.nithVar(field.getIndex()));
-			winRing.restrictWith(fac.nithVar(field.getIndex()));
+			winRing.restrictWith(fac.ithVar(field.getIndex()));
 		}
 
 	}
@@ -113,12 +91,6 @@ public class SituationHavannah implements Situation {
 	// ************************************************************************
 
 	private void init(BoardAnalyzer analyzer) {
-		// System.out.println("try loading from file: win" +
-		// board.getBoardSize()
-		// + color.name().toLowerCase());
-		// File winFileFork = new File(getFileName() + "fork");
-		// File winFileBridge = new File(getFileName() + "bridge");
-		// File winFileRing = new File(getFileName() + "ring");
 		if (Preferences.getInstance().isGenerateFiles()) {
 			initFromScratch(analyzer);
 		} else {
@@ -127,9 +99,6 @@ public class SituationHavannah implements Situation {
 						.load(getFileName() + "bridge");
 				winFork = analyzer.getFactory().load(getFileName() + "fork");
 				winRing = analyzer.getFactory().load(getFileName() + "ring");
-				// System.out.println("loaded from file: win" +
-				// board.getBoardSize()
-				// + color.name().toLowerCase());
 			} catch (IOException e) {
 				System.out
 						.println("Could not load files, BDDs are generated vom scratch.");
@@ -141,16 +110,10 @@ public class SituationHavannah implements Situation {
 	private void initFromScratch(BoardAnalyzer analyzer) {
 
 		// computes bdd representation of the bridge condition
-		// System.out.println("computing bridge");
 		winBridge = getBridgeCondition(analyzer);
-		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
-		// System.out.println("...done");
 
 		// computes bdd representation of the fork condition
-		// System.out.println("computing fork");
 		winFork = getForkCondition(analyzer);
-		// analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
-		// System.out.println("...done");
 
 		// computes bdd representation of the ring condition
 		winRing = getRingCondition(analyzer);

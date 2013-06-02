@@ -18,14 +18,6 @@ public interface Situation {
 
 	BDD getWinningConditionRing();
 
-	boolean hasVictory();
-
-	boolean hasFork();
-
-	boolean hasBridge();
-
-	boolean hasRing();
-
 	Board getBoard();
 
 	StoneColor getStoneColor();

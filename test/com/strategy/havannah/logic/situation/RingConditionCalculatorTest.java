@@ -66,7 +66,8 @@ public class RingConditionCalculatorTest extends AbstractTest {
 				StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
-		Evaluation eval = new EvaluationHavannah(board, result);
+		Evaluation eval = new EvaluationHavannah(board, result, analyzer
+				.getFactory().zero(), analyzer.getFactory().zero());
 
 		int expected = 7;
 		int actual = eval.getBestIndex();
@@ -109,7 +110,8 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 		BDD result = sit.getWinningConditionRing();
 
-		Evaluation eval = new EvaluationHavannah(board, result);
+		Evaluation eval = new EvaluationHavannah(board, result, analyzer
+				.getFactory().zero(), analyzer.getFactory().zero());
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -122,7 +124,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		sit.update(actual, StoneColor.BLACK);
 		// System.out.println(result);
 		// Assert.assertTrue(result.isZero());
-		Assert.assertTrue(sit.hasRing());
+		Assert.assertTrue(eval.getBestBdd().isOne());
 	}
 
 	@Test
@@ -143,7 +145,8 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 		BDD result = sit.getWinningCondition();
 
-		Evaluation eval = new EvaluationHavannah(board, result);
+		Evaluation eval = new EvaluationHavannah(board, result, analyzer
+				.getFactory().zero(), analyzer.getFactory().zero());
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -156,7 +159,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		sit.update(actual, StoneColor.BLACK);
 		// System.out.println(result);
 		// Assert.assertTrue(result.isZero());
-		Assert.assertTrue(sit.hasRing());
+		Assert.assertTrue(eval.getBestBdd().isOne());
 	}
 
 	@Test

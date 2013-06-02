@@ -64,7 +64,8 @@ public class BridgeCondidtionCalculatorTest extends AbstractTest {
 				board, StoneColor.WHITE);
 		BDD result = calc.getBdd();
 
-		Evaluation eval = new EvaluationHavannah(board, result);
+		Evaluation eval = new EvaluationHavannah(board, result, analyzer
+				.getFactory().zero(), analyzer.getFactory().zero());
 
 		int expected = 7;
 		int actual = eval.getBestIndex();

@@ -1,13 +1,17 @@
 package com.strategy.havannah.logic.evaluation;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
@@ -23,12 +27,22 @@ public class EvaluationHavannah implements Evaluation {
 	private double avg;
 	private int best;
 	private Board board;
-	private BDD win;
+	private BDD bridge;
+	private BDD fork;
 	private BDD bestBdd;
+	private BDD ring;
+	private BDD varsetBridge;
+	private BDD varsetFork;
+	private BDD varsetRing;
 
-	public EvaluationHavannah(Board board, BDD win) {
+	public EvaluationHavannah(Board board, BDD bridge, BDD fork, BDD ring) {
 		this.board = board;
-		this.win = win;
+		this.bridge = bridge;
+		this.varsetBridge = bridge.fullSatOne();
+		this.fork = fork;
+		this.varsetFork = fork.fullSatOne();
+		this.ring = ring;
+		this.varsetRing = ring.fullSatOne();
 		avg = 0d;
 		best = 0;
 		init();
@@ -59,61 +73,48 @@ public class EvaluationHavannah implements Evaluation {
 	private void init() {
 		ArrayList<Position> filtered = Lists.newArrayList(Iterables.filter(
 				board.getPositions(), new EmptyPositionFilter(board)));
-		BDDFactory fac = win.getFactory();
-		// BDD varset = getVarset(fac, board);
-		BDD varset = win.fullSatOne();
+		BDDFactory fac = bridge.getFactory();
 		rating = new double[board.getRows() * board.getColumns()];
 		double sum = 0d;
 		double bestValue = 0d;
 		for (Position pos : filtered) {
 			Field field = board.getField(pos.getRow(), pos.getCol());
-			BDD bdd = win.id();
-			bdd.restrictWith(fac.ithVar(field.getIndex()));
+			BDD bddBridge = bridge.id();
+			bddBridge.restrictWith(fac.ithVar(field.getIndex()));
+			BDD bddFork = fork.id();
+			bddFork.restrictWith(fac.ithVar(field.getIndex()));
+			BDD bddRing = ring.id();
+			bddRing.restrictWith(fac.nithVar(field.getIndex()));
 			// fac.reorder(BDDFactory.REORDER_SIFT);
-			Double satCount = bdd.satCount(varset);
-			// Double satCount = bdd.satCount();
-			rating[field.getIndex()] = satCount;
-			sum += satCount;
-			if (satCount > bestValue) {
+			Map<BDD, Double> sat = Maps.newHashMap();
+			sat.put(bddBridge, bddBridge.satCount(varsetBridge));
+			sat.put(bddFork, bddFork.satCount(varsetFork));
+			sat.put(bddRing, bddRing.satCount(varsetRing));
+			Entry<BDD, Double> valuation = Collections.max(sat.entrySet(),
+					new EntryComparator());
+			rating[field.getIndex()] = valuation.getValue();
+			sum += valuation.getValue();
+			if (valuation.getValue() > bestValue) {
 				best = field.getIndex();
-				bestValue = satCount;
-				bestBdd = bdd.id();
+				bestValue = valuation.getValue();
+				bestBdd = valuation.getKey().id();
 			}
-			// best = satCount > bestValue ? field.getIndex() : best;
-			// bestValue = satCount > bestValue ? satCount : bestValue;
-			bdd.free();
+			bddBridge.free();
+			bddFork.free();
+			bddRing.free();
 		}
 
 		avg = sum / filtered.size();
 	}
 
-	private BDD getVarset(BDDFactory fac, Board b) {
-		// List<BDD> variables = Lists.transform(
-		// Lists.newArrayList(b.getPositions()),
-		// new PositionToBdd(fac, b.getRows()));
-		int[] variables = new int[board.getPositions().size()];
-		int i = 0;
-		for (Position p : board.getPositions()) {
-			variables[i++] = board.getRows() * p.getRow() + p.getCol();
-		}
-		return fac.makeSet(variables);
-	}
-
 	// ************************************************************************
 
-	private class PositionToBdd implements Function<Position, BDD> {
+	private class EntryComparator implements Comparator<Entry<BDD, Double>> {
 
-		private final BDDFactory fac;
-		private final int rows;
-
-		public PositionToBdd(BDDFactory fac, int rows) {
-			this.fac = fac;
-			this.rows = rows;
+		@Override
+		public int compare(Entry<BDD, Double> o1, Entry<BDD, Double> o2) {
+			return o1.getValue().compareTo(o2.getValue());
 		}
 
-		public BDD apply(Position p) {
-			return fac.ithVar(rows * p.getRow() + p.getCol());
-		}
 	}
-
 }

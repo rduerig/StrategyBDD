@@ -2,9 +2,10 @@ package com.strategy.havannah.logic.prediction;
 
 import static com.strategy.util.Output.print;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
-
-import net.sf.javabdd.BDD;
+import java.util.Map.Entry;
 
 import com.google.common.collect.Maps;
 import com.strategy.api.board.Board;
@@ -27,7 +28,7 @@ public class PredictionHavannah implements Prediction {
 
 	private Situation situationWhite;
 	private Situation situationBlack;
-	private boolean winWite = false;
+	private boolean winWhite = false;
 	private boolean winBlack = false;
 
 	public PredictionHavannah(Board board) {
@@ -36,7 +37,7 @@ public class PredictionHavannah implements Prediction {
 
 	@Override
 	public boolean isWinWhite() {
-		return winWite;
+		return winWhite;
 	}
 
 	@Override
@@ -44,60 +45,21 @@ public class PredictionHavannah implements Prediction {
 		return winBlack;
 	}
 
-	// @Override
-	// public int doTurn(StoneColor colorToUse) {
-	// // evaluate all possible white turns
-	// Map<Double, Evaluation> mappingWhite = getMapping(situationWhite);
-	// Double maxWhite = Collections.max(Lists.newArrayList(mappingWhite
-	// .keySet()));
-	// // evaluate all possible black turns
-	// Map<Double, Evaluation> mappingBlack = getMapping(situationBlack);
-	// Double maxBlack = Collections.max(Lists.newArrayList(mappingBlack
-	// .keySet()));
-	// print("max " + StoneColor.WHITE + ": " + maxWhite + " | max "
-	// + StoneColor.BLACK + ": " + maxBlack, PredictionHavannah.class);
-	// Integer best = maxWhite >= maxBlack ? mappingWhite.get(maxWhite)
-	// .getBestIndex() : mappingBlack.get(maxBlack).getBestIndex();
-	//
-	// situationWhite.update(best, colorToUse);
-	// if (situationWhite.hasFork() || situationWhite.hasBridge()
-	// || situationWhite.hasRing()) {
-	// winWite = true;
-	// }
-	// situationBlack.update(best, colorToUse);
-	// if (situationBlack.hasFork() || situationBlack.hasBridge()
-	// || situationBlack.hasRing()) {
-	// winBlack = true;
-	// }
-	//
-	// return best;
-	// }
-
 	@Override
 	public int doTurn(StoneColor colorToUse) {
 
-		// Evaluation evalWhite = new EvaluationHavannah(
-		// situationWhite.getBoard(),
-		// situationWhite.getWinningCondition().orWith(
-		// situationBlack.getWinningCondition().id().not()));
-		// Evaluation evalBlack = new EvaluationHavannah(
-		// situationBlack.getBoard(),
-		// situationBlack.getWinningCondition().orWith(
-		// situationWhite.getWinningCondition().id().not()));
-
 		Evaluation evalWhite = new EvaluationHavannah(
-				situationWhite.getBoard(), situationWhite.getWinningCondition());
+				situationWhite.getBoard(),
+				situationWhite.getWinningConditionBridge(),
+				situationWhite.getWinningConditionFork(),
+				situationBlack.getWinningConditionRing());
 		Evaluation evalBlack = new EvaluationHavannah(
-				situationBlack.getBoard(), situationBlack.getWinningCondition());
+				situationBlack.getBoard(),
+				situationBlack.getWinningConditionBridge(),
+				situationBlack.getWinningConditionFork(),
+				situationWhite.getWinningConditionRing());
 
-		print("Rating WHITE:\n"
-				+ situationWhite.getBoard().toRatingString(
-						evalWhite.getRating(), evalWhite.getBestIndex()),
-				PredictionHavannah.class);
-		print("Rating BLACK:\n"
-				+ situationBlack.getBoard().toRatingString(
-						evalBlack.getRating(), evalBlack.getBestIndex()),
-				PredictionHavannah.class);
+		// debug(evalWhite, evalBlack);
 
 		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
 		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
@@ -105,44 +67,28 @@ public class PredictionHavannah implements Prediction {
 		if (StoneColor.WHITE.equals(colorToUse)) {
 			best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
 					.getBestIndex();
+			winWhite = evalWhite.getBestBdd().isOne();
 		} else {
 			best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
 					.getBestIndex();
+			winBlack = evalBlack.getBestBdd().isOne();
 		}
-
-		print("Nodes BDD WHITE:\n" + evalWhite.getBestBdd().nodeCount(),
-				PredictionHavannah.class);
-		print("Nodes BDD BLACK:\n" + evalBlack.getBestBdd().nodeCount(),
-				PredictionHavannah.class);
-		print("Satcount BDD WHITE:\n" + evalWhite.getBestBdd().satCount(),
-				PredictionHavannah.class);
-		print("Satcount BDD BLACK:\n" + evalBlack.getBestBdd().satCount(),
-				PredictionHavannah.class);
-		print("Paths BDD WHITE:\n" + evalWhite.getBestBdd().pathCount(),
-				PredictionHavannah.class);
-		print("Paths BDD BLACK:\n" + evalBlack.getBestBdd().pathCount(),
-				PredictionHavannah.class);
-		print("Support BDD WHITE:\n" + evalWhite.getBestBdd().fullSatOne(),
-				PredictionHavannah.class);
-		print("Support BDD BLACK:\n" + evalBlack.getBestBdd().fullSatOne(),
-				PredictionHavannah.class);
-		print("Support size BDD WHITE:\n"
-				+ evalWhite.getBestBdd().support().nodeCount(),
-				PredictionHavannah.class);
-		print("Support size BDD BLACK:\n"
-				+ evalBlack.getBestBdd().support().nodeCount(),
-				PredictionHavannah.class);
 
 		situationWhite.update(best, colorToUse);
-		if (situationWhite.hasFork() || situationWhite.hasBridge()
-				|| situationWhite.hasRing()) {
-			winWite = true;
-		}
 		situationBlack.update(best, colorToUse);
-		if (situationBlack.hasFork() || situationBlack.hasBridge()
-				|| situationBlack.hasRing()) {
-			winBlack = true;
-		}
+
+		print("WHITE win ring is zero: "
+				+ situationWhite.getWinningConditionRing().not().isOne(),
+				PredictionHavannah.class);
+		print("BLACK win ring is zero: "
+				+ situationBlack.getWinningConditionRing().not().isOne(),
+				PredictionHavannah.class);
+		print("WHITE win fork is one: "
+				+ situationWhite.getWinningConditionFork().isOne(),
+				PredictionHavannah.class);
+		print("BLACK win fork is one: "
+				+ situationBlack.getWinningConditionFork().isOne(),
+				PredictionHavannah.class);
 
 		return best;
 	}
@@ -171,37 +117,62 @@ public class PredictionHavannah implements Prediction {
 		analyzer.done();
 	}
 
-	private Map<Double, Evaluation> getMapping(Situation sit) {
-		BDD winningConditionFork = sit.getWinningConditionFork().id();
-		BDD winningConditionBridge = sit.getWinningConditionBridge().id();
-		BDD winningConditionRing = sit.getWinningConditionRing().id();
-		Evaluation evalFork = new EvaluationHavannah(sit.getBoard(),
-				winningConditionFork);
-		Evaluation evalBridge = new EvaluationHavannah(sit.getBoard(),
-				winningConditionBridge);
-		Evaluation evalRing = new EvaluationHavannah(sit.getBoard(),
-				winningConditionRing);
-
-		double bestRatingFork = evalFork.getRating()[evalFork.getBestIndex()];
-		print("best rating fork for " + sit.getStoneColor() + ": "
-				+ bestRatingFork + " - best index: " + evalFork.getBestIndex(),
+	private void debug(Evaluation evalWhite, Evaluation evalBlack) {
+		print("Rating WHITE:\n"
+				+ situationWhite.getBoard().toRatingString(
+						evalWhite.getRating(), evalWhite.getBestIndex()),
 				PredictionHavannah.class);
-		double bestRatingBridge = evalBridge.getRating()[evalBridge
-				.getBestIndex()];
-		print("best rating bridge for " + sit.getStoneColor() + ": "
-				+ bestRatingBridge + " - best index: "
-				+ evalBridge.getBestIndex(), PredictionHavannah.class);
-		double bestRatingRing = evalRing.getRating()[evalRing.getBestIndex()];
-		print("best rating ring for " + sit.getStoneColor() + ": "
-				+ bestRatingRing + " - best index: " + evalRing.getBestIndex(),
+		print("Rating BLACK:\n"
+				+ situationBlack.getBoard().toRatingString(
+						evalBlack.getRating(), evalBlack.getBestIndex()),
 				PredictionHavannah.class);
 
-		Map<Double, Evaluation> mapping = Maps.newHashMap();
-		mapping.put(bestRatingFork, evalFork);
-		mapping.put(bestRatingBridge, evalBridge);
-		mapping.put(bestRatingRing, evalRing);
+		print("Nodes BDD WHITE:\n" + evalWhite.getBestBdd().nodeCount(),
+				PredictionHavannah.class);
+		print("Nodes BDD BLACK:\n" + evalBlack.getBestBdd().nodeCount(),
+				PredictionHavannah.class);
+		print("Satcount BDD WHITE:\n" + evalWhite.getBestBdd().satCount(),
+				PredictionHavannah.class);
+		print("Satcount BDD BLACK:\n" + evalBlack.getBestBdd().satCount(),
+				PredictionHavannah.class);
+		print("Paths BDD WHITE:\n" + evalWhite.getBestBdd().pathCount(),
+				PredictionHavannah.class);
+		print("Paths BDD BLACK:\n" + evalBlack.getBestBdd().pathCount(),
+				PredictionHavannah.class);
 
-		return mapping;
+		Comparator<Entry<Integer, Integer>> comparator = new Comparator<Entry<Integer, Integer>>() {
+
+			@Override
+			public int compare(Entry<Integer, Integer> o1,
+					Entry<Integer, Integer> o2) {
+				return o1.getValue().compareTo(o2.getValue());
+			}
+		};
+		Map<Integer, Integer> varsWhite = Maps.newHashMap();
+		int[] varProfileWhite = evalWhite.getBestBdd().varProfile();
+		for (int i = 0; i < varProfileWhite.length; i++) {
+			varsWhite.put(i, varProfileWhite[i]);
+		}
+		Entry<Integer, Integer> maxEntryWhite = Collections.max(
+				varsWhite.entrySet(), comparator);
+		print("var count BDD WHITE:\n" + maxEntryWhite.getKey() + ":"
+				+ maxEntryWhite.getValue(), PredictionHavannah.class);
+		print("best var count BDD WHITE:\n" + evalWhite.getBestIndex() + ":"
+				+ varProfileWhite[evalWhite.getBestIndex()],
+				PredictionHavannah.class);
+
+		Map<Integer, Integer> varsBlack = Maps.newHashMap();
+		int[] varProfileBlack = evalBlack.getBestBdd().varProfile();
+		for (int i = 0; i < varProfileBlack.length; i++) {
+			varsBlack.put(i, varProfileBlack[i]);
+		}
+		Entry<Integer, Integer> maxEntryBlack = Collections.max(
+				varsBlack.entrySet(), comparator);
+		print("var count BDD BLACK:\n" + maxEntryBlack.getKey() + ":"
+				+ maxEntryBlack.getValue(), PredictionHavannah.class);
+		print("best var count BDD BLACK:\n" + evalBlack.getBestIndex() + ":"
+				+ varProfileBlack[evalBlack.getBestIndex()],
+				PredictionHavannah.class);
 	}
 
 }
