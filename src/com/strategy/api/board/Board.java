@@ -126,6 +126,16 @@ public interface Board {
 	/**
 	 * Checks if there is a valid field on the board.
 	 * 
+	 * @param index
+	 *            the index of the field to check
+	 * @return true if there is a field with the given index on the current
+	 *         board
+	 */
+	boolean isValidField(int index);
+
+	/**
+	 * Checks if there is a valid field on the board.
+	 * 
 	 * @param p
 	 *            {@link Position} of the field to check
 	 * @return true if there is a field on the given {@link Position} on the
@@ -177,5 +187,5 @@ public interface Board {
 	 *            field index where the latest move happened
 	 * @return the board's fields
 	 */
-	String toMarkLastTurnString(int index);
+	String toMarkLastTurnString(Integer index);
 }

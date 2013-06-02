@@ -117,7 +117,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 		Prediction p = new PredictionHavannah(board);
 		int expected = 38;
-		int actual = p.doTurn(StoneColor.BLACK);
+		int actual = p.doCalculatedTurn(StoneColor.BLACK);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(p.isWinBlack());
 	}

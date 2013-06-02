@@ -127,6 +127,11 @@ public class BoardHavannah implements Board {
 	}
 
 	@Override
+	public boolean isValidField(int index) {
+		return null != getField(index);
+	}
+
+	@Override
 	public boolean isValidField(Position p) {
 		return fields.containsKey(p);
 	}
@@ -164,19 +169,19 @@ public class BoardHavannah implements Board {
 	}
 
 	@Override
-	public String toMarkLastTurnString(int index) {
+	public String toMarkLastTurnString(Integer index) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < getRows(); i++) {
 			for (int k = 0; k < Math.abs(getBoardSize() - 1 - i) + 2; k++) {
-				sb.append(" ");
+				sb.append("  ");
 			}
 			for (int j = linestart(i); j < lineend(i); j++) {
 				if (isValidField(PositionHexagon.get(i, j))) {
 					Field field = getField(i, j);
-					if (index == field.getIndex()) {
-						sb.append(" (" + field + ")");
+					if (null != index && index == field.getIndex()) {
+						sb.append("(" + field + ")");
 					} else {
-						sb.append(" " + field);
+						sb.append(" " + field + " ");
 					}
 				}
 			}

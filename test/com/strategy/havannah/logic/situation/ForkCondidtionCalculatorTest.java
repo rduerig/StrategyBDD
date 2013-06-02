@@ -81,7 +81,7 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 
 		Prediction p = new PredictionHavannah(board);
 		int expected = 17;
-		int actual = p.doTurn(StoneColor.BLACK);
+		int actual = p.doCalculatedTurn(StoneColor.BLACK);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(p.isWinBlack());
 	}
@@ -100,7 +100,7 @@ public class ForkCondidtionCalculatorTest extends AbstractTest {
 
 		Prediction p = new PredictionHavannah(board);
 		int expected = 11;
-		int actual = p.doTurn(StoneColor.BLACK);
+		int actual = p.doCalculatedTurn(StoneColor.BLACK);
 		Assert.assertEquals(expected, actual);
 		Assert.assertTrue(p.isWinBlack());
 	}

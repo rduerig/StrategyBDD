@@ -14,9 +14,9 @@ public interface Prediction extends HasDebugFlag {
 	 * 
 	 * @param fieldIndex
 	 *            index of the field
-	 * @return the index of the field the cpu set on
+	 * @return the index of the field the cpu set on or null if someone has won
 	 */
-	int answerTurn(int fieldIndex, StoneColor colorLastSet);
+	Integer answerTurn(int fieldIndex, StoneColor colorLastSet);
 
 	/**
 	 * Make cpu turn.
@@ -24,7 +24,18 @@ public interface Prediction extends HasDebugFlag {
 	 * @return field index the cpu has set on, null if no decision was made due
 	 *         to victory of one side
 	 */
-	Integer doTurn(StoneColor colorToUse);
+	Integer doCalculatedTurn(StoneColor colorToUse);
+
+	/**
+	 * Updates all conditions to the turn made on the given field and with the
+	 * given color. Does not evaluate or predict anything.
+	 * 
+	 * @param fieldIndex
+	 *            index of the field
+	 * @param colorLastSet
+	 *            the color for which the turn should be recorded
+	 */
+	void doManualTurn(int fieldIndex, StoneColor colorLastSet);
 
 	/**
 	 * 
@@ -43,6 +54,6 @@ public interface Prediction extends HasDebugFlag {
 	 * 
 	 * @return the last turn's field index
 	 */
-	int getLastTurn();
+	Integer getLastTurn();
 
 }

@@ -30,7 +30,7 @@ public class PredictionHavannah implements Prediction {
 	private Situation situationBlack;
 	private boolean winWhite = false;
 	private boolean winBlack = false;
-	private int lastTurn = 0;
+	private Integer lastTurn = null;
 
 	public PredictionHavannah(Board board) {
 		init(board);
@@ -52,12 +52,12 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
-	public int getLastTurn() {
+	public Integer getLastTurn() {
 		return lastTurn;
 	}
 
 	@Override
-	public Integer doTurn(StoneColor colorToUse) {
+	public Integer doCalculatedTurn(StoneColor colorToUse) {
 
 		// has someone already won?
 		checkVictory();
@@ -93,20 +93,31 @@ public class PredictionHavannah implements Prediction {
 		situationWhite.update(best, colorToUse);
 		situationBlack.update(best, colorToUse);
 
+		lastTurn = best;
+
 		checkVictory();
 
 		return best;
 	}
 
 	@Override
-	public int answerTurn(int fieldIndex, StoneColor colorLastSet) {
+	public Integer answerTurn(int fieldIndex, StoneColor colorLastSet) {
 		StoneColor cpuColor = colorLastSet.getOpposite();
+		doManualTurn(fieldIndex, colorLastSet);
+
+		return doCalculatedTurn(cpuColor);
+
+	}
+
+	@Override
+	public void doManualTurn(int fieldIndex, StoneColor colorLastSet) {
 		StoneColor playerColor = colorLastSet;
 		situationWhite.update(fieldIndex, playerColor);
 		situationBlack.update(fieldIndex, playerColor);
 
-		return doTurn(cpuColor);
+		lastTurn = fieldIndex;
 
+		checkVictory();
 	}
 
 	// ************************************************************************
