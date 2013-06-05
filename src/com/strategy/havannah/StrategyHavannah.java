@@ -67,6 +67,7 @@ public class StrategyHavannah {
 
 		Thread interpreter = new StrategyInterpreter(board, cpuColor, p);
 		InterpreterManager.scheduleInterpreter(interpreter);
+
 	}
 
 }

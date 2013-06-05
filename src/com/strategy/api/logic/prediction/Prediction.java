@@ -1,6 +1,7 @@
 package com.strategy.api.logic.prediction;
 
 import com.strategy.api.HasDebugFlag;
+import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.util.StoneColor;
 
 /**
@@ -55,5 +56,17 @@ public interface Prediction extends HasDebugFlag {
 	 * @return the last turn's field index
 	 */
 	Integer getLastTurn();
+
+	/**
+	 * 
+	 * @return {@link Evaluation} for white's situation
+	 */
+	Evaluation getEvaluationWhite();
+
+	/**
+	 * 
+	 * @return {@link Evaluation} for black's situation
+	 */
+	Evaluation getEvaluationBlack();
 
 }

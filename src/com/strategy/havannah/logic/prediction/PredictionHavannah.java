@@ -57,6 +57,16 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
+	public Evaluation getEvaluationWhite() {
+		return createEvaluationWhite();
+	}
+
+	@Override
+	public Evaluation getEvaluationBlack() {
+		return createEvaluationBlack();
+	}
+
+	@Override
 	public Integer doCalculatedTurn(StoneColor colorToUse) {
 
 		// has someone already won?
@@ -66,16 +76,8 @@ public class PredictionHavannah implements Prediction {
 			return null;
 		}
 
-		Evaluation evalWhite = new EvaluationHavannah(
-				situationWhite.getBoard(),
-				situationWhite.getWinningConditionBridge(),
-				situationWhite.getWinningConditionFork(),
-				situationBlack.getWinningConditionOpponentHasRing());
-		Evaluation evalBlack = new EvaluationHavannah(
-				situationBlack.getBoard(),
-				situationBlack.getWinningConditionBridge(),
-				situationBlack.getWinningConditionFork(),
-				situationWhite.getWinningConditionOpponentHasRing());
+		Evaluation evalWhite = createEvaluationWhite();
+		Evaluation evalBlack = createEvaluationBlack();
 
 		debug(evalWhite, evalBlack);
 
@@ -134,6 +136,24 @@ public class PredictionHavannah implements Prediction {
 
 		analyzer.done();
 
+	}
+
+	private Evaluation createEvaluationWhite() {
+		Evaluation evalWhite = new EvaluationHavannah(
+				situationWhite.getBoard(),
+				situationWhite.getWinningConditionBridge(),
+				situationWhite.getWinningConditionFork(),
+				situationBlack.getWinningConditionOpponentHasRing());
+		return evalWhite;
+	}
+
+	private Evaluation createEvaluationBlack() {
+		Evaluation evalBlack = new EvaluationHavannah(
+				situationBlack.getBoard(),
+				situationBlack.getWinningConditionBridge(),
+				situationBlack.getWinningConditionFork(),
+				situationWhite.getWinningConditionOpponentHasRing());
+		return evalBlack;
 	}
 
 	private void checkVictory() {
