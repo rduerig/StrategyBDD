@@ -62,7 +62,7 @@ public class StrategyHavannah {
 			cpuColor = last.getColor();
 			int lastIndex = board.getField(last.getCoord(),
 					last.getCoordNumber()).getIndex();
-			p = new PredictionHavannah(board, lastIndex);
+			p = new PredictionHavannah(board, lastIndex, turns);
 		}
 
 		Thread interpreter = new StrategyInterpreter(board, cpuColor, p);

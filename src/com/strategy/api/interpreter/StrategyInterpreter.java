@@ -14,6 +14,7 @@ import static com.strategy.api.interpreter.InterpreterCommands.CMD_THINK;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_WHITE;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,6 +27,7 @@ import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
+import com.strategy.util.Turn;
 
 /**
  * @author Ralph Dürig
@@ -99,13 +101,27 @@ public class StrategyInterpreter extends Thread {
 			}
 
 			if (InterpreterCommands.CMD_SWAP.equals(line)) {
-				int lastTurn = p.getLastTurn();
+				Integer lastTurn = p.getLastTurn();
+				if (null == lastTurn) {
+					return;
+				}
 				Field lastField = board.getField(lastTurn);
 				// overwrite the last field
 				board.setField(FieldGenerator.create(cpuColor.getOpposite()
 						.getPrimitive(), lastField.getPosition(), lastField
 						.getIndex()));
-				p = new PredictionHavannah(board, lastTurn);
+				// overwrite the last turn
+				List<Turn> turns = p.getTurnsSoFar();
+				if (null != turns && turns.size() > 0) {
+					turns.set(
+							turns.size() - 1,
+							new Turn(RowConstant.parse(lastTurn,
+									board.getBoardSize()), RowConstant
+									.parseToCoordNumber(lastTurn,
+											board.getBoardSize()), cpuColor
+									.getOpposite()));
+				}
+				p = new PredictionHavannah(board, lastTurn, turns);
 				cpuColor = cpuColor.getOpposite();
 				if (p.isWinWhite()) {
 					win(StoneColor.WHITE);

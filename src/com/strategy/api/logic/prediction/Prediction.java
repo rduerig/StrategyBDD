@@ -1,8 +1,11 @@
 package com.strategy.api.logic.prediction;
 
+import java.util.List;
+
 import com.strategy.api.HasDebugFlag;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.util.StoneColor;
+import com.strategy.util.Turn;
 
 /**
  * @author Ralph Dürig
@@ -68,5 +71,11 @@ public interface Prediction extends HasDebugFlag {
 	 * @return {@link Evaluation} for black's situation
 	 */
 	Evaluation getEvaluationBlack();
+
+	/**
+	 * 
+	 * @return a list of {@link Turn}s that were played so far
+	 */
+	List<Turn> getTurnsSoFar();
 
 }
