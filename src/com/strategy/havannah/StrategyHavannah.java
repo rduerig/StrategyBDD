@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Iterables;
 import com.strategy.api.board.Board;
+import com.strategy.api.interpreter.GtpInterpreter;
 import com.strategy.api.interpreter.InterpreterManager;
 import com.strategy.api.interpreter.StrategyInterpreter;
 import com.strategy.api.logic.prediction.Prediction;
@@ -46,27 +47,35 @@ public class StrategyHavannah {
 		// Output.setDebug(PredictionHavannah.class, true);
 		Preferences.createInstance(args);
 
-		Board board;
-		int boardSize = Preferences.getInstance().getBoardSize();
-		int[][] rawBoard = PrimitiveBoardProvider.getBoard(boardSize);
-		List<Turn> turns = Preferences.getInstance().getTurns();
-		StoneColor cpuColor;
-		Prediction p;
-		if (null == turns || turns.isEmpty()) {
-			board = BoardHavannah.createInstance(rawBoard, boardSize);
-			cpuColor = StoneColor.WHITE;
-			p = new PredictionHavannah(board);
+		Thread interpreter;
+		if (!Preferences.getInstance().isModeInterpreter()) {
+			// System.err.println("loading gtp interpreter");
+			interpreter = new GtpInterpreter();
 		} else {
-			board = BoardHavannah.createInstance(rawBoard, boardSize, turns);
-			Turn last = Iterables.getLast(turns);
-			cpuColor = last.getColor();
-			int lastIndex = board.getField(last.getCoord(),
-					last.getCoordNumber()).getIndex();
-			p = new PredictionHavannah(board, lastIndex);
+			Board board;
+			int boardSize = Preferences.getInstance().getBoardSize();
+			int[][] rawBoard = PrimitiveBoardProvider.getBoard(boardSize);
+			List<Turn> turns = Preferences.getInstance().getTurns();
+			StoneColor cpuColor;
+			Prediction p;
+			if (null == turns || turns.isEmpty()) {
+				board = BoardHavannah.createInstance(rawBoard, boardSize);
+				cpuColor = StoneColor.WHITE;
+				p = new PredictionHavannah(board);
+			} else {
+				board = BoardHavannah
+						.createInstance(rawBoard, boardSize, turns);
+				Turn last = Iterables.getLast(turns);
+				cpuColor = last.getColor();
+				int lastIndex = board.getField(last.getCoord(),
+						last.getCoordNumber()).getIndex();
+				p = new PredictionHavannah(board, lastIndex, turns);
+			}
+			// System.err.println("loading interactive interpreter");
+			interpreter = new StrategyInterpreter(board, cpuColor, p);
 		}
-
-		Thread interpreter = new StrategyInterpreter(board, cpuColor, p);
 		InterpreterManager.scheduleInterpreter(interpreter);
+
 	}
 
 }

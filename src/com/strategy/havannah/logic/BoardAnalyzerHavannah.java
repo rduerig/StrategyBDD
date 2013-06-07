@@ -141,6 +141,9 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	private BDD getBDDForPosition(Position p, StoneColor color) {
 		Field field = board.getField(p.getRow(), p.getCol());
+		if (null == field) {
+			return fac.zero();
+		}
 		ColorDependingBDDFieldVisitor visitor = new ColorDependingBDDFieldVisitor(
 				fac, color);
 		field.accept(visitor);

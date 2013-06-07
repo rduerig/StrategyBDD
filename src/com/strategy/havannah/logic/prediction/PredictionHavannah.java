@@ -4,9 +4,11 @@ import static com.strategy.util.Output.print;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
@@ -16,7 +18,9 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
+import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
+import com.strategy.util.Turn;
 
 /**
  * Uses a {@link Situation} and its {@link Evaluation} to predict where to set
@@ -31,14 +35,17 @@ public class PredictionHavannah implements Prediction {
 	private boolean winWhite = false;
 	private boolean winBlack = false;
 	private Integer lastTurn = null;
+	private List<Turn> turnsSoFar;
 
 	public PredictionHavannah(Board board) {
-		init(board);
+		this.turnsSoFar = Lists.newArrayList();
+		init(board, null);
 	}
 
-	public PredictionHavannah(Board board, int lastTurn) {
+	public PredictionHavannah(Board board, int lastTurn, List<Turn> turns) {
 		this.lastTurn = lastTurn;
-		init(board);
+		this.turnsSoFar = Lists.newArrayList();
+		init(board, turns);
 	}
 
 	@Override
@@ -57,6 +64,21 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
+	public Evaluation getEvaluationWhite() {
+		return createEvaluationWhite();
+	}
+
+	@Override
+	public Evaluation getEvaluationBlack() {
+		return createEvaluationBlack();
+	}
+
+	@Override
+	public List<Turn> getTurnsSoFar() {
+		return turnsSoFar;
+	}
+
+	@Override
 	public Integer doCalculatedTurn(StoneColor colorToUse) {
 
 		// has someone already won?
@@ -66,16 +88,8 @@ public class PredictionHavannah implements Prediction {
 			return null;
 		}
 
-		Evaluation evalWhite = new EvaluationHavannah(
-				situationWhite.getBoard(),
-				situationWhite.getWinningConditionBridge(),
-				situationWhite.getWinningConditionFork(),
-				situationBlack.getWinningConditionOpponentHasRing());
-		Evaluation evalBlack = new EvaluationHavannah(
-				situationBlack.getBoard(),
-				situationBlack.getWinningConditionBridge(),
-				situationBlack.getWinningConditionFork(),
-				situationWhite.getWinningConditionOpponentHasRing());
+		Evaluation evalWhite = createEvaluationWhite();
+		Evaluation evalBlack = createEvaluationBlack();
 
 		debug(evalWhite, evalBlack);
 
@@ -90,12 +104,14 @@ public class PredictionHavannah implements Prediction {
 					.getBestIndex();
 		}
 
-		situationWhite.update(best, colorToUse);
-		situationBlack.update(best, colorToUse);
+		// situationWhite.update(best, colorToUse);
+		// situationBlack.update(best, colorToUse);
+		//
+		// lastTurn = best;
+		//
+		// checkVictory();
 
-		lastTurn = best;
-
-		checkVictory();
+		doManualTurn(best, colorToUse);
 
 		return best;
 	}
@@ -115,6 +131,11 @@ public class PredictionHavannah implements Prediction {
 		situationWhite.update(fieldIndex, playerColor);
 		situationBlack.update(fieldIndex, playerColor);
 
+		Board b = situationWhite.getBoard();
+		int bSize = b.getBoardSize();
+		turnsSoFar
+				.add(new Turn(RowConstant.parse(fieldIndex, bSize), RowConstant
+						.parseToCoordNumber(fieldIndex, bSize), playerColor));
 		lastTurn = fieldIndex;
 
 		checkVictory();
@@ -122,7 +143,7 @@ public class PredictionHavannah implements Prediction {
 
 	// ************************************************************************
 
-	private void init(Board board) {
+	private void init(Board board, List<Turn> turns) {
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 
 		situationWhite = new SituationHavannah(analyzer, board,
@@ -134,6 +155,32 @@ public class PredictionHavannah implements Prediction {
 
 		analyzer.done();
 
+		if (null != turns && !turns.isEmpty()) {
+			for (Turn turn : turns) {
+				doManualTurn(
+						board.getField(turn.getCoord(), turn.getCoordNumber())
+								.getIndex(), turn.getColor());
+			}
+		}
+
+	}
+
+	private Evaluation createEvaluationWhite() {
+		Evaluation evalWhite = new EvaluationHavannah(
+				situationWhite.getBoard(),
+				situationWhite.getWinningConditionBridge(),
+				situationWhite.getWinningConditionFork(),
+				situationBlack.getWinningConditionOpponentHasRing());
+		return evalWhite;
+	}
+
+	private Evaluation createEvaluationBlack() {
+		Evaluation evalBlack = new EvaluationHavannah(
+				situationBlack.getBoard(),
+				situationBlack.getWinningConditionBridge(),
+				situationBlack.getWinningConditionFork(),
+				situationWhite.getWinningConditionOpponentHasRing());
+		return evalBlack;
 	}
 
 	private void checkVictory() {
