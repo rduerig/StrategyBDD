@@ -1,13 +1,31 @@
-#!/usr/bin/ruby -W0
+# !/usr/bin/ruby -W0
 
+require 'java'
+require './target/uber-StrategyBdd-0.0.1-SNAPSHOT.jar'
 require './lg-interface'
+
+module GtpWrapperModule
+	import "com.strategy.api.board"
+	import "com.strategy.api.logic.prediction"
+	import "com.strategy.havannah.board"
+	import "com.strategy.util"
+	import "com.strategy.api.logic"
+	import "com.google.common.base"
+	import "com.google.common.collect"
+	import "com.strategy.havannah.logic.prediction"
+end
 
 class GTPClient
 	def initialize(cmdline)
 		@io=IO.popen(cmdline,'w+')
+		#puts @io.readlines
+		#puts $stdout.readlines
 	end
 	def cmd(c)
-		@io.puts c.strip
+		puts "Trying write to interpreter: "
+		#@io.puts c.strip
+		puts c.strip
+		#puts @io.readlines
 		return @io.gets("\n\n")
 	end
 	def close
@@ -24,26 +42,11 @@ class HBdd < LittleGolemInterface
 		@supported_gametypes = /Hav/
 		super(LOGIN,PSW,BOSS_ID)
 	end
-
-	def call_castro(size, moves)
-		gtp = GTPClient.new("java -jar ./target/uber-StrategyBdd-0.0.1-SNAPSHOT.jar -s #{size} -m #{moves}")
-		gtp.cmd("hguicoords")
-		gtp.cmd("swap 0")
-		gtp.cmd("boardsize #{size}")
-		case size
-			when 4 then gtp.cmd('player_params -g 1')
-			when 6 then gtp.cmd('player_params -R 50')
-			when 7 then gtp.cmd('player_params -R 60 -p 1')
-			when 8 then gtp.cmd('player_params -R 70 -p 1')
-			when 9 then gtp.cmd('player_params -R 100 -p 1')
-			when 10 then gtp.cmd('player_params -R 130 -p 1')
-		end
-		gtp.cmd("time -r 0 -g 0 -m #{size*60} -f 0")
-		gtp.cmd("playgame " + moves.select{|m| m != 'swap'}.join(' '))
-		response = gtp.cmd('genmove')
-		gtp.cmd('quit')
-		sleep 1
-		gtp.close
+	def call_hbdd(size, moves)
+		wrapper = GtpWrapperModule::GtpWrapper.new
+		wrapper.setBoardSize(size)
+		wrapper.setMoves(moves.join(' '))
+		response = wrapper.getResponse
 		return response[2..-3] #trim off the = and newlines
 	end
 	def parse_make_moves(gameids)
@@ -53,7 +56,7 @@ class HBdd < LittleGolemInterface
 				moves = game.scan(/;[B|W]\[(.+?)\]/).flatten.map{|m| coord_HGF2GA(m, size) }.compact
 
 				self.log("Game #{g}, size #{size}: #{moves.join(' ')}")
-				newmove = self.call_castro(size, moves)
+				newmove = self.call_hbdd(size, moves)
 				self.log("Game #{g}, size #{size}: response #{newmove}")
 				self.post_move(g, coord_GA2LG(newmove, size))
 			else

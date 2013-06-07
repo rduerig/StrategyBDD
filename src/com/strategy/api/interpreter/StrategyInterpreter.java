@@ -78,6 +78,8 @@ public class StrategyInterpreter extends Thread {
 		out.print(cpuColor.getOpposite() + "s turn: ");
 		line = scanner.nextLine();
 
+		System.out.println(line);
+
 		if (CMD_REDO.equals(line)) {
 			line = lastLine;
 		} else {

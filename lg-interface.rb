@@ -33,7 +33,7 @@ end
 
 class Logger
 def log(msg)
-puts((('[' + Time::now.strftime('%d-%m-%y %H:%M:%S') + '] ').yellow) + msg)
+puts((('[' + Time::now.strftime('%d-%m-%y %H:%M:%S') + '] ')) + msg)
 end
 end
 
@@ -85,7 +85,7 @@ return (resp.code == '200' ? resp.body : nil)
 end
 def login
 path='/jsp/login/index.jsp'
-resp = @http.get(path, nil)
+resp = @http.get(path, {})
 @headers = {'Cookie' => resp['set-cookie'] }#, 'Content-Type' => 'using application/x-www-form-urlencoded' }
 
 data = "login=#{@login}&password=#{@psw}"
@@ -189,10 +189,11 @@ module HavannahCoords
 def coord_GA2LG(c,size)
 #centered at oo
 return c if c == 'swap'
+#return c if c.nil?
 c.upcase!
 
-y = ('o'[0] - size + (c[0]-64) ).chr
-x = ('o'[0] + size - c[1..2].to_i).chr
+y = ('o'.ord - size + (c[0].ord - 64) ).chr
+x = ('o'.ord + size - c[1..2].to_i).chr
 return y+x
 end
 def coord_GA2HGF(c,size)
@@ -200,13 +201,12 @@ return c if c == 'swap'
 c.upcase!
 y = c[0].chr
 x = c[1..2].to_i
-x -= (y[0]-64)-size if size < (y[0]-64)
+x -= (y[0].ord-64)-size if size < (y[0].ord-64)
 return y + x.to_s
 end
 def coord_HGF2GA(c,size)
 return c if c == 'swap'
 c.upcase!
-#y = c[0].chr
 y = c[0].chr
 x = c[1..2].to_i
 x += (y[0].ord-64)-size if size < (y[0].ord-64)
