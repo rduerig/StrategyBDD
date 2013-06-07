@@ -1,5 +1,6 @@
 package com.strategy.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -44,6 +45,12 @@ public class Preferences {
 			if (null != parser) {
 				parBoardSize = parser.getBoardSize();
 				parTurns = parser.getTurns();
+			} else {
+				parser = getParserWithStrings(params);
+				if (null != parser) {
+					parBoardSize = parser.getBoardSize();
+					parTurns = parser.getTurns();
+				}
 			}
 		} catch (FileNotFoundException e) {
 		} catch (GameParserException e) {
@@ -138,6 +145,25 @@ public class Preferences {
 		}
 
 		InputStream in = new FileInputStream(hgfFile);
+
+		GameParser parser = new GameParser(in);
+
+		return parser;
+	}
+
+	private static GameParser getParserWithStrings(List<String> params)
+			throws GameParserException {
+		int parTurnsIndex = Iterables.indexOf(params,
+				new ParameterTurnsStringPredicate());
+		if (parTurnsIndex < 0 || parTurnsIndex >= params.size() - 1) {
+			return null;
+		}
+		String value = Iterables.<String> get(params, parTurnsIndex + 1);
+		if (null == value || value.trim().isEmpty()) {
+			return null;
+		}
+		InputStream in = new ByteArrayInputStream(value.getBytes());
+
 		GameParser parser = new GameParser(in);
 
 		return parser;
@@ -176,6 +202,18 @@ public class Preferences {
 		@Override
 		public boolean apply(String input) {
 			return input.equals(PAR_TURNS);
+		}
+
+	}
+
+	private static class ParameterTurnsStringPredicate implements
+			Predicate<String> {
+
+		private static final String PAR_TURNS_STRING = "-m";
+
+		@Override
+		public boolean apply(String input) {
+			return input.equals(PAR_TURNS_STRING);
 		}
 
 	}

@@ -26,7 +26,7 @@ class HBdd < LittleGolemInterface
 	end
 
 	def call_castro(size, moves)
-		gtp = GTPClient.new("java -jar ./target/uber-StrategyBdd-0.0.1-SNAPSHOT.jar")
+		gtp = GTPClient.new("java -jar ./target/uber-StrategyBdd-0.0.1-SNAPSHOT.jar -s #{size} -m #{moves}")
 		gtp.cmd("hguicoords")
 		gtp.cmd("swap 0")
 		gtp.cmd("boardsize #{size}")
