@@ -1,7 +1,7 @@
 # !/usr/bin/ruby -W0
 
 require 'java'
-require './target/uber-StrategyBdd-0.0.1-SNAPSHOT.jar'
+require './dist/hbdd.jar'
 require './lg-interface'
 
 module GtpWrapperModule
