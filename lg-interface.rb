@@ -189,13 +189,12 @@ module HavannahCoords
 def coord_GA2LG(c,size)
 #centered at oo
 return c if c == 'swap'
-#return c if c.nil?
 c.upcase!
-
 y = ('o'.ord - size + (c[0].ord - 64) ).chr
 x = ('o'.ord + size - c[1..2].to_i).chr
 return y+x
 end
+
 def coord_GA2HGF(c,size)
 return c if c == 'swap'
 c.upcase!
@@ -204,6 +203,7 @@ x = c[1..2].to_i
 x -= (y[0].ord-64)-size if size < (y[0].ord-64)
 return y + x.to_s
 end
+
 def coord_HGF2GA(c,size)
 return c if c == 'swap'
 c.upcase!
@@ -212,6 +212,7 @@ x = c[1..2].to_i
 x += (y[0].ord-64)-size if size < (y[0].ord-64)
 return y + x.to_s
 end
+
 def test_coords
 coord_GA2LG('D4',4) == 'oo' or raise "GA2LG not centered"
 coord_GA2LG('B2',4) == 'mq' or raise "GA2LG fails on 1"

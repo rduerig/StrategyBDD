@@ -6,6 +6,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
+import com.strategy.api.field.Field;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
@@ -39,15 +40,16 @@ public class GtpWrapper {
 			p = new PredictionHavannah(board);
 		} else {
 			Turn last = Iterables.getLast(turns);
-			Integer lastIndex = board.getField(last.getCoord(),
-					last.getCoordNumber()).getIndex();
+			Field field = board
+					.getField(last.getCoord(), last.getCoordNumber());
+			Integer lastIndex = field.getIndex();
 			p = new PredictionHavannah(board, lastIndex, turns);
 		}
 	}
 
 	public String getResponse() {
 		if (null == board || null == p) {
-			return "? empty \n\n";
+			return "?";
 		}
 
 		List<Turn> turnsSoFar = p.getTurnsSoFar();
@@ -61,15 +63,13 @@ public class GtpWrapper {
 		}
 
 		if (null != move) {
-			return "= "
+			return ""
 					+ RowConstant.parse(move, board.getBoardSize())
-					+ ""
 					+ RowConstant
-							.parseToCoordNumber(move, board.getBoardSize())
-					+ "\n\n";
+							.parseToCoordNumber(move, board.getBoardSize());
 		}
 
-		return "? empty \n\n";
+		return "?";
 	}
 
 	// ************************************************************************
