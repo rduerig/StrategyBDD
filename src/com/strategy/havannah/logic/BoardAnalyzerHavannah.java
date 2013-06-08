@@ -65,24 +65,30 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	private BDD getPathTransitiveClosure(Position p, Position q,
 			StoneColor color) {
 		int i = rows * cols - 1;
-		return recursiveTransitiveClosure(i, p, q, color);
+		if (!cache.isCached(color, p, q, i)) {
+			BDD path = recursiveTransitiveClosure(i, p, q, color);
+			cache.store(color, p, q, i, path);
+		}
+
+		return cache.restore(color, p, q, i);
 	}
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
 			StoneColor color) {
 		if (i == 0) {
-			if (p.isNeighbour(q) && board.isValidField(p)
-					&& board.isValidField(q)) {
-				return getBDDForPosition(p, color).andWith(
-						getBDDForPosition(q, color));
-			} else {
-				return fac.zero();
+			if (!cache.isCached(color, p, q, i)) {
+				if (p.isNeighbour(q) && board.isValidField(p)
+						&& board.isValidField(q)) {
+					cache.store(color, p, q, i, getBDDForPosition(p, color)
+							.andWith(getBDDForPosition(q, color)));
+				} else {
+					cache.store(color, p, q, i, fac.zero());
+				}
 			}
+			return cache.restore(color, p, q, i);
 		}
 
-		if (cache.isCached(color, p, q, i)) {
-			return cache.restore(color, p, q, i);
-		} else {
+		if (!cache.isCached(color, p, q, i)) {
 			Position m = getValidIntermediatePosition(i);
 			BDD pq = cache.isCached(color, p, q, i - 1) ? cache.restore(color,
 					p, q, i - 1) : cache.store(color, p, q, i - 1,
@@ -96,8 +102,9 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 			BDD pmandmq = pm.andWith(mq);
 			BDD result = pq.orWith(pmandmq);
 			cache.store(color, p, q, i, result.id());
-			return result;
 		}
+
+		return cache.restore(color, p, q, i);
 	}
 
 	private Position getValidIntermediatePosition(int i) {
