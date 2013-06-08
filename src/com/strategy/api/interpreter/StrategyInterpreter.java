@@ -4,6 +4,7 @@ import static com.strategy.api.interpreter.InterpreterCommands.CMD_BLACK;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_COORDINATES;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_EXIT;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_HELP;
+import static com.strategy.api.interpreter.InterpreterCommands.CMD_NODES;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_NUMBERS;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_PREFIX;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_RATING;
@@ -23,6 +24,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
+import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.RowConstant;
@@ -77,8 +79,6 @@ public class StrategyInterpreter extends Thread {
 
 		out.print(cpuColor.getOpposite() + "s turn: ");
 		line = scanner.nextLine();
-
-		System.out.println(line);
 
 		checkCmdRedo(line);
 
@@ -157,9 +157,15 @@ public class StrategyInterpreter extends Thread {
 
 			if (CMD_RATING.equals(line)) {
 				out.println("Rating WHITE:");
-				pringEvaluation(p.getEvaluationWhite());
+				printEvaluation(p.getEvaluationWhite());
 				out.println("Rating BLACK:");
-				pringEvaluation(p.getEvaluationBlack());
+				printEvaluation(p.getEvaluationBlack());
+				return;
+			}
+
+			if (CMD_NODES.equals(line)) {
+				printNodes(p.getWhite());
+				printNodes(p.getBlack());
 				return;
 			}
 
@@ -346,8 +352,16 @@ public class StrategyInterpreter extends Thread {
 		out.println("The selected field is either not valid or not empty. Please choose another one.");
 	}
 
-	private void pringEvaluation(Evaluation eval) {
+	private void printEvaluation(Evaluation eval) {
 		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
+	}
+
+	private void printNodes(Situation sit) {
+		out.println("Nodes " + sit.getStoneColor().name() + ": ");
+		out.println("Bridge: " + sit.getWinningConditionBridge().nodeCount());
+		out.println("Fork: " + sit.getWinningConditionFork().nodeCount());
+		out.println("Ring for opponent: "
+				+ sit.getWinningConditionOpponentHasRing().nodeCount());
 	}
 
 	private void printUsage() {
@@ -371,6 +385,8 @@ public class StrategyInterpreter extends Thread {
 		out.println("\t "
 				+ CMD_RATING
 				+ " \t prints the board with each field's rating according to the computed evaluation");
+		out.println("\t " + CMD_NODES
+				+ " \t prints information about the nodes the BDDs are using");
 		out.println("\t :[NUMBER] \t sets a stone to the field specified by the given number");
 		out.println("\t :[CHARACTER][NUMBER] \t sets a stone to the field specified by the given hgf-coordinate");
 		out.println("\t [NUMBER] \t sets a stone to the field specified by the given number and let the cpu answer");

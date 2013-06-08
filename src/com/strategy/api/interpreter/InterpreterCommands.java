@@ -16,7 +16,6 @@ public class InterpreterCommands {
 	static final String CMD_RATING = CMD_PREFIX + "rating";
 	static final String CMD_SWAP = CMD_PREFIX + "swap";
 	static final String CMD_SWITCH = CMD_PREFIX + "switch";
-	static final String CMD_NODES_WHITE = CMD_PREFIX + "nodesWhite";
-	static final String CMD_NODES_BLACK = CMD_PREFIX + "nodesBlack";
+	static final String CMD_NODES = CMD_PREFIX + "nodes";
 
 }

@@ -29,6 +29,8 @@ public class BddFactoryProvider {
 				dimension * 200000);
 		result.setVarNum(dimension);
 		result.reorderVerbose(0);
+		result.setMaxIncrease(10000000);
+		result.setIncreaseFactor(0.5);
 		return result;
 	}
 

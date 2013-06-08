@@ -20,6 +20,9 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	private BddCache cache;
 	private Board board;
 
+	// private int rec;
+	// private int allrec = 0;
+
 	public BoardAnalyzerHavannah(Board board) {
 		this.board = board;
 		initFactory(board);
@@ -31,13 +34,19 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	public BDD getPath(Position p, Position q, StoneColor color) {
 		// cache = new BddCacheHavannah();
 		// cache.free();
+		// rec = 0;
 		BDD path = getPathTransitiveClosure(p, q, color);
+		// calculating for opposite color - just fills the cache
+		getPathTransitiveClosure(p, q, color.getOpposite());
+		// System.out.println("recursions from " + p + " to " + q + ": " + rec);
+		// allrec += rec;
 		// fac.reorder(BDDFactory.REORDER_SIFT);
 		return path;
 	}
 
 	public void done() {
 		// fac.done();
+		// System.out.println("all recursions: " + allrec);
 		cache.free();
 	}
 
@@ -67,7 +76,9 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		int i = rows * cols - 1;
 		if (!cache.isCached(color, p, q, i)) {
 			BDD path = recursiveTransitiveClosure(i, p, q, color);
-			cache.store(color, p, q, i, path);
+			cache.store(color, p, q, i, path.id());
+			cache.store(color, q, p, i, path.id());
+			path.free();
 		}
 
 		return cache.restore(color, p, q, i);
@@ -75,14 +86,19 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
 			StoneColor color) {
+		// rec++;
 		if (i == 0) {
 			if (!cache.isCached(color, p, q, i)) {
 				if (p.isNeighbour(q) && board.isValidField(p)
 						&& board.isValidField(q)) {
-					cache.store(color, p, q, i, getBDDForPosition(p, color)
-							.andWith(getBDDForPosition(q, color)));
+					BDD bdd = getBDDForPosition(p, color).andWith(
+							getBDDForPosition(q, color));
+					cache.store(color, p, q, i, bdd.id());
+					cache.store(color, q, p, i, bdd.id());
+					bdd.free();
 				} else {
 					cache.store(color, p, q, i, fac.zero());
+					cache.store(color, q, p, i, fac.zero());
 				}
 			}
 			return cache.restore(color, p, q, i);
@@ -90,18 +106,51 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 		if (!cache.isCached(color, p, q, i)) {
 			Position m = getValidIntermediatePosition(i);
-			BDD pq = cache.isCached(color, p, q, i - 1) ? cache.restore(color,
-					p, q, i - 1) : cache.store(color, p, q, i - 1,
-					recursiveTransitiveClosure(i - 1, p, q, color));
-			BDD pm = cache.isCached(color, p, m, i - 1) ? cache.restore(color,
-					p, m, i - 1) : cache.store(color, p, m, i - 1,
-					recursiveTransitiveClosure(i - 1, p, m, color));
-			BDD mq = cache.isCached(color, m, q, i - 1) ? cache.restore(color,
-					m, q, i - 1) : cache.store(color, m, q, i - 1,
-					recursiveTransitiveClosure(i - 1, m, q, color));
+			BDD pq;
+			if (!cache.isCached(color, p, q, i - 1)) {
+				pq = cache.store(color, p, q, i - 1,
+						recursiveTransitiveClosure(i - 1, p, q, color));
+				cache.store(color, q, p, i - 1, pq.id());
+			} else {
+				pq = cache.restore(color, p, q, i - 1);
+			}
+			// BDD pq = cache.isCached(color, p, q, i - 1) ?
+			// cache.restore(color,
+			// p, q, i - 1) : cache.store(color, p, q, i - 1,
+			// recursiveTransitiveClosure(i - 1, p, q, color));
+			BDD pm;
+			if (!cache.isCached(color, p, m, i - 1)) {
+				pm = cache.store(color, p, m, i - 1,
+						recursiveTransitiveClosure(i - 1, p, m, color));
+				cache.store(color, m, p, i - 1, pm.id());
+			} else {
+				pm = cache.restore(color, p, m, i - 1);
+			}
+			// BDD pm = cache.isCached(color, p, m, i - 1) ?
+			// cache.restore(color,
+			// p, m, i - 1) : cache.store(color, p, m, i - 1,
+			// recursiveTransitiveClosure(i - 1, p, m, color));
+			BDD mq;
+			if (!cache.isCached(color, m, q, i - 1)) {
+				mq = cache.store(color, m, q, i - 1,
+						recursiveTransitiveClosure(i - 1, m, q, color));
+				cache.store(color, q, m, i - 1, mq.id());
+			} else {
+				mq = cache.restore(color, m, q, i - 1);
+			}
+			// BDD mq = cache.isCached(color, m, q, i - 1) ?
+			// cache.restore(color,
+			// m, q, i - 1) : cache.store(color, m, q, i - 1,
+			// recursiveTransitiveClosure(i - 1, m, q, color));
 			BDD pmandmq = pm.andWith(mq);
 			BDD result = pq.orWith(pmandmq);
+			// BDD result = recursiveTransitiveClosure(i - 1, p, q,
+			// color).orWith(
+			// recursiveTransitiveClosure(i - 1, p, m, color).andWith(
+			// recursiveTransitiveClosure(i - 1, m, q, color)));
 			cache.store(color, p, q, i, result.id());
+			cache.store(color, q, p, i, result.id());
+			result.free();
 		}
 
 		return cache.restore(color, p, q, i);

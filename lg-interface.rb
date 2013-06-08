@@ -126,6 +126,7 @@ if invites = get_invitations
 a = invites.slice(/Your decision.*?table>/m).scan(/<td>(.*?)<\/td>/m).flatten
 opponent = a[1]
 gametype = a[2]
+self.log("Got invitaton for #{gametype}")
 if gametype =~ @supported_gametypes
 answer='accept'
 else
@@ -147,7 +148,7 @@ gameids=gamesheet.slice(/your turn.*your opponent/m).scan(/gid=(\d+)?/).flatten
 parse_make_moves(gameids)
 return true;
 else
-self.log("No games found where it's my turn, sleep")
+#self.log("No games found where it's my turn, sleep")
 return false
 end
 end
