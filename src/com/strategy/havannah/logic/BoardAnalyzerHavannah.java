@@ -68,33 +68,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		return recursiveTransitiveClosure(i, p, q, color);
 	}
 
-	// private BDD recursiveTransitiveClosure(int i, Position p, Position q,
-	// StoneColor color) {
-	// if (i == 0) {
-	// if (p.isNeighbour(q) && board.isValidField(p)
-	// && board.isValidField(q)) {
-	// return getBDDForPosition(p, color).andWith(
-	// getBDDForPosition(q, color));
-	// } else {
-	// return fac.zero();
-	// }
-	// }
-	//
-	// Position m = getValidIntermediatePosition(i);
-	//
-	// BDD pq = cache.isCached(color, p, q, i) ? cache.restore(color, p, q, i)
-	// : cache.store(color, p, q, i,
-	// recursiveTransitiveClosure(i - 1, p, q, color));
-	// BDD pm = cache.isCached(color, p, m, i) ? cache.restore(color, p, m, i)
-	// : cache.store(color, p, m, i,
-	// recursiveTransitiveClosure(i - 1, p, m, color));
-	// BDD mq = cache.isCached(color, m, q, i) ? cache.restore(color, m, q, i)
-	// : cache.store(color, m, q, i,
-	// recursiveTransitiveClosure(i - 1, m, q, color));
-	// BDD pmandmq = pm.andWith(mq);
-	// return pq.orWith(pmandmq);
-	// }
-
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
 			StoneColor color) {
 		if (i == 0) {

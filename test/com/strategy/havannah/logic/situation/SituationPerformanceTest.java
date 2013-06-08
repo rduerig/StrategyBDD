@@ -12,6 +12,7 @@ import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.Output;
+import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 /**
@@ -23,6 +24,7 @@ public class SituationPerformanceTest {
 	public static void before() {
 		System.setProperty("bdd", "bdd");
 		Output.setDebug(BridgeConditionCalculator.class, true);
+		Preferences.getInstance().setGenerateFiles(true);
 	}
 
 	@After
@@ -57,7 +59,7 @@ public class SituationPerformanceTest {
 				.createInstance(TestBoardProvider.BOARD_5, 5);
 		System.out.println(board.toIndexString());
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
-		new SituationHavannah(analyzer, board, StoneColor.WHITE);
+		new SituationHavannah(analyzer, board, StoneColor.BLACK);
 	}
 
 	@Test(timeout = 60000)

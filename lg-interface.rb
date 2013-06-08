@@ -33,7 +33,7 @@ end
 
 class Logger
 def log(msg)
-puts((('[' + Time::now.strftime('%d-%m-%y %H:%M:%S') + '] ')) + msg)
+puts((('[' + Time::now.strftime('%d-%m-%y %H:%M:%S') + '] ').yellow) + msg)
 end
 end
 
@@ -71,6 +71,7 @@ return (resp.code == '200' ? resp.body : nil)
 end
 def reply_invitation(inv_id,answer)
 path="/Invitation.action?#{answer}=&invid=#{inv_id}"
+#self.log(path)
 resp = @http.get(path, @headers)
 return (resp.code == '200' ? resp.body : nil)
 end
@@ -130,10 +131,13 @@ answer='accept'
 else
 answer='refuse'
 end
-self.send_message(@boss_id,"New invitation","#{answer} #{gametype} from #{opponent}")
 self.log("#{answer} #{gametype} from #{opponent}".green)
-inv_id = a[5].scan(/invid=(\d*)?/m)[0]
+inv_id = a[5].scan(/invid=(\d*)?/m)[0].slice(0)
 reply_invitation(inv_id, answer)
+self.send_message(@boss_id,"New invitation","#{answer} #{gametype} from #{opponent}")
+#self.log("#{answer} #{gametype} from #{opponent}".green)
+#inv_id = a[5].scan(/invid=(\d*)?/m)[0]
+#reply_invitation(inv_id, answer)
 end
 end
 

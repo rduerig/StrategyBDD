@@ -79,14 +79,28 @@ public class GtpWrapper {
 		Iterable<String> split = splitter.split(moves);
 		StoneColor color = StoneColor.BLACK;
 		for (String move : split) {
-			String coordLetterStr = move.substring(0, 1);
-			String coordNumberStr = move.substring(1);
-			int coordNumber = Integer.parseInt(coordNumberStr);
+			Turn turn;
+			if (move.equals("swap")) {
+				if (result.isEmpty()) {
+					// swap must actually always be second move
+					continue;
+				} else {
+					Turn last = Iterables.getLast(result);
+					turn = new Turn(last.getCoord(), last.getCoordNumber(),
+							color);
+					result.set(0, turn);
+				}
+			} else {
+				String coordLetterStr = move.substring(0, 1);
+				String coordNumberStr = move.substring(1);
+				int coordNumber = Integer.parseInt(coordNumberStr);
 
-			RowConstant coord = RowConstant.parseToConstant(coordLetterStr);
+				RowConstant coord = RowConstant.parseToConstant(coordLetterStr);
 
-			Turn turn = new Turn(coord, coordNumber, color);
-			result.add(turn);
+				turn = new Turn(coord, coordNumber, color);
+				result.add(turn);
+			}
+
 			color = color.getOpposite();
 		}
 		return result;

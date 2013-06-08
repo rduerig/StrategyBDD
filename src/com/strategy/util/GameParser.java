@@ -130,6 +130,10 @@ public class GameParser {
 		}
 
 		if (s.contains(VALUE_SWAP)) {
+			if (fields.isEmpty() || fields.size() > 1) {
+				// no swap allowed
+				return;
+			}
 			Turn last = Iterables.getLast(fields);
 			StoneColor newColor;
 			if (last.getColor().equals(StoneColor.WHITE)) {
@@ -138,7 +142,7 @@ public class GameParser {
 				newColor = StoneColor.WHITE;
 			}
 
-			fields.add(new Turn(last.getCoord(), last.getCoordNumber(),
+			fields.set(0, new Turn(last.getCoord(), last.getCoordNumber(),
 					newColor));
 		}
 

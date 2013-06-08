@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.strategy.api.HasDebugFlag;
 import com.strategy.api.logic.evaluation.Evaluation;
+import com.strategy.api.logic.situation.Situation;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
 
@@ -77,5 +78,17 @@ public interface Prediction extends HasDebugFlag {
 	 * @return a list of {@link Turn}s that were played so far
 	 */
 	List<Turn> getTurnsSoFar();
+
+	/**
+	 * 
+	 * @return the current {@link Situation} for color white
+	 */
+	Situation getWhite();
+
+	/**
+	 * 
+	 * @return the current {@link Situation} for color black
+	 */
+	Situation getBlack();
 
 }

@@ -80,11 +80,7 @@ public class StrategyInterpreter extends Thread {
 
 		System.out.println(line);
 
-		if (CMD_REDO.equals(line)) {
-			line = lastLine;
-		} else {
-			lastLine = line;
-		}
+		checkCmdRedo(line);
 
 		if (null == line || line.trim().isEmpty()) {
 			return;
@@ -93,12 +89,12 @@ public class StrategyInterpreter extends Thread {
 		if (line.startsWith(CMD_PREFIX)) {
 
 			if (CMD_EXIT.equals(line)) {
-				exit();
+				cmdExit();
 				return;
 			}
 
 			if (InterpreterCommands.CMD_SWITCH.equals(line)) {
-				cpuColor = cpuColor.getOpposite();
+				cmdSwitch();
 				return;
 			}
 
@@ -107,24 +103,7 @@ public class StrategyInterpreter extends Thread {
 				if (null == lastTurn) {
 					return;
 				}
-				Field lastField = board.getField(lastTurn);
-				// overwrite the last field
-				board.setField(FieldGenerator.create(cpuColor.getOpposite()
-						.getPrimitive(), lastField.getPosition(), lastField
-						.getIndex()));
-				// overwrite the last turn
-				List<Turn> turns = p.getTurnsSoFar();
-				if (null != turns && turns.size() > 0) {
-					turns.set(
-							turns.size() - 1,
-							new Turn(RowConstant.parse(lastTurn,
-									board.getBoardSize()), RowConstant
-									.parseToCoordNumber(lastTurn,
-											board.getBoardSize()), cpuColor
-									.getOpposite()));
-				}
-				p = new PredictionHavannah(board, lastTurn, turns);
-				cpuColor = cpuColor.getOpposite();
+				cmdSwap(lastTurn);
 				if (p.isWinWhite()) {
 					win(StoneColor.WHITE);
 					return;
@@ -138,12 +117,7 @@ public class StrategyInterpreter extends Thread {
 
 			if (line.equalsIgnoreCase(CMD_BLACK)
 					|| line.equalsIgnoreCase(CMD_WHITE)) {
-				StoneColor parsed = StoneColor.parse(line.substring(1));
-				if (!StoneColor.EMPTY.equals(parsed)) {
-					cpuColor = parsed.getOpposite();
-				}
-
-				out.println("You are now " + cpuColor.getOpposite());
+				cmdChangeColor(line);
 				return;
 			}
 
@@ -152,7 +126,7 @@ public class StrategyInterpreter extends Thread {
 				if (null != next) {
 					printCpuTurn(next, board.getBoardSize(),
 							cpuColor.getOpposite());
-					cpuColor = cpuColor.getOpposite();
+					cmdSwitch();
 					return;
 				} else {
 					if (p.isWinWhite()) {
@@ -207,7 +181,7 @@ public class StrategyInterpreter extends Thread {
 				}
 
 				p.doManualTurn(fieldIndex, cpuColor.getOpposite());
-				cpuColor = cpuColor.getOpposite();
+				cmdSwitch();
 				if (p.isWinWhite()) {
 					win(StoneColor.WHITE);
 					return;
@@ -260,7 +234,51 @@ public class StrategyInterpreter extends Thread {
 		}
 	}
 
+	private void cmdChangeColor(String line) {
+		StoneColor parsed = StoneColor.parse(line.substring(1));
+		if (!StoneColor.EMPTY.equals(parsed)) {
+			cpuColor = parsed.getOpposite();
+		}
+
+		out.println("You are now " + cpuColor.getOpposite());
+	}
+
+	private void cmdSwap(Integer lastTurn) {
+		Field lastField = board.getField(lastTurn);
+		// overwrite the last field
+		board.setField(FieldGenerator.create(cpuColor.getOpposite()
+				.getPrimitive(), lastField.getPosition(), lastField.getIndex()));
+		// overwrite the last turn
+		List<Turn> turns = p.getTurnsSoFar();
+		if (null != turns && turns.size() > 0) {
+			turns.set(
+					turns.size() - 1,
+					new Turn(RowConstant.parse(lastTurn, board.getBoardSize()),
+							RowConstant.parseToCoordNumber(lastTurn,
+									board.getBoardSize()), cpuColor
+									.getOpposite()));
+		}
+		p = new PredictionHavannah(board, lastTurn, turns);
+		cmdSwitch();
+	}
+
+	private void cmdSwitch() {
+		cpuColor = cpuColor.getOpposite();
+	}
+
 	// ************************************************************************
+
+	private void cmdExit() {
+		exit();
+	}
+
+	private void checkCmdRedo(String line) {
+		if (CMD_REDO.equals(line)) {
+			line = lastLine;
+		} else {
+			lastLine = line;
+		}
+	}
 
 	private Integer readIndex(String line, Board board) {
 		int limit = board.getRows() * board.getColumns();

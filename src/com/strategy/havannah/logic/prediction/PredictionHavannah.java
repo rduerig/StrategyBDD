@@ -79,6 +79,16 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
+	public Situation getWhite() {
+		return situationWhite;
+	}
+
+	@Override
+	public Situation getBlack() {
+		return situationBlack;
+	}
+
+	@Override
 	public Integer doCalculatedTurn(StoneColor colorToUse) {
 
 		// has someone already won?

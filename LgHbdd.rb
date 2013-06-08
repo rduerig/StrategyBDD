@@ -17,7 +17,7 @@ class HBdd < LittleGolemInterface
 	include HavannahCoords
 	LOGIN='hbdd'
 	PSW='nojyraca'
-	BOSS_ID='34687'
+	BOSS_ID='34282'
 	def initialize
 		@supported_gametypes = /Hav/
 		super(LOGIN,PSW,BOSS_ID)
