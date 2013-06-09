@@ -16,7 +16,7 @@ import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
-import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
+import com.strategy.havannah.logic.evaluation.EvaluationMultiple;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
@@ -176,7 +176,7 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	private Evaluation createEvaluationWhite() {
-		Evaluation evalWhite = new EvaluationHavannah(
+		Evaluation evalWhite = new EvaluationMultiple(
 				situationWhite.getBoard(),
 				situationWhite.getWinningConditionBridge(),
 				situationWhite.getWinningConditionFork(),
@@ -185,7 +185,7 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	private Evaluation createEvaluationBlack() {
-		Evaluation evalBlack = new EvaluationHavannah(
+		Evaluation evalBlack = new EvaluationMultiple(
 				situationBlack.getBoard(),
 				situationBlack.getWinningConditionBridge(),
 				situationBlack.getWinningConditionFork(),
