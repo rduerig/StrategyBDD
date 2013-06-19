@@ -1,5 +1,8 @@
 package com.strategy.prototype.logic;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
 import com.strategy.api.logic.Position;
 
 /**
@@ -91,6 +94,11 @@ public class PositionSquare implements Position {
 	@Override
 	public Position getSouthEast() {
 		return null;
+	}
+
+	@Override
+	public List<Position> getNeighbors() {
+		return Lists.newArrayList(getNorth(), getEast(), getSouth(), getWest());
 	}
 
 	// ************************************************************************

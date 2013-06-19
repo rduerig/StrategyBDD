@@ -16,7 +16,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.evaluation.Evaluation;
-import com.strategy.util.EmptyPositionFilter;
+import com.strategy.util.predicates.EmptyPositionFilter;
 
 /**
  * @author Ralph Dürig

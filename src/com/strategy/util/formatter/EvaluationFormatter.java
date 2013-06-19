@@ -1,4 +1,4 @@
-package com.strategy.util;
+package com.strategy.util.formatter;
 
 import java.text.NumberFormat;
 

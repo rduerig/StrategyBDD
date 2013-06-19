@@ -1,5 +1,7 @@
 package com.strategy.api.logic;
 
+import java.util.List;
+
 public interface Position {
 
 	public abstract boolean isNeighbour(Position other);
@@ -29,5 +31,7 @@ public interface Position {
 	public abstract Position getWest();
 
 	public abstract Position getSouthEast();
+
+	public abstract List<Position> getNeighbors();
 
 }

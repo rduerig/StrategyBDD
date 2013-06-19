@@ -2,8 +2,8 @@ package com.strategy.havannah.logic.situation;
 
 import static com.strategy.util.Output.print;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -16,6 +16,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.util.StoneColor;
+import com.strategy.util.predicates.ValidPositionFilter;
 
 public class RingConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
@@ -39,10 +40,10 @@ public class RingConditionCalculator implements ConditionCalculator,
 	private void calculateResult(BoardAnalyzer analyzer, Board board) {
 		Collection<Position> allPos = board.getPositions();
 
-		ArrayList<Position> allInnerPos = Lists
-				.newArrayList(filterInnerPositions(allPos, board));
+		List<Position> allInnerPos = Lists.newArrayList(filterInnerPositions(
+				allPos, board));
 
-		ArrayList<Position> outerPositions = Lists.newArrayList(allPos);
+		List<Position> outerPositions = Lists.newArrayList(allPos);
 		Iterables.removeAll(outerPositions, allInnerPos);
 
 		print("outer: " + outerPositions.toString(),
@@ -53,10 +54,8 @@ public class RingConditionCalculator implements ConditionCalculator,
 
 		for (Position innerPos : allInnerPos) {
 			BDD innerPosReachableFromOut = analyzer.getFactory().zero();
-			ArrayList<Position> neighbours = Lists.newArrayList(
-					innerPos.getSouth(), innerPos.getSouthWest(),
-					innerPos.getNorthWest(), innerPos.getNorth(),
-					innerPos.getNorthEast(), innerPos.getSouthEast());
+			List<Position> neighbours = Lists.newArrayList(Iterables.filter(
+					innerPos.getNeighbors(), new ValidPositionFilter(board)));
 			for (Position outerPos : outerPositions) {
 				BDD outerPosCanReachInnerPos = analyzer.getFactory().zero();
 				for (Position neighbour : neighbours) {

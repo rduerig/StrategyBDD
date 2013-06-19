@@ -3,7 +3,10 @@
  */
 package com.strategy.havannah.logic;
 
+import java.util.List;
+
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import com.strategy.api.logic.Position;
 
 /**
@@ -153,6 +156,12 @@ public class PositionHexagon implements Position {
 	@Override
 	public Position getWest() {
 		return null;
+	}
+
+	@Override
+	public List<Position> getNeighbors() {
+		return Lists.newArrayList(getNorth(), getNorthEast(), getSouthEast(),
+				getSouth(), getSouthWest(), getNorthWest());
 	}
 
 	// ************************************************************************

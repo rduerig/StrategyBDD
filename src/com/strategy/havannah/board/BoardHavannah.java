@@ -13,11 +13,11 @@ import com.strategy.api.field.EmptyField;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.havannah.logic.PositionHexagon;
-import com.strategy.util.EvaluationFormatter;
 import com.strategy.util.FieldGenerator;
-import com.strategy.util.FieldIndexFormatter;
 import com.strategy.util.RowConstant;
 import com.strategy.util.Turn;
+import com.strategy.util.formatter.EvaluationFormatter;
+import com.strategy.util.formatter.FieldIndexFormatter;
 
 /**
  * Represents a hexagonal board for the game Havannah.<br>
