@@ -62,7 +62,7 @@ public class ForkConditionCalculator implements ConditionCalculator,
 										.andWith(
 												analyzer.getPath(pos2, pos3,
 														color));
-								result = result.id().orWith(path);
+								result = result.orWith(path);
 							}
 						}
 					}

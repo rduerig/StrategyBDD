@@ -25,12 +25,15 @@ public class BddFactoryProvider {
 
 	private static BDDFactory createBddFactory(Board board) {
 		int dimension = board.getRows() * board.getColumns();
-		BDDFactory result = BDDFactory.init(dimension * 200000,
-				dimension * 200000);
+		BDDFactory result = BDDFactory.init(dimension * 100000,
+				dimension * 100000);
+		// BDDFactory result = MicroFactory.init(dimension * 200000,
+		// dimension * 200000);
 		result.setVarNum(dimension);
 		result.reorderVerbose(0);
 		result.setMaxIncrease(10000000);
 		result.setIncreaseFactor(0.5);
+		// result.setMaxNodeNum(10000000);
 		return result;
 	}
 

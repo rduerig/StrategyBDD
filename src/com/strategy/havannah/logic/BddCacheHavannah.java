@@ -26,7 +26,13 @@ public class BddCacheHavannah implements BddCache {
 	@Override
 	public BDD restore(StoneColor color, Position p, Position q, int i) {
 		stats.incrementRestores();
-		return cache.get(BddCacheIndex.getIndex(color, p, q, i)).id();
+		if (cache.containsKey(BddCacheIndex.getIndex(color, p, q, i))) {
+			return cache.get(BddCacheIndex.getIndex(color, p, q, i)).id();
+		} else if (cache.containsKey(BddCacheIndex.getIndex(color, q, p, i))) {
+			return cache.get(BddCacheIndex.getIndex(color, q, p, i)).id();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -35,13 +41,14 @@ public class BddCacheHavannah implements BddCache {
 		if (null == bdd) {
 			return null;
 		}
-		cache.put(BddCacheIndex.getIndex(color, p, q, i), bdd);
+		cache.put(BddCacheIndex.getIndex(color, p, q, i), bdd.id());
 		return bdd.id();
 	}
 
 	@Override
 	public boolean isCached(StoneColor color, Position p, Position q, int i) {
-		return cache.containsKey(BddCacheIndex.getIndex(color, p, q, i));
+		return cache.containsKey(BddCacheIndex.getIndex(color, p, q, i))
+				|| cache.containsKey(BddCacheIndex.getIndex(color, q, p, i));
 	}
 
 	@Override

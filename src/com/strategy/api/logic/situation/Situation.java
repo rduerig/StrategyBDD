@@ -10,11 +10,13 @@ import com.strategy.util.StoneColor;
  */
 public interface Situation {
 
-	BDD getWinningConditionFork();
+	// BDD getWinningConditionFork();
+	//
+	// BDD getWinningConditionBridge();
+	//
+	// BDD getWinningConditionOpponentHasRing();
 
-	BDD getWinningConditionBridge();
-
-	BDD getWinningConditionOpponentHasRing();
+	BDD getWinningCondition();
 
 	Board getBoard();
 
@@ -22,10 +24,10 @@ public interface Situation {
 
 	void update(int fieldIndex, StoneColor color);
 
-	boolean hasBridge();
-
-	boolean hasFork();
-
-	boolean hasOpponentRing();
+	// boolean hasBridge();
+	//
+	// boolean hasFork();
+	//
+	// boolean hasOpponentRing();
 
 }

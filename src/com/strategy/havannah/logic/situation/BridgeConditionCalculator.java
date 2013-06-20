@@ -65,7 +65,7 @@ public class BridgeConditionCalculator implements ConditionCalculator,
 				Output.print("path from " + corners[i] + " to " + corners[j],
 						BridgeConditionCalculator.class);
 				BDD path = analyzer.getPath(corners[i], corners[j], color);
-				result = result.id().orWith(path);
+				result = result.orWith(path);
 			}
 		}
 

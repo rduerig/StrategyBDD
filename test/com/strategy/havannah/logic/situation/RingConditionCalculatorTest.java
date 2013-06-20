@@ -18,7 +18,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
-import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
+import com.strategy.havannah.logic.evaluation.EvaluationWin;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
@@ -39,6 +39,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 				game.getBytes()));
 		Board board = BoardHavannah.createInstance(TestBoardProvider.BOARD_4,
 				parser.getBoardSize(), parser.getTurns());
+		System.out.println(board);
 
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
@@ -60,9 +61,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
 
-		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningConditionBridge(), sit.getWinningConditionFork(),
-				sit.getWinningConditionOpponentHasRing());
+		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -86,12 +85,8 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
-		Situation sitOpp = new SituationHavannah(analyzer, board,
-				StoneColor.WHITE);
 
-		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningConditionBridge(), sit.getWinningConditionFork(),
-				sitOpp.getWinningConditionOpponentHasRing());
+		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));

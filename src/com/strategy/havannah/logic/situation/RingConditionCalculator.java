@@ -67,15 +67,15 @@ public class RingConditionCalculator implements ConditionCalculator,
 								outerPos, neighbour, color);
 
 						outerPosCanReachInnerPos = outerPosCanReachInnerPos
-								.id().orWith(outerPosCanReachNeighbour);
+								.orWith(outerPosCanReachNeighbour);
 					}
 				}
-				innerPosReachableFromOut = innerPosReachableFromOut.id()
+				innerPosReachableFromOut = innerPosReachableFromOut
 						.orWith(outerPosCanReachInnerPos);
 			}
 
-			selfCanReachAllInnerPos = selfCanReachAllInnerPos.id().andWith(
-					innerPosReachableFromOut);
+			selfCanReachAllInnerPos = selfCanReachAllInnerPos
+					.andWith(innerPosReachableFromOut);
 		}
 
 		result = selfCanReachAllInnerPos.not();

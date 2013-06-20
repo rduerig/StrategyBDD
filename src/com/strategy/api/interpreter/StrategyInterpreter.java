@@ -358,10 +358,12 @@ public class StrategyInterpreter extends Thread {
 
 	private void printNodes(Situation sit) {
 		out.println("Nodes " + sit.getStoneColor().name() + ": ");
-		out.println("Bridge: " + sit.getWinningConditionBridge().nodeCount());
-		out.println("Fork: " + sit.getWinningConditionFork().nodeCount());
-		out.println("Ring for opponent: "
-				+ sit.getWinningConditionOpponentHasRing().nodeCount());
+		// out.println("Bridge: " +
+		// sit.getWinningConditionBridge().nodeCount());
+		// out.println("Fork: " + sit.getWinningConditionFork().nodeCount());
+		// out.println("Ring for opponent: "
+		// + sit.getWinningConditionOpponentHasRing().nodeCount());
+		out.println(sit.getWinningCondition().nodeCount());
 	}
 
 	private void printUsage() {

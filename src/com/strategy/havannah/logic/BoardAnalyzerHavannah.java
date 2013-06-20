@@ -80,11 +80,11 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 			StoneColor color) {
 		// int i = rows * cols - 1;
 		// int i = IntMath.log2(board.getBoardSize(), RoundingMode.HALF_UP);
-		int i = board.getBoardSize() * board.getBoardSize();
+		int i = 2 * board.getBoardSize() + 1;
 		if (!cache.isCached(color, p, q, i)) {
 			BDD path = recursiveTransitiveClosure(i, p, q, color);
-			cache.store(color, p, q, i, path.id());
-			cache.store(color, q, p, i, path.id());
+			cache.store(color, p, q, i, path);
+			// cache.store(color, q, p, i, path.id());
 			path.free();
 		}
 
@@ -100,12 +100,9 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 						&& board.isValidField(q)) {
 					BDD bdd = getBDDForPosition(p, color).andWith(
 							getBDDForPosition(q, color));
-					cache.store(color, p, q, i, bdd.id());
-					cache.store(color, q, p, i, bdd.id());
+					cache.store(color, p, q, i, bdd);
 					bdd.free();
 				} else {
-					// cache.store(color, p, q, i, fac.zero());
-					// cache.store(color, q, p, i, fac.zero());
 					return fac.zero();
 				}
 			}
@@ -117,13 +114,12 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 			if (!cache.isCached(color, p, q, i - 1)) {
 				pq = cache.store(color, p, q, i - 1,
 						recursiveTransitiveClosure(i - 1, p, q, color));
-				cache.store(color, q, p, i - 1, pq.id());
 			} else {
 				pq = cache.restore(color, p, q, i - 1);
 			}
 
 			// Position m = getValidIntermediatePosition(i);
-			BDD existsMi = fac.zero();
+			BDD result = null;
 			List<Position> neighbors = p.getNeighbors();
 			List<Position> validNeighbors = Lists.newArrayList(Iterables
 					.filter(neighbors, new ValidPositionFilter(board)));
@@ -132,7 +128,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 				if (!cache.isCached(color, p, m, i - 1)) {
 					pm = cache.store(color, p, m, i - 1,
 							recursiveTransitiveClosure(i - 1, p, m, color));
-					cache.store(color, m, p, i - 1, pm.id());
 				} else {
 					pm = cache.restore(color, p, m, i - 1);
 				}
@@ -140,18 +135,23 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 				if (!cache.isCached(color, m, q, i - 1)) {
 					mq = cache.store(color, m, q, i - 1,
 							recursiveTransitiveClosure(i - 1, m, q, color));
-					cache.store(color, q, m, i - 1, mq.id());
 				} else {
 					mq = cache.restore(color, m, q, i - 1);
 				}
-				BDD pmandmq = pm.andWith(mq);
-				existsMi = existsMi.orWith(pmandmq);
+				if (null == result) {
+					result = pq.orWith(pm.andWith(mq));
+					if (result.isOne()) {
+						break;
+					}
+				} else {
+					result = result.orWith(pm.andWith(mq));
+				}
+				if (result.isOne()) {
+					break;
+				}
 			}
 
-			// BDD result = pq.orWith(pmandmq);
-			BDD result = pq.orWith(existsMi);
-			cache.store(color, p, q, i, result.id());
-			cache.store(color, q, p, i, result.id());
+			cache.store(color, p, q, i, result);
 			result.free();
 		}
 

@@ -1,0 +1,20 @@
+#4 - all neighbors as intermediate nodes
+
+Start reordering
+End reordering. Went from 4589059 to 993278 nodes, gain = 78% (1.37172736E9 sec)
+Garbage collection #1: 9800003 nodes / 8806725 free / 0.447s / 0.447s total
+Start reordering
+Garbage collection #2: 9800003 nodes / 8445928 free / 0.492s / 0.939s total
+End reordering. Went from 3290015 to 1354075 nodes, gain = 58% (1.37172736E9 sec)
+Start reordering
+Garbage collection #3: 9800003 nodes / 7819511 free / 0.585s / 1.524s total
+End reordering. Went from 3582620 to 1980492 nodes, gain = 44% (1.37172736E9 sec)
+Start reordering
+Garbage collection #4: 9800003 nodes / 7819511 free / 0.588s / 2.112s total
+End reordering. Went from 1980492 to 1980492 nodes, gain = 0% (1.37172736E9 sec)
+Start reordering
+Garbage collection #5: 9800003 nodes / 7819511 free / 0.59s / 2.702s total
+End reordering. Went from 2033026 to 1980492 nodes, gain = 2% (1.37172736E9 sec)
+Start reordering
+Garbage collection #6: 9800003 nodes / 7819511 free / 0.589s / 3.291s total
+End reordering. Went from 2034266 to 1980492 nodes, gain = 2% (1.37172736E9 sec)

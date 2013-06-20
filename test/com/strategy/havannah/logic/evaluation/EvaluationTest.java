@@ -40,9 +40,7 @@ public class EvaluationTest extends AbstractTest {
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
 		// Situation sitOpp = new SituationHavannah(analyzerOpp, analyzer,
 		// board);
-		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningConditionFork(), analyzer.getFactory().zero(),
-				analyzer.getFactory().zero());
+		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
 
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
@@ -65,9 +63,7 @@ public class EvaluationTest extends AbstractTest {
 
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
-		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningConditionFork(), analyzer.getFactory().zero(),
-				analyzer.getFactory().zero());
+		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
 		analyzer.done();
 
 		// ConditionCalculator calc = new ForkConditionCalculator(analyzer,
@@ -85,7 +81,7 @@ public class EvaluationTest extends AbstractTest {
 
 		sit.update(actualBest, StoneColor.WHITE);
 		// result.restrictWith(analyzer.getFactory().ithVar(actualBest));
-		Assert.assertTrue(sit.getWinningConditionFork().isOne());
+		Assert.assertTrue(sit.getWinningCondition().isOne());
 		// Assert.assertTrue(result.isOne());
 	}
 
@@ -109,9 +105,7 @@ public class EvaluationTest extends AbstractTest {
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 		sit.update(46, StoneColor.WHITE);
-		Evaluation eval = new EvaluationHavannah(board,
-				sit.getWinningConditionBridge(), analyzer.getFactory().zero(),
-				analyzer.getFactory().zero());
+		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
 
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
