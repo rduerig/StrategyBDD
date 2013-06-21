@@ -16,12 +16,10 @@ import com.strategy.api.field.WhiteStone;
  */
 public class ColorDependingBDDFieldVisitor implements BDDFieldVisitor {
 
-	private final StoneColor color;
 	private BDD result;
 	private BDDFactory fac;
 
-	public ColorDependingBDDFieldVisitor(BDDFactory fac, StoneColor color) {
-		this.color = color;
+	public ColorDependingBDDFieldVisitor(BDDFactory fac) {
 		this.fac = fac;
 	}
 
@@ -41,20 +39,12 @@ public class ColorDependingBDDFieldVisitor implements BDDFieldVisitor {
 
 	@Override
 	public void visit(WhiteStone field) {
-		if (StoneColor.WHITE.equals(color)) {
-			result = fac.one();
-		} else {
-			result = fac.zero();
-		}
+		result = fac.one();
 	}
 
 	@Override
 	public void visit(BlackStone field) {
-		if (StoneColor.WHITE.equals(color)) {
-			result = fac.zero();
-		} else {
-			result = fac.one();
-		}
+		result = fac.zero();
 	}
 
 }

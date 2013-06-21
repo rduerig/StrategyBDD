@@ -90,7 +90,8 @@ public class SituationHavannah implements Situation {
 		board.setField(field);
 		// BDDFactory fac = winFork.getFactory();
 		BDDFactory fac = win.getFactory();
-		if (this.color.equals(color)) {
+		// if (this.color.equals(color)) {
+		if (StoneColor.WHITE.equals(color)) {
 			// winBridge.restrictWith(fac.ithVar(field.getIndex()));
 			// winFork.restrictWith(fac.ithVar(field.getIndex()));
 			// winOpponentHasRing.restrictWith(fac.ithVar(field.getIndex()));

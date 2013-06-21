@@ -36,7 +36,7 @@ public class GameParserTest {
 		Integer expectedSize = 4;
 		Assert.assertEquals(expectedSize, parser.getBoardSize());
 
-		int expectedTurns = 17;
+		int expectedTurns = 16;
 		Assert.assertEquals(expectedTurns, parser.getTurns().size());
 	}
 

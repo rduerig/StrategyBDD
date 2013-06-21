@@ -15,6 +15,8 @@ public interface BddCache extends HasDebugFlag {
 
 	/**
 	 * Returns a bdd that was cached before for the given {@link Position}s.
+	 * Note that it's assumed that the bdd for q and p means the same as the bdd
+	 * for p and q so the returned bdd may be the bdd for q and p.
 	 * 
 	 * @param p
 	 *            Position p
@@ -43,7 +45,8 @@ public interface BddCache extends HasDebugFlag {
 	BDD store(StoneColor color, Position p, Position q, int i, BDD bdd);
 
 	/**
-	 * Returns if a bdd is cached for the given {@link Position}s.
+	 * Returns if a bdd is cached for the given {@link Position}s in given order
+	 * or in reversed order.
 	 * 
 	 * @param p
 	 *            Position p

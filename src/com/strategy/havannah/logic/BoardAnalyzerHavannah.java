@@ -19,8 +19,6 @@ import com.strategy.util.predicates.ValidPositionFilter;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
-	private int rows;
-	private int cols;
 	private BDDFactory fac;
 	private BddCache cache;
 	private Board board;
@@ -31,8 +29,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	public BoardAnalyzerHavannah(Board board) {
 		this.board = board;
 		initFactory(board);
-		rows = board.getRows();
-		cols = board.getColumns();
 		cache = new BddCacheHavannah();
 	}
 
@@ -63,28 +59,16 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	// ************************************************************************
 
 	private void initFactory(Board board) {
-		// /*
-		// * Generate a BDD factory with variable numbers according to the
-		// board's
-		// * size.
-		// */
-		// int dimension = board.getRows() * board.getColumns();
-		// fac = MicroFactory.init(dimension * 100000, dimension * 100000);
-		// fac.setVarNum(dimension);
-		// fac.reorderVerbose(0);
-
 		fac = BddFactoryProvider.getOrCreateBddFactory(board);
 	}
 
 	private BDD getPathTransitiveClosure(Position p, Position q,
 			StoneColor color) {
-		// int i = rows * cols - 1;
 		// int i = IntMath.log2(board.getBoardSize(), RoundingMode.HALF_UP);
 		int i = 2 * board.getBoardSize() + 1;
 		if (!cache.isCached(color, p, q, i)) {
 			BDD path = recursiveTransitiveClosure(i, p, q, color);
 			cache.store(color, p, q, i, path);
-			// cache.store(color, q, p, i, path.id());
 			path.free();
 		}
 
@@ -96,12 +80,18 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		// rec++;
 		if (i == 0) {
 			if (!cache.isCached(color, p, q, i)) {
-				if (p.isNeighbour(q) && board.isValidField(p)
-						&& board.isValidField(q)) {
-					BDD bdd = getBDDForPosition(p, color).andWith(
-							getBDDForPosition(q, color));
-					cache.store(color, p, q, i, bdd);
-					bdd.free();
+				if (p.isNeighbour(q)) {
+					if (StoneColor.WHITE.equals(color)) {
+						BDD bdd = getBDDForPosition(p).andWith(
+								getBDDForPosition(q));
+						cache.store(color, p, q, i, bdd);
+						bdd.free();
+					} else {
+						BDD bdd = getBDDForPosition(p).not().andWith(
+								getBDDForPosition(q).not());
+						cache.store(color, p, q, i, bdd);
+						bdd.free();
+					}
 				} else {
 					return fac.zero();
 				}
@@ -118,7 +108,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 				pq = cache.restore(color, p, q, i - 1);
 			}
 
-			// Position m = getValidIntermediatePosition(i);
 			BDD result = null;
 			List<Position> neighbors = p.getNeighbors();
 			List<Position> validNeighbors = Lists.newArrayList(Iterables
@@ -158,25 +147,10 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 		return cache.restore(color, p, q, i);
 	}
 
-	private Position getValidIntermediatePosition(int i) {
-		Position m;
-		do {
-			m = PositionHexagon.get(i / rows, i % cols);
-			if (!board.isValidField(m)) {
-				i = i - 1;
-			}
-		} while (!board.isValidField(m) && i > 0);
-
-		return m;
-	}
-
-	private BDD getBDDForPosition(Position p, StoneColor color) {
+	private BDD getBDDForPosition(Position p) {
 		Field field = board.getField(p.getRow(), p.getCol());
-		if (null == field) {
-			return fac.zero();
-		}
 		ColorDependingBDDFieldVisitor visitor = new ColorDependingBDDFieldVisitor(
-				fac, color);
+				fac);
 		field.accept(visitor);
 		return visitor.getBDD();
 	}

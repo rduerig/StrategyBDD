@@ -54,6 +54,9 @@ public class BddCacheHavannah implements BddCache {
 	@Override
 	public void free() {
 		Output.print(stats.toString(), BddCacheHavannah.class);
+		for (BDD bdd : cache.values()) {
+			bdd.free();
+		}
 		cache.clear();
 	}
 

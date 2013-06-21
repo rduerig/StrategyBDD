@@ -18,7 +18,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.TestBoardProvider;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
-import com.strategy.havannah.logic.evaluation.EvaluationWin;
+import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
@@ -59,9 +59,9 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
-		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 
-		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
+		Evaluation eval = EvaluationHavannah.create(sit);
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -86,7 +86,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
 
-		Evaluation eval = new EvaluationWin(board, sit.getWinningCondition());
+		Evaluation eval = EvaluationHavannah.create(sit);
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));

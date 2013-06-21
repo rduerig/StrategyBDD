@@ -16,7 +16,7 @@ import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
-import com.strategy.havannah.logic.evaluation.EvaluationWin;
+import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
@@ -176,34 +176,16 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	private Evaluation createEvaluationWhite() {
-		// Evaluation evalWhite = new EvaluationWin(situationWhite.getBoard(),
-		// situationWhite.getWinningConditionBridge(),
-		// situationWhite.getWinningConditionFork(),
-		// situationBlack.getWinningConditionOpponentHasRing());
-		Evaluation evalWhite = new EvaluationWin(situationWhite.getBoard(),
-				situationWhite.getWinningCondition());
+		Evaluation evalWhite = EvaluationHavannah.create(situationWhite);
 		return evalWhite;
 	}
 
 	private Evaluation createEvaluationBlack() {
-		// Evaluation evalBlack = new EvaluationWin(situationBlack.getBoard(),
-		// situationBlack.getWinningConditionBridge(),
-		// situationBlack.getWinningConditionFork(),
-		// situationWhite.getWinningConditionOpponentHasRing());
-		Evaluation evalBlack = new EvaluationWin(situationBlack.getBoard(),
-				situationBlack.getWinningCondition());
+		Evaluation evalBlack = EvaluationHavannah.create(situationBlack);
 		return evalBlack;
 	}
 
 	private void checkVictory() {
-		// if (situationWhite.hasBridge() || situationWhite.hasFork()
-		// || situationBlack.hasOpponentRing()) {
-		// winWhite = true;
-		// }
-		// if (situationBlack.hasBridge() || situationBlack.hasFork()
-		// || situationWhite.hasOpponentRing()) {
-		// winBlack = true;
-		// }
 		if (situationWhite.getWinningCondition().isOne()) {
 			winWhite = true;
 		}
@@ -214,24 +196,12 @@ public class PredictionHavannah implements Prediction {
 
 	private void debugInit() {
 		print("init:\n", PredictionHavannah.class);
-		// print("WHITE opponent has ring is one: "
-		// + situationWhite.getWinningConditionOpponentHasRing().isOne(),
-		// PredictionHavannah.class);
-		// print("BLACK opponent has ring is one: "
-		// + situationBlack.getWinningConditionOpponentHasRing().isOne(),
-		// PredictionHavannah.class);
-		// print("WHITE win fork is one: "
-		// + situationWhite.getWinningConditionFork().isOne(),
-		// PredictionHavannah.class);
-		// print("BLACK win fork is one: "
-		// + situationBlack.getWinningConditionFork().isOne(),
-		// PredictionHavannah.class);
-		// print("WHITE win bridge is one: "
-		// + situationWhite.getWinningConditionBridge().isOne(),
-		// PredictionHavannah.class);
-		// print("BLACK win bridge is one: "
-		// + situationBlack.getWinningConditionBridge().isOne(),
-		// PredictionHavannah.class);
+		print("WHITE opponent winning condition is one: "
+				+ situationWhite.getWinningCondition().isOne(),
+				PredictionHavannah.class);
+		print("BLACK opponent winning condition is one: "
+				+ situationBlack.getWinningCondition().isOne(),
+				PredictionHavannah.class);
 	}
 
 	private void debug(Evaluation evalWhite, Evaluation evalBlack) {
