@@ -19,7 +19,7 @@ class HBdd < LittleGolemInterface
 	PSW='nojyraca'
 	BOSS_ID='34282'
 	def initialize
-		@supported_gametypes = /Havannah Size 4/
+		@supported_gametypes = /Havannah :: Size 4/
 		super(LOGIN,PSW,BOSS_ID)
 	end
 	def call_hbdd(size, moves)
