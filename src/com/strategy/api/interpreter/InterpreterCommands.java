@@ -17,5 +17,6 @@ public class InterpreterCommands {
 	static final String CMD_SWAP = CMD_PREFIX + "swap";
 	static final String CMD_SWITCH = CMD_PREFIX + "switch";
 	static final String CMD_NODES = CMD_PREFIX + "nodes";
+	static final String CMD_BDD = CMD_PREFIX + "bdd";
 
 }
