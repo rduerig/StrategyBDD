@@ -84,9 +84,9 @@ public class PrimitiveBoardProvider {
 			{ 1, 1, 0, 0, 0 } };
 
 	public static int[][] BOARD_2 = new int[][] {//
-	/*    */{ 0, 0, 1 },//
+	/*    */{ 0, 0, 3 },//
 			{ 0, 0, 0 },//
-			{ 1, 0, 0 } };
+			{ 3, 0, 0 } };
 
 	public static int[][] getBoard(int size) {
 		switch (size) {

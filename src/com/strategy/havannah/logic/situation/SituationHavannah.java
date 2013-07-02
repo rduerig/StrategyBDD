@@ -137,8 +137,13 @@ public class SituationHavannah implements Situation {
 		// computes bdd representation of the ring condition
 		// winOpponentHasRing = getRingCondition(analyzer);
 
-		win = getBridgeCondition(analyzer).orWith(getForkCondition(analyzer))
-				.orWith(getRingCondition(analyzer));
+		BDD b = getBridgeCondition(analyzer);
+		// System.out.println("bridge: " + b);
+		BDD f = getForkCondition(analyzer);
+		// System.out.println("fork: " + f);
+		BDD r = getRingCondition(analyzer);
+		// System.out.println("ring: " + r);
+		win = b.orWith(f).orWith(r);
 
 		try {
 			// analyzer.getFactory().save(getFileName() + "fork", winFork);

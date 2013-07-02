@@ -1,43 +1,86 @@
 package com.strategy.util;
 
-import java.math.BigInteger;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.List;
 
 import net.sf.javabdd.BDD;
-import net.sf.javabdd.BDDFactory;
-import net.sf.javabdd.MicroFactory;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.strategy.api.board.Board;
+import com.strategy.api.field.Field;
+import com.strategy.api.logic.BoardAnalyzer;
+import com.strategy.api.logic.situation.Situation;
+import com.strategy.havannah.board.BoardHavannah;
+import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.havannah.logic.situation.SituationHavannah;
 
 /**
  * @author Ralph Dürig
  */
 public class TestMain {
 
-	public static void main(String[] args) {
-		BDDFactory fac = MicroFactory.init(1000, 1000);
-		fac.setVarNum(3);
+	private static Joiner joiner = Joiner.on(", ");
 
-		BDD bdd = fac.ithVar(0).orWith(fac.ithVar(1)).orWith(fac.ithVar(2));
-		fac.extDomain(BigInteger.valueOf(3));
-		BDD bdd2 = fac.getDomain(0).set();
+	public static void main(String[] args) throws FileNotFoundException {
+		Preferences.getInstance().setGenerateFiles(true);
+		int size = 2;
+		System.setOut(new PrintStream("solution2.log"));
+		int[][] rawBoard = PrimitiveBoardProvider.getBoard(size);
+		Board board = BoardHavannah.createInstance(rawBoard, size);
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
+		BDD win = sit.getWinningCondition();
+		// System.out.println("win:" + win);
+		System.out.println("satCount: " + win.satCount());
+		System.out.println("pathCount: " + win.pathCount());
+		System.out.println("nodeCount: " + win.nodeCount());
 
-		BDD exist = fac.ithVar(0).exist(bdd);
+		// human readable output of solutions (playouts)
+		printBoards(win, size);
 
-		System.out.println(bdd.satCount());
-		System.out.println(bdd.nodeCount());
+		// latex output of solutions
+		printLatex(win, size);
+	}
 
-		System.out.println(bdd);
-		System.out.println();
+	// ************************************************************************
 
-		System.out.println(exist.satCount());
-		System.out.println(exist.nodeCount());
+	private static void printBoards(BDD win, int size) {
+		int[][] rawBoard = PrimitiveBoardProvider.getBoard(size);
+		for (Object o : win.allsat()) {
+			byte[] solution = (byte[]) o;
+			// System.out.println(Arrays.toString(solution));
+			Board cpBoard = BoardHavannah.createInstance(rawBoard, size);
+			for (int i = 0; i < solution.length; i++) {
+				if (solution[i] == 1) {
+					Field field = cpBoard.getField(i);
+					cpBoard.setField(FieldGenerator.create(1,
+							field.getPosition(), field.getIndex()));
+				}
+			}
+			System.out.println(cpBoard);
+		}
+	}
 
-		System.out.println(exist);
-		System.out.println();
-
-		System.out.println(bdd2.satCount());
-		System.out.println(bdd2.nodeCount());
-
-		System.out.println(bdd2);
-
+	private static void printLatex(BDD win, int size) {
+		StringBuilder sb;
+		for (Object o : win.allsat()) {
+			byte[] solution = (byte[]) o;
+			List<String> fields = Lists.newArrayList();
+			for (int i = 0; i < solution.length; i++) {
+				if (solution[i] == 1) {
+					fields.add(RowConstant.parseToCoordString(i, size));
+				}
+			}
+			sb = new StringBuilder();
+			sb.append("\\begin{HavannahBoard}[board size=2]\n");
+			sb.append("\\HStoneGroup[color=white]{");
+			sb.append(joiner.join(fields));
+			sb.append("}\n");
+			sb.append("\\end{HavannahBoard}");
+			System.out.println(sb.toString());
+		}
 	}
 
 }
