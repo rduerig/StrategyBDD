@@ -22,26 +22,29 @@ import com.strategy.havannah.logic.situation.SituationHavannah;
 public class TestMain {
 
 	private static Joiner joiner = Joiner.on(", ");
+	private static int SIZE = 2;
 
 	public static void main(String[] args) throws FileNotFoundException {
 		Preferences.getInstance().setGenerateFiles(true);
-		int size = 2;
-		System.setOut(new PrintStream("solution2.log"));
-		int[][] rawBoard = PrimitiveBoardProvider.getBoard(size);
-		Board board = BoardHavannah.createInstance(rawBoard, size);
+		Preferences.getInstance().setOut(
+				new PrintStream("operations" + SIZE + ".log"));
+		// System.setOut(new PrintStream("operations2.log"));
+		int[][] rawBoard = PrimitiveBoardProvider.getBoard(SIZE);
+		Board board = BoardHavannah.createInstance(rawBoard, SIZE);
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.WHITE);
-		BDD win = sit.getWinningCondition();
+		analyzer.done();
+		// BDD win = sit.getWinningCondition();
 		// System.out.println("win:" + win);
-		System.out.println("satCount: " + win.satCount());
-		System.out.println("pathCount: " + win.pathCount());
-		System.out.println("nodeCount: " + win.nodeCount());
+		// System.out.println("satCount: " + win.satCount());
+		// System.out.println("pathCount: " + win.pathCount());
+		// System.out.println("nodeCount: " + win.nodeCount());
 
 		// human readable output of solutions (playouts)
-		printBoards(win, size);
+		// printBoards(win, size);
 
 		// latex output of solutions
-		printLatex(win, size);
+		// printLatex(win, size);
 	}
 
 	// ************************************************************************

@@ -1,0 +1,6 @@
+bridge OR fork: 1 times, 1 msec, 760 nodes
+bf OR ring: 1 times, 0 msec, 87 nodes
+p and q: 61 times, 12 msec, 42 nodes
+not p and not q: 61 times, 0 msec, 42 nodes
+pm and mq: 11502 times, 97 msec, 109886 nodes
+pq or (pm and mq): 11502 times, 122 msec, 17584 nodes

@@ -15,6 +15,7 @@ import com.strategy.api.logic.Position;
 import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.StoneColor;
+import com.strategy.util.operation.Bdd;
 import com.strategy.util.predicates.ValidPositionFilter;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
@@ -22,6 +23,11 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	private BDDFactory fac;
 	private BddCache cache;
 	private Board board;
+
+	private Bdd logPandQ = Bdd.create("p and q");
+	private Bdd logNPandNQ = Bdd.create("not p and not q");
+	private Bdd logPMandMQ = Bdd.create("pm and mq");
+	private Bdd logPQorPMMQ = Bdd.create("pq or (pm and mq)");
 
 	// private int rec;
 	// private int allrec = 0;
@@ -48,6 +54,10 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 	public void done() {
 		// fac.done();
 		// System.out.println("all recursions: " + allrec);
+		logPandQ.log();
+		logNPandNQ.log();
+		logPMandMQ.log();
+		logPQorPMMQ.log();
 		cache.free();
 	}
 
@@ -82,12 +92,16 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 			if (!cache.isCached(color, p, q, i)) {
 				if (p.isNeighbour(q)) {
 					if (StoneColor.WHITE.equals(color)) {
-						BDD bdd = getBDDForPosition(p).andWith(
+						// BDD bdd = getBDDForPosition(p).andWith(
+						// getBDDForPosition(q));
+						BDD bdd = logPandQ.andLog(getBDDForPosition(p),
 								getBDDForPosition(q));
 						cache.store(color, p, q, i, bdd);
 						bdd.free();
 					} else {
-						BDD bdd = getBDDForPosition(p).not().andWith(
+						// BDD bdd = getBDDForPosition(p).not().andWith(
+						// getBDDForPosition(q).not());
+						BDD bdd = logNPandNQ.andLog(getBDDForPosition(p).not(),
 								getBDDForPosition(q).not());
 						cache.store(color, p, q, i, bdd);
 						bdd.free();
@@ -128,12 +142,15 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 					mq = cache.restore(color, m, q, i - 1);
 				}
 				if (null == result) {
-					result = pq.orWith(pm.andWith(mq));
+					// result = pq.orWith(pm.andWith(mq));
+					result = logPQorPMMQ.orLog(pq, logPMandMQ.andLog(pm, mq));
 					if (result.isOne()) {
 						break;
 					}
 				} else {
-					result = result.orWith(pm.andWith(mq));
+					// result = result.orWith(pm.andWith(mq));
+					result = logPQorPMMQ.orLog(result,
+							logPMandMQ.andLog(pm, mq));
 				}
 				if (result.isOne()) {
 					break;

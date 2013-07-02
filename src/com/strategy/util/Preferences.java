@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +29,13 @@ public class Preferences {
 	private static List<Turn> defaultTurns = null;
 	// defaults to interpreter mode
 	private static boolean defaultModeInterpreter = true;
+	private static PrintStream defaultOut = System.out;
 
 	private boolean generateFiles;
 	private final int boardSize;
 	private final List<Turn> turns;
 	private boolean modeInterpreter;
+	private PrintStream out;
 
 	public static Preferences createInstance(String[] args) {
 		if (null == args || 0 == args.length) {
@@ -79,6 +82,7 @@ public class Preferences {
 		this.boardSize = boardSize;
 		this.turns = turns;
 		this.modeInterpreter = modeInterpreter;
+		this.out = defaultOut;
 	}
 
 	/**
@@ -112,6 +116,21 @@ public class Preferences {
 	 */
 	public List<Turn> getTurns() {
 		return turns;
+	}
+
+	/**
+	 * @return the out
+	 */
+	public PrintStream getOut() {
+		return out;
+	}
+
+	/**
+	 * @param out
+	 *            the out to set
+	 */
+	public void setOut(PrintStream out) {
+		this.out = out;
 	}
 
 	// ************************************************************************

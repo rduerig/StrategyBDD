@@ -1,0 +1,7 @@
+bridge OR fork: 1 times, 0 msec, 0 nodes
+bf OR ring: 1 times, 0 msec, 0 nodes
+p and q: 19 times, 1 msec, 12 nodes
+not p and not q: 19 times, 0 msec, 12 nodes
+pm and mq: 912 times, 9 msec, 856 nodes
+pq or (pm and mq): 912 times, 10 msec, 172 nodes
+CacheStats{hitCount=2214, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}
