@@ -4,6 +4,8 @@ import net.sf.javabdd.BDD;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.Position;
 import com.strategy.util.Preferences;
@@ -16,12 +18,23 @@ public class BddCacheHavannah implements BddCache {
 
 	// private Map<BddCacheIndex, BDD> cache;
 	private Cache<BddCacheIndex, BDD> cache;
-	private BDDCacheStatus stats;
+
+	// private BDDCacheStatus stats;
 
 	public BddCacheHavannah() {
 		// cache = Maps.newHashMap();
 		// stats = new BDDCacheStatus();
-		cache = CacheBuilder.newBuilder().recordStats().softValues().build();
+		RemovalListener<BddCacheIndex, BDD> listener = new RemovalListener<BddCache.BddCacheIndex, BDD>() {
+			@Override
+			public void onRemoval(
+					RemovalNotification<BddCacheIndex, BDD> notification) {
+				notification.getValue().free();
+			}
+		};
+		// cache = CacheBuilder.newBuilder().recordStats().maximumSize(1)
+		// .removalListener(listener).build();
+		cache = CacheBuilder.newBuilder().recordStats()
+				.removalListener(listener).build();
 	}
 
 	@Override
@@ -63,6 +76,7 @@ public class BddCacheHavannah implements BddCache {
 				.containsKey(BddCacheIndex.getIndex(color, p, q, i))
 				|| cache.asMap().containsKey(
 						BddCacheIndex.getIndex(color, q, p, i));
+		// return false;
 	}
 
 	@Override

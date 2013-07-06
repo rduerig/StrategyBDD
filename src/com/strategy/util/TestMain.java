@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -22,9 +23,18 @@ import com.strategy.havannah.logic.situation.SituationHavannah;
 public class TestMain {
 
 	private static Joiner joiner = Joiner.on(", ");
-	private static int SIZE = 2;
+	private static int SIZE = 4;
 
 	public static void main(String[] args) throws FileNotFoundException {
+
+		profilingStrategyBdd();
+
+	}
+
+	// ************************************************************************
+	// profiling strategybdd
+
+	private static void profilingStrategyBdd() throws FileNotFoundException {
 		Preferences.getInstance().setGenerateFiles(true);
 		Preferences.getInstance().setOut(
 				new PrintStream("operations" + SIZE + ".log"));
@@ -46,8 +56,6 @@ public class TestMain {
 		// latex output of solutions
 		// printLatex(win, size);
 	}
-
-	// ************************************************************************
 
 	private static void printBoards(BDD win, int size) {
 		int[][] rawBoard = PrimitiveBoardProvider.getBoard(size);
@@ -84,6 +92,45 @@ public class TestMain {
 			sb.append("\\end{HavannahBoard}");
 			System.out.println(sb.toString());
 		}
+	}
+
+	// ************************************************************************
+	// profiling sample bdds
+
+	private static void profilingSampleBdds() throws FileNotFoundException {
+		BDDFactory fac = BDDFactory.init(100, 100);
+		fac.setVarNum(4);
+		fac.reorderVerbose(-1);
+
+		// BDD f = fac.ithVar(0).orWith(fac.ithVar(1));
+		// printDot(f, "tmp/f.dot");
+		// BDD g = fac.ithVar(2).orWith(fac.ithVar(3));
+		// printDot(g, "tmp/g.dot");
+		// BDD fAg = f.andWith(g);
+		// printDot(fAg, "tmp/fAg.dot");
+		// BDD fOg = f.orWith(g);
+		// printDot(fOg, "tmp/fOg.dot");
+
+		fac.setVarOrder(new int[] { 0, 1, 2, 3 });
+		BDD bdd = fac.ithVar(0).orWith(fac.ithVar(1)).orWith(fac.ithVar(2))
+				.orWith(fac.ithVar(3).orWith(fac.nithVar(3)));
+		System.out.println("sat: " + bdd.satCount());
+		System.out.println("before: " + bdd);
+		fac.printAll();
+		fac.printOrder();
+		// printDot(bdd, "tmp/reorderBefore.dot");
+		fac.setVarOrder(new int[] { 3, 1, 2, 0 });
+		fac.printAll();
+		fac.printOrder();
+		System.out.println("after: " + bdd);
+		// printDot(bdd, "tmp/reorderAfter.dot");
+	}
+
+	private static void printDot(BDD bdd, String filename)
+			throws FileNotFoundException {
+		PrintStream out = new PrintStream(filename);
+		System.setOut(out);
+		bdd.printDot();
 	}
 
 }
