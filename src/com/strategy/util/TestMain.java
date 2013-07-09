@@ -12,10 +12,11 @@ import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
+import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
-import com.strategy.havannah.logic.PositionHexagon;
+import com.strategy.havannah.logic.situation.BridgeConditionCalculator;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 
 /**
@@ -34,15 +35,13 @@ public class TestMain {
 				PrimitiveBoardProvider.getBoard(SIZE), SIZE);
 		System.out.println(b.toRowColString());
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(b);
-		// analyzer.getFactory().setVarOrder(
-		// new int[] { 4, 7, 1, 3, 0, 8, 5, 2, 6 });
-		BDD path = analyzer.getPath(PositionHexagon.get(2, 1),
-				PositionHexagon.get(0, 1), StoneColor.WHITE);
-		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFTITE);
+		ConditionCalculator calc = new BridgeConditionCalculator(analyzer, b,
+				StoneColor.WHITE);
+		BDD path = calc.getBdd();
 		System.out.println(b.toIndexString());
 		System.out.println(path);
 		analyzer.done();
-		PrintStream out = new PrintStream("tmp/paths2reordered.dot");
+		PrintStream out = new PrintStream("tmp/bridge2.dot");
 		System.setOut(out);
 		path.printDot();
 
