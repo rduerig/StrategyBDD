@@ -15,6 +15,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
+import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 
 /**
@@ -23,11 +24,27 @@ import com.strategy.havannah.logic.situation.SituationHavannah;
 public class TestMain {
 
 	private static Joiner joiner = Joiner.on(", ");
-	private static int SIZE = 4;
+	private static int SIZE = 2;
 
 	public static void main(String[] args) throws FileNotFoundException {
 
-		profilingStrategyBdd();
+		// profilingStrategyBdd();
+
+		Board b = BoardHavannah.createInstance(
+				PrimitiveBoardProvider.getBoard(SIZE), SIZE);
+		System.out.println(b.toRowColString());
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(b);
+		// analyzer.getFactory().setVarOrder(
+		// new int[] { 4, 7, 1, 3, 0, 8, 5, 2, 6 });
+		BDD path = analyzer.getPath(PositionHexagon.get(2, 1),
+				PositionHexagon.get(0, 1), StoneColor.WHITE);
+		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFTITE);
+		System.out.println(b.toIndexString());
+		System.out.println(path);
+		analyzer.done();
+		PrintStream out = new PrintStream("tmp/paths2reordered.dot");
+		System.setOut(out);
+		path.printDot();
 
 	}
 
