@@ -140,8 +140,8 @@ public class PathsIter implements PathCalculator {
 			reachmq = todo[m][q];
 		}
 		// todo[p][q] = reachpq.or(reachpm.and(reachmq));
-		todo[p][q] = logPQorPMMQ.orLog(reachpq,
-				logPMandMQ.andLog(reachpm, reachmq));
+		todo[p][q] = logPQorPMMQ.orLog(reachpq.id(),
+				logPMandMQ.andLog(reachpm.id(), reachmq.id()));
 	}
 
 	private void printMatrix(int V, BDD[][] reach) {

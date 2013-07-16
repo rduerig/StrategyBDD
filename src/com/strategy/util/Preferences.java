@@ -29,7 +29,7 @@ public class Preferences {
 	private static List<Turn> defaultTurns = null;
 	// defaults to interpreter mode
 	private static boolean defaultModeInterpreter = true;
-	private static PrintStream defaultOut = System.out;
+	private static PrintStream defaultOut = null;
 
 	private boolean generateFiles;
 	private final int boardSize;

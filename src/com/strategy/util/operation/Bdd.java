@@ -26,7 +26,7 @@ public class Bdd {
 
 	// ************************************************************************
 
-	public Bdd(PrintStream out, String caption) {
+	private Bdd(PrintStream out, String caption) {
 		this.out = out;
 		this.caption = caption;
 		sumDurations = 0;
@@ -43,6 +43,10 @@ public class Bdd {
 	}
 
 	public void log() {
+		// ignore if no output stream was given
+		if (null == out) {
+			return;
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(caption);
 		sb.append(": ");
