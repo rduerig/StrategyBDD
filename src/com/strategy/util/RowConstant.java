@@ -41,14 +41,14 @@ public enum RowConstant {
 	/**
 	 * @return the index
 	 */
-	public int getIndex() {
+	public int getLetterIndex() {
 		return index;
 	}
 
-	public static Integer parseToIndex(String s) {
+	public static Integer parseToLetterIndex(String s) {
 		for (RowConstant val : values()) {
 			if (val.name().equalsIgnoreCase(s)) {
-				return val.getIndex();
+				return val.getLetterIndex();
 			}
 		}
 
@@ -65,9 +65,9 @@ public enum RowConstant {
 		return null;
 	}
 
-	public static RowConstant getForIndex(int index) {
+	public static RowConstant getForLetterIndex(int index) {
 		for (RowConstant val : values()) {
-			if (val.getIndex() == index) {
+			if (val.getLetterIndex() == index) {
 				return val;
 			}
 		}
@@ -75,8 +75,8 @@ public enum RowConstant {
 		return null;
 	}
 
-	// c5 d4 e3
-	// b4 c4 d3 e2
+	// c5 d4 e3______
+	// b4 c4 d3 e2___
 	// a3 b3 c3 d2 e1
 	// ___a2 b2 c2 d1
 	// ______a1 b1 c1
@@ -88,7 +88,7 @@ public enum RowConstant {
 
 		int letterIndex = col - row + boardSize;
 
-		return getForIndex(letterIndex);
+		return getForLetterIndex(letterIndex);
 	}
 
 	public static Integer parseToCoordNumber(int fieldIndex, int boardSize) {
@@ -99,6 +99,16 @@ public enum RowConstant {
 		int withNumber = col > row ? dim - col : dim - row;
 
 		return withNumber;
+	}
+
+	public static String parseToCoordString(int fieldIndex, int boardSize) {
+		RowConstant coord = parse(fieldIndex, boardSize);
+		Integer coordNumber = parseToCoordNumber(fieldIndex, boardSize);
+		StringBuilder sb = new StringBuilder();
+		sb.append(coord.name().toLowerCase());
+		sb.append(coordNumber.toString());
+
+		return sb.toString();
 	}
 
 }

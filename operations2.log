@@ -1,0 +1,12 @@
+or bridge path: 15 times, 1 msec, 21 nodes
+or fork path: 0 times, 0 msec, 0 nodes
+ring: or outerPosCanReachInnerPos: 36 times, 1 msec, 6 nodes
+ring: or innerPosReachableFromOut: 6 times, 0 msec, 6 nodes
+ring: and selfCanReachAllInnerPos: 1 times, 0 msec, 6 nodes
+bridge OR fork: 1 times, 0 msec, 0 nodes
+bf OR ring: 1 times, 0 msec, 0 nodes
+p and q: 19 times, 1 msec, 12 nodes
+not p and not q: 19 times, 1 msec, 12 nodes
+pm and mq: 912 times, 11 msec, 856 nodes
+pq or (pm and mq): 912 times, 3 msec, 172 nodes
+CacheStats{hitCount=2214, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}

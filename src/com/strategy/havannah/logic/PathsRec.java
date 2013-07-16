@@ -1,0 +1,160 @@
+package com.strategy.havannah.logic;
+
+import java.util.List;
+
+import net.sf.javabdd.BDD;
+import net.sf.javabdd.BDDFactory;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.strategy.api.board.Board;
+import com.strategy.api.field.Field;
+import com.strategy.api.logic.BddCache;
+import com.strategy.api.logic.Position;
+import com.strategy.havannah.logic.BoardAnalyzerHavannah.PathCalculator;
+import com.strategy.util.ColorDependingBDDFieldVisitor;
+import com.strategy.util.StoneColor;
+import com.strategy.util.operation.Bdd;
+import com.strategy.util.predicates.ValidPositionFilter;
+
+/**
+ * @author Ralph Dürig
+ */
+public class PathsRec implements PathCalculator {
+	private BDDFactory fac;
+	private BddCache cache;
+	private Board board;
+
+	private Bdd logPandQ = Bdd.create("p and q");
+	private Bdd logNPandNQ = Bdd.create("not p and not q");
+	private Bdd logPMandMQ = Bdd.create("pm and mq");
+	private Bdd logPQorPMMQ = Bdd.create("pq or (pm and mq)");
+
+	/**
+	 * 
+	 */
+	public PathsRec(BDDFactory fac, Board board) {
+		this.fac = fac;
+		this.board = board;
+		cache = new BddCacheHavannah();
+	}
+
+	public BDD getPath(Position p, Position q, StoneColor color) {
+		BDD path = getPathTransitiveClosure(p, q, color);
+		getPathTransitiveClosure(p, q, color.getOpposite());
+		return path;
+	}
+
+	public void done() {
+		// fac.done();
+		// System.out.println("all recursions: " + allrec);
+		logPandQ.log();
+		logNPandNQ.log();
+		logPMandMQ.log();
+		logPQorPMMQ.log();
+		cache.free();
+	}
+
+	// ************************************************************************
+
+	private BDD getPathTransitiveClosure(Position p, Position q,
+			StoneColor color) {
+		// int i = IntMath.log2(board.getBoardSize(), RoundingMode.HALF_UP);
+		int i = 2 * board.getBoardSize() + 1;
+		if (!cache.isCached(color, p, q, i)) {
+			BDD path = recursiveTransitiveClosure(i, p, q, color);
+			cache.store(color, p, q, i, path);
+			path.free();
+		}
+
+		return cache.restore(color, p, q, i);
+	}
+
+	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
+			StoneColor color) {
+		// rec++;
+		if (i == 0) {
+			if (!cache.isCached(color, p, q, i)) {
+				if (p.isNeighbour(q)) {
+					if (StoneColor.WHITE.equals(color)) {
+						// BDD bdd = getBDDForPosition(p).andWith(
+						// getBDDForPosition(q));
+						BDD bdd = logPandQ.andLog(getBDDForPosition(p),
+								getBDDForPosition(q));
+						cache.store(color, p, q, i, bdd);
+						bdd.free();
+					} else {
+						// BDD bdd = getBDDForPosition(p).not().andWith(
+						// getBDDForPosition(q).not());
+						BDD bdd = logNPandNQ.andLog(getBDDForPosition(p).not(),
+								getBDDForPosition(q).not());
+						cache.store(color, p, q, i, bdd);
+						bdd.free();
+					}
+				} else {
+					return fac.zero();
+				}
+			}
+			return cache.restore(color, p, q, i);
+		}
+
+		if (!cache.isCached(color, p, q, i)) {
+			BDD pq;
+			if (!cache.isCached(color, p, q, i - 1)) {
+				pq = cache.store(color, p, q, i - 1,
+						recursiveTransitiveClosure(i - 1, p, q, color));
+			} else {
+				pq = cache.restore(color, p, q, i - 1);
+			}
+
+			BDD result = null;
+			List<Position> neighbors = p.getNeighbors();
+			List<Position> validNeighbors = Lists.newArrayList(Iterables
+					.filter(neighbors, new ValidPositionFilter(board)));
+			for (Position m : validNeighbors) {
+				BDD pm;
+				if (!cache.isCached(color, p, m, i - 1)) {
+					pm = cache.store(color, p, m, i - 1,
+							recursiveTransitiveClosure(i - 1, p, m, color));
+				} else {
+					pm = cache.restore(color, p, m, i - 1);
+				}
+				BDD mq;
+				if (!cache.isCached(color, m, q, i - 1)) {
+					mq = cache.store(color, m, q, i - 1,
+							recursiveTransitiveClosure(i - 1, m, q, color));
+				} else {
+					mq = cache.restore(color, m, q, i - 1);
+				}
+				if (null == result) {
+					// result = pq.orWith(pm.andWith(mq));
+					result = logPQorPMMQ.orLog(pq, logPMandMQ.andLog(pm, mq));
+					if (result.isOne()) {
+						break;
+					}
+				} else {
+					// result = result.orWith(pm.andWith(mq));
+					result = logPQorPMMQ.orLog(result,
+							logPMandMQ.andLog(pm, mq));
+				}
+				if (result.isOne()) {
+					break;
+				}
+			}
+
+			cache.store(color, p, q, i, result);
+			result.free();
+		}
+
+		return cache.restore(color, p, q, i);
+	}
+
+	private BDD getBDDForPosition(Position p) {
+		Field field = board.getField(p.getRow(), p.getCol());
+		ColorDependingBDDFieldVisitor visitor = new ColorDependingBDDFieldVisitor(
+				fac);
+		field.accept(visitor);
+		return visitor.getBDD();
+	}
+
+}

@@ -1,0 +1,192 @@
+Could not load BDD package buddy: Can't load library: /home/rayu/git/StrategyBDD/libbuddy.so
+Start reordering
+End reordering. Went from 330 to 161 nodes, gain = 51% (1.37275725E9 sec)
+Start reordering
+End reordering. Went from 161 to 161 nodes, gain = 0% (1.37275725E9 sec)
+Start reordering
+End reordering. Went from 211 to 169 nodes, gain = 19% (1.37275725E9 sec)
+satCount: 412.0
+pathCount: 26.0
+nodeCount: 21
+    . .
+   . . .
+    W W
+
+    . .
+   . . W
+    . W
+
+    . .
+   . W .
+    W W
+
+    . .
+   . W W
+    . W
+
+    . .
+   . W W
+    W .
+
+    . .
+   W . .
+    W .
+
+    . .
+   W . W
+    . W
+
+    . .
+   W . W
+    W .
+
+    . .
+   W W .
+    . W
+
+    . .
+   W W .
+    W .
+
+    . .
+   W W W
+    . .
+
+    . W
+   . . .
+    W W
+
+    . W
+   . . W
+    . .
+
+    . W
+   . W .
+    . W
+
+    . W
+   . W .
+    W .
+
+    . W
+   . W W
+    . .
+
+    . W
+   W . .
+    W .
+
+    . W
+   W . W
+    . .
+
+    . W
+   W W .
+    . .
+
+    W .
+   . . .
+    W W
+
+    W .
+   . . W
+    . W
+
+    W .
+   . W .
+    . W
+
+    W .
+   . W .
+    W .
+
+    W .
+   . W W
+    . .
+
+    W .
+   W . .
+    . .
+
+    W W
+   . . .
+    . .
+
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b2, a1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b2, c1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b2, c1, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a2, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a2, c1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a2, c1, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a2, b2, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a2, b2, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{a2, b2, c1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, a1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, c1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, b2, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, b2, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, b2, c1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, a2, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, a2, c1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{c2, a2, b2}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, a1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, c1, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, b2, b1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, b2, a1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, b2, c1}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, a2}
+\end{HavannahBoard}
+\begin{HavannahBoard}[board size=2]
+\HStoneGroup[color=white]{b3, c2}
+\end{HavannahBoard}

@@ -1,5 +1,6 @@
 package com.strategy.api.interpreter;
 
+import static com.strategy.api.interpreter.InterpreterCommands.CMD_BDD;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_BLACK;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_COORDINATES;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_EXIT;
@@ -80,7 +81,7 @@ public class StrategyInterpreter extends Thread {
 		out.print(cpuColor.getOpposite() + "s turn: ");
 		line = scanner.nextLine();
 
-		checkCmdRedo(line);
+		line = checkCmdRedo(line);
 
 		if (null == line || line.trim().isEmpty()) {
 			return;
@@ -166,6 +167,12 @@ public class StrategyInterpreter extends Thread {
 			if (CMD_NODES.equals(line)) {
 				printNodes(p.getWhite());
 				printNodes(p.getBlack());
+				return;
+			}
+
+			if (CMD_BDD.equals(line)) {
+				printBdd(p.getWhite());
+				printBdd(p.getBlack());
 				return;
 			}
 
@@ -278,11 +285,12 @@ public class StrategyInterpreter extends Thread {
 		exit();
 	}
 
-	private void checkCmdRedo(String line) {
+	private String checkCmdRedo(String line) {
 		if (CMD_REDO.equals(line)) {
-			line = lastLine;
+			return lastLine;
 		} else {
 			lastLine = line;
+			return line;
 		}
 	}
 
@@ -358,12 +366,12 @@ public class StrategyInterpreter extends Thread {
 
 	private void printNodes(Situation sit) {
 		out.println("Nodes " + sit.getStoneColor().name() + ": ");
-		// out.println("Bridge: " +
-		// sit.getWinningConditionBridge().nodeCount());
-		// out.println("Fork: " + sit.getWinningConditionFork().nodeCount());
-		// out.println("Ring for opponent: "
-		// + sit.getWinningConditionOpponentHasRing().nodeCount());
 		out.println(sit.getWinningCondition().nodeCount());
+	}
+
+	private void printBdd(Situation sit) {
+		out.println("BDD " + sit.getStoneColor().name() + ": ");
+		sit.getWinningCondition().printDot();
 	}
 
 	private void printUsage() {
@@ -389,6 +397,8 @@ public class StrategyInterpreter extends Thread {
 				+ " \t prints the board with each field's rating according to the computed evaluation");
 		out.println("\t " + CMD_NODES
 				+ " \t prints information about the nodes the BDDs are using");
+		out.println("\t " + CMD_BDD
+				+ " \t prints the currently used BDDs in dot graph notation");
 		out.println("\t :[NUMBER] \t sets a stone to the field specified by the given number");
 		out.println("\t :[CHARACTER][NUMBER] \t sets a stone to the field specified by the given hgf-coordinate");
 		out.println("\t [NUMBER] \t sets a stone to the field specified by the given number and let the cpu answer");

@@ -16,6 +16,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.util.StoneColor;
+import com.strategy.util.operation.Bdd;
 import com.strategy.util.predicates.ValidPositionFilter;
 
 public class RingConditionCalculator implements ConditionCalculator,
@@ -52,6 +53,15 @@ public class RingConditionCalculator implements ConditionCalculator,
 
 		BDD selfCanReachAllInnerPos = analyzer.getFactory().one();
 
+		Bdd logOrOuterPosCanReachInnerPos = Bdd
+				.create("ring: or opponent outerPosCanReachInnerPos");
+		Bdd logOrInnerPosReachableFromOut = Bdd
+				.create("ring: or opponent innerPosReachableFromOut");
+		Bdd logAndSelfCanReachAllInnerPos = Bdd
+				.create("ring: and opponent canReachAllInnerPos");
+		// Bdd logNotSelfCanReachAllInnerPos =
+		// Bdd.create("ring: not selfCanReachAllInnerPos");
+
 		for (Position innerPos : allInnerPos) {
 			BDD innerPosReachableFromOut = analyzer.getFactory().zero();
 			List<Position> neighbours = Lists.newArrayList(Iterables.filter(
@@ -66,20 +76,30 @@ public class RingConditionCalculator implements ConditionCalculator,
 						BDD outerPosCanReachNeighbour = analyzer.getPath(
 								outerPos, neighbour, color);
 
-						outerPosCanReachInnerPos = outerPosCanReachInnerPos
-								.orWith(outerPosCanReachNeighbour);
+						// outerPosCanReachInnerPos = outerPosCanReachInnerPos
+						// .orWith(outerPosCanReachNeighbour);
+						outerPosCanReachInnerPos = logOrOuterPosCanReachInnerPos
+								.orLog(outerPosCanReachInnerPos,
+										outerPosCanReachNeighbour);
 					}
 				}
-				innerPosReachableFromOut = innerPosReachableFromOut
-						.orWith(outerPosCanReachInnerPos);
+				// innerPosReachableFromOut = innerPosReachableFromOut
+				// .orWith(outerPosCanReachInnerPos);
+				innerPosReachableFromOut = logOrInnerPosReachableFromOut.orLog(
+						innerPosReachableFromOut, outerPosCanReachInnerPos);
 			}
 
-			selfCanReachAllInnerPos = selfCanReachAllInnerPos
-					.andWith(innerPosReachableFromOut);
+			// selfCanReachAllInnerPos = selfCanReachAllInnerPos
+			// .andWith(innerPosReachableFromOut);
+			selfCanReachAllInnerPos = logAndSelfCanReachAllInnerPos.andLog(
+					selfCanReachAllInnerPos, innerPosReachableFromOut);
 		}
 
 		result = selfCanReachAllInnerPos.not();
 
+		logOrOuterPosCanReachInnerPos.log();
+		logOrInnerPosReachableFromOut.log();
+		logAndSelfCanReachAllInnerPos.log();
 		analyzer.getFactory().reorder(BDDFactory.REORDER_SIFT);
 	}
 

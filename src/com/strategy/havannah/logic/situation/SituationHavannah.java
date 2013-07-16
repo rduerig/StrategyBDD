@@ -14,6 +14,7 @@ import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
+import com.strategy.util.operation.Bdd;
 
 /**
  * @author Ralph Dürig
@@ -137,8 +138,19 @@ public class SituationHavannah implements Situation {
 		// computes bdd representation of the ring condition
 		// winOpponentHasRing = getRingCondition(analyzer);
 
-		win = getBridgeCondition(analyzer).orWith(getForkCondition(analyzer))
-				.orWith(getRingCondition(analyzer));
+		BDD b = getBridgeCondition(analyzer);
+		// System.out.println("bridge: " + b);
+		BDD f = getForkCondition(analyzer);
+		// System.out.println("fork: " + f);
+		BDD r = getRingCondition(analyzer);
+		// System.out.println("ring: " + r);
+
+		Bdd logBF = Bdd.create("bridge OR fork");
+		Bdd logBFR = Bdd.create("bf OR ring");
+		win = logBFR.orLog(logBF.orLog(b, f), r);
+		logBF.log();
+		logBFR.log();
+		// win = b.orWith(f).orWith(r);
 
 		try {
 			// analyzer.getFactory().save(getFileName() + "fork", winFork);
