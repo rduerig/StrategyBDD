@@ -12,11 +12,9 @@ import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
-import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
-import com.strategy.havannah.logic.situation.BridgeConditionCalculator;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 
 /**
@@ -35,15 +33,25 @@ public class TestMain {
 				PrimitiveBoardProvider.getBoard(SIZE), SIZE);
 		System.out.println(b.toRowColString());
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(b);
-		ConditionCalculator calc = new BridgeConditionCalculator(analyzer, b,
-				StoneColor.WHITE);
-		BDD path = calc.getBdd();
+		// Situation sit = new SituationHavannah(analyzer, b, StoneColor.WHITE);
+		// BDD path = sit.getWinningCondition();
+		BDD path = analyzer.getPath(b.getField(1).getPosition(), b.getField(7)
+				.getPosition(), StoneColor.WHITE);
 		System.out.println(b.toIndexString());
-		System.out.println(path);
+		// System.out.println(path);
+		System.out.println("nodes\t\t: " + path.nodeCount());
+		System.out.println("sat count\t: " + path.satCount());
+		System.out.println("path count\t: " + path.pathCount());
+
+		path.restrictWith(analyzer.getFactory().ithVar(4));
+		System.out.println("nodes\t\t: " + path.nodeCount());
+		System.out.println("sat count\t: " + path.satCount());
+		System.out.println("path count\t: " + path.pathCount());
+
 		analyzer.done();
-		PrintStream out = new PrintStream("tmp/bridge2.dot");
-		System.setOut(out);
-		path.printDot();
+		// PrintStream out = new PrintStream("tmp/win2.dot");
+		// System.setOut(out);
+		// path.printDot();
 
 	}
 

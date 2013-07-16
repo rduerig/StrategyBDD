@@ -54,11 +54,11 @@ public class RingConditionCalculator implements ConditionCalculator,
 		BDD selfCanReachAllInnerPos = analyzer.getFactory().one();
 
 		Bdd logOrOuterPosCanReachInnerPos = Bdd
-				.create("ring: or outerPosCanReachInnerPos");
+				.create("ring: or opponent outerPosCanReachInnerPos");
 		Bdd logOrInnerPosReachableFromOut = Bdd
-				.create("ring: or innerPosReachableFromOut");
+				.create("ring: or opponent innerPosReachableFromOut");
 		Bdd logAndSelfCanReachAllInnerPos = Bdd
-				.create("ring: and selfCanReachAllInnerPos");
+				.create("ring: and opponent canReachAllInnerPos");
 		// Bdd logNotSelfCanReachAllInnerPos =
 		// Bdd.create("ring: not selfCanReachAllInnerPos");
 
