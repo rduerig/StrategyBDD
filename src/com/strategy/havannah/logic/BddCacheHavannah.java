@@ -1,5 +1,7 @@
 package com.strategy.havannah.logic;
 
+import java.io.PrintStream;
+
 import net.sf.javabdd.BDD;
 
 import com.google.common.cache.Cache;
@@ -86,7 +88,10 @@ public class BddCacheHavannah implements BddCache {
 		// bdd.free();
 		// }
 		// cache.clear();
-		Preferences.getInstance().getOut().println(cache.stats());
+		PrintStream out = Preferences.getInstance().getOut();
+		if (null != out) {
+			out.println(cache.stats());
+		}
 		cache.invalidateAll();
 	}
 
