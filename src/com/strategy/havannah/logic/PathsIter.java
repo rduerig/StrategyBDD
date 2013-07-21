@@ -7,8 +7,8 @@ import net.sf.javabdd.BDDFactory;
 
 import com.google.common.collect.Iterables;
 import com.strategy.api.board.Board;
+import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
-import com.strategy.havannah.logic.BoardAnalyzerHavannah.PathCalculator;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Bdd;
 import com.strategy.util.predicates.ValidPositionFilter;
@@ -55,6 +55,10 @@ public class PathsIter implements PathCalculator {
 		logNPandNQ.log();
 		logPMandMQ.log();
 		logPQorPMMQ.log();
+
+		int V = board.getColumns() * board.getRows();
+		freeMatrix(V, reachWhite);
+		freeMatrix(V, reachBlack);
 	}
 
 	// ************************************************************************
@@ -64,8 +68,10 @@ public class PathsIter implements PathCalculator {
 		int V = board.getColumns() * board.getRows();
 
 		// adjacency matrix with bdd style
-		BDD[][] graphWhite = new BDD[V][V];
-		BDD[][] graphBlack = new BDD[V][V];
+		// BDD[][] graphWhite = new BDD[V][V];
+		// BDD[][] graphBlack = new BDD[V][V];
+		reachWhite = new BDD[V][V];
+		reachBlack = new BDD[V][V];
 		for (Position pos : board.getPositions()) {
 			int indexP = board.getField(pos.getRow(), pos.getCol()).getIndex();
 			List<Position> neighbors = pos.getNeighbors();
@@ -73,25 +79,23 @@ public class PathsIter implements PathCalculator {
 					new ValidPositionFilter(board));
 			for (Position n : filtered) {
 				int indexN = board.getField(n.getRow(), n.getCol()).getIndex();
-				if (null == graphWhite[indexP][indexN]) {
-					graphWhite[indexP][indexN] = fac.zero();
+				if (null == reachWhite[indexP][indexN]) {
+					reachWhite[indexP][indexN] = fac.zero();
 				}
-				if (null == graphBlack[indexP][indexN]) {
-					graphBlack[indexP][indexN] = fac.zero();
+				if (null == reachBlack[indexP][indexN]) {
+					reachBlack[indexP][indexN] = fac.zero();
 				}
-				graphWhite[indexP][indexN] = graphWhite[indexP][indexN]
+				reachWhite[indexP][indexN] = reachWhite[indexP][indexN]
 						.orWith(logPandQ.andLog(fac.ithVar(indexP),
 								fac.ithVar(indexN)));
-				graphBlack[indexP][indexN] = graphBlack[indexP][indexN]
+				reachBlack[indexP][indexN] = reachBlack[indexP][indexN]
 						.orWith(logNPandNQ.andLog(fac.nithVar(indexP),
 								fac.nithVar(indexN)));
 			}
 		}
 
-		reachWhite = new BDD[V][V];
-		reachBlack = new BDD[V][V];
-		doFill(reachWhite, graphWhite, V);
-		doFill(reachBlack, graphBlack, V);
+		// doFill(reachWhite, graphWhite, V);
+		// doFill(reachBlack, graphBlack, V);
 
 		// reachability matrix with floyd-warshall-algorithm and bdd style also
 		for (int k = 0; k < V; k++) {
@@ -142,6 +146,15 @@ public class PathsIter implements PathCalculator {
 		// todo[p][q] = reachpq.or(reachpm.and(reachmq));
 		todo[p][q] = logPQorPMMQ.orLog(reachpq.id(),
 				logPMandMQ.andLog(reachpm.id(), reachmq.id()));
+	}
+
+	private void freeMatrix(int V, BDD[][] reach) {
+		for (int i = 0; i < V; i++) {
+			for (int j = 0; j < V; j++) {
+				reach[i][j].free();
+			}
+		}
+
 	}
 
 	private void printMatrix(int V, BDD[][] reach) {

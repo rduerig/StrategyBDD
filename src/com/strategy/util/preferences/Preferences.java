@@ -1,4 +1,4 @@
-package com.strategy.util;
+package com.strategy.util.preferences;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -13,7 +13,10 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.strategy.havannah.logic.PathCalculatorProvider.PathCalculatorKey;
+import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
+import com.strategy.util.Turn;
 
 /**
  * Stores the program's preferences that can be set through command line
@@ -27,15 +30,20 @@ public class Preferences {
 	private static boolean defaultGenerateFiles = false;
 	private static int defaultBoardSize = 4;
 	private static List<Turn> defaultTurns = null;
-	// defaults to interpreter mode
-	private static boolean defaultModeInterpreter = true;
+	private static boolean defaultModeInterpreter = true; // defaults to
+															// interpreter mode
 	private static PrintStream defaultOut = null;
+	private static final String STDOUT = "stdout";
+
+	private static PathCalculatorKey defaultAlg = PathCalculatorKey.RECURSIVE;
 
 	private boolean generateFiles;
 	private final int boardSize;
 	private final List<Turn> turns;
 	private boolean modeInterpreter;
 	private PrintStream out;
+	private PathCalculatorKey alg;
+	private boolean help;
 
 	public static Preferences createInstance(String[] args) {
 		if (null == args || 0 == args.length) {
@@ -43,6 +51,13 @@ public class Preferences {
 			return instance;
 		}
 		ArrayList<String> params = Lists.newArrayList(args);
+
+		if (parseHelp(params)) {
+			instance = getDefault();
+			instance.setHelp(true);
+			return instance;
+		}
+
 		boolean parGenerateFiles = parseGenerateFiles(params);
 		boolean parModeInterpreter = parseMode(params);
 		int parBoardSize = parseBoardSize(params);
@@ -62,9 +77,15 @@ public class Preferences {
 		} catch (FileNotFoundException e) {
 		} catch (GameParserException e) {
 		}
+
+		PrintStream out = parseOut(params);
+		PathCalculatorKey alg = parseAlg(params);
+
 		instance = new Preferences(
 				null == parTurns || parTurns.isEmpty() ? parGenerateFiles
-						: false, parBoardSize, parTurns, parModeInterpreter);
+						: false, parBoardSize, parTurns, parModeInterpreter,
+				out, alg);
+
 		return instance;
 
 	}
@@ -77,25 +98,28 @@ public class Preferences {
 	}
 
 	private Preferences(boolean generateFiles, int boardSize, List<Turn> turns,
-			boolean modeInterpreter) {
+			boolean modeInterpreter, PrintStream out, PathCalculatorKey alg) {
 		this.generateFiles = generateFiles;
 		this.boardSize = boardSize;
 		this.turns = turns;
 		this.modeInterpreter = modeInterpreter;
-		this.out = defaultOut;
+		this.out = out;
+		this.alg = alg;
+		this.help = false;
 	}
 
-	/**
-	 * @return the generateFiles
-	 */
+	void setHelp(boolean help) {
+		this.help = help;
+	}
+
+	public boolean isHelp() {
+		return help;
+	}
+
 	public boolean isGenerateFiles() {
 		return generateFiles;
 	}
 
-	/**
-	 * @param generateFiles
-	 *            the generateFiles to set
-	 */
 	public void setGenerateFiles(boolean generateFiles) {
 		this.generateFiles = generateFiles;
 	}
@@ -104,45 +128,47 @@ public class Preferences {
 		return modeInterpreter;
 	}
 
-	/**
-	 * @return the boardSize
-	 */
 	public int getBoardSize() {
 		return boardSize;
 	}
 
-	/**
-	 * @return the turns
-	 */
 	public List<Turn> getTurns() {
 		return turns;
 	}
 
-	/**
-	 * @return the out
-	 */
 	public PrintStream getOut() {
 		return out;
 	}
 
-	/**
-	 * @param out
-	 *            the out to set
-	 */
 	public void setOut(PrintStream out) {
 		this.out = out;
+	}
+
+	public PathCalculatorKey getAlg() {
+		return alg;
 	}
 
 	// ************************************************************************
 
 	private static Preferences getDefault() {
 		return new Preferences(defaultGenerateFiles, defaultBoardSize,
-				defaultTurns, defaultModeInterpreter);
+				defaultTurns, defaultModeInterpreter, defaultOut, defaultAlg);
+	}
+
+	private static boolean parseHelp(List<String> params) {
+		Optional<String> opt = Iterables.tryFind(params,
+				new ParameterPredicate(ArgumentStrings.PAR_HELP));
+		if (opt.isPresent()) {
+			printHelp();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private static boolean parseGenerateFiles(List<String> params) {
 		Optional<String> opt = Iterables.tryFind(params,
-				new ParameterGenerateFilesPredicate());
+				new ParameterPredicate(ArgumentStrings.PAR_GENERATE_FILES));
 		if (opt.isPresent()) {
 			return true;
 		} else {
@@ -152,7 +178,7 @@ public class Preferences {
 
 	private static boolean parseMode(List<String> params) {
 		Optional<String> opt = Iterables.tryFind(params,
-				new ParameterModePredicate());
+				new ParameterPredicate(ArgumentStrings.PAR_MODE));
 		if (opt.isPresent()) {
 			return false;
 		} else {
@@ -162,7 +188,7 @@ public class Preferences {
 
 	private static int parseBoardSize(List<String> params) {
 		int parBoardSizeIndex = Iterables.indexOf(params,
-				new ParameterBoardSizePredicate());
+				new ParameterPredicate(ArgumentStrings.PAR_BOARD_SIZE));
 		if (parBoardSizeIndex < 0 || parBoardSizeIndex >= params.size() - 1) {
 			return defaultBoardSize;
 		}
@@ -170,10 +196,40 @@ public class Preferences {
 		return Integer.parseInt(value);
 	}
 
+	private static PrintStream parseOut(List<String> params) {
+		int parOutIndex = Iterables.indexOf(params, new ParameterPredicate(
+				ArgumentStrings.PAR_OUT));
+		if (parOutIndex < 0 || parOutIndex >= params.size() - 1) {
+			return defaultOut;
+		}
+		String value = Iterables.<String> get(params, parOutIndex + 1);
+		if (STDOUT.equals(value)) {
+			return System.out;
+		}
+
+		try {
+			return new PrintStream(value);
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not find file " + value
+					+ " for output. No debug information will be available.");
+			return defaultOut;
+		}
+	}
+
+	private static PathCalculatorKey parseAlg(List<String> params) {
+		int parAlgIndex = Iterables.indexOf(params, new ParameterPredicate(
+				ArgumentStrings.PAR_ALG));
+		if (parAlgIndex < 0 || parAlgIndex >= params.size() - 1) {
+			return defaultAlg;
+		}
+		String value = Iterables.<String> get(params, parAlgIndex + 1);
+		return PathCalculatorKey.parse(value);
+	}
+
 	private static GameParser getParser(List<String> params)
 			throws FileNotFoundException, GameParserException {
-		int parTurnsIndex = Iterables.indexOf(params,
-				new ParameterTurnsPredicate());
+		int parTurnsIndex = Iterables.indexOf(params, new ParameterPredicate(
+				ArgumentStrings.PAR_TURNS));
 		if (parTurnsIndex < 0 || parTurnsIndex >= params.size() - 1) {
 			return null;
 		}
@@ -192,8 +248,8 @@ public class Preferences {
 
 	private static GameParser getParserWithStrings(List<String> params)
 			throws GameParserException {
-		int parTurnsIndex = Iterables.indexOf(params,
-				new ParameterTurnsStringPredicate());
+		int parTurnsIndex = Iterables.indexOf(params, new ParameterPredicate(
+				ArgumentStrings.PAR_TURNS_STRING));
 		if (parTurnsIndex < 0 || parTurnsIndex >= params.size() - 1) {
 			return null;
 		}
@@ -208,62 +264,34 @@ public class Preferences {
 		return parser;
 	}
 
+	private static void printHelp() {
+		System.out.println("Available arguments:");
+		System.out
+				.println("-alg ['rec' / 'iter'] - select the algorithm to compute paths (transitive closure of connectivity)");
+		System.out
+				.println("-f - BDD files are always generated with this flag present, works not with -hgf");
+		System.out.println("-h - prints this help message");
+		System.out.println("-hgf [FILENAME] - parse FILENAME as hgf file");
+		System.out
+				.println("-m [HGF MOVES ...] - parses the given string as hgf move string");
+		System.out
+				.println("-out [FILENAME / 'stdout'] - prints debug output to given FILENAME or STDOUT");
+		System.out.println("-s [NUMBER] - use NUMBER as boardsize");
+	}
+
 	// ************************************************************************
 
-	private static class ParameterGenerateFilesPredicate implements
-			Predicate<String> {
+	private static class ParameterPredicate implements Predicate<String> {
 
-		private static final String PAR_GENERATE_FILES = "-f";
+		private String argString;
 
-		@Override
-		public boolean apply(String input) {
-			return input.equals(PAR_GENERATE_FILES);
+		public ParameterPredicate(String argString) {
+			this.argString = argString;
 		}
 
-	}
-
-	private static class ParameterModePredicate implements Predicate<String> {
-
-		private static final String PAR_MODE = "-gtp";
-
 		@Override
 		public boolean apply(String input) {
-			return input.equals(PAR_MODE);
-		}
-
-	}
-
-	private static class ParameterBoardSizePredicate implements
-			Predicate<String> {
-
-		private static final String PAR_BOARD_SIZE = "-s";
-
-		@Override
-		public boolean apply(String input) {
-			return input.equals(PAR_BOARD_SIZE);
-		}
-
-	}
-
-	private static class ParameterTurnsPredicate implements Predicate<String> {
-
-		private static final String PAR_TURNS = "-hgf";
-
-		@Override
-		public boolean apply(String input) {
-			return input.equals(PAR_TURNS);
-		}
-
-	}
-
-	private static class ParameterTurnsStringPredicate implements
-			Predicate<String> {
-
-		private static final String PAR_TURNS_STRING = "-m";
-
-		@Override
-		public boolean apply(String input) {
-			return input.equals(PAR_TURNS_STRING);
+			return input.equals(argString);
 		}
 
 	}

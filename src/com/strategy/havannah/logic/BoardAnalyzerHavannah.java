@@ -5,9 +5,11 @@ import net.sf.javabdd.BDDFactory;
 
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.BoardAnalyzer;
+import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
 import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.StoneColor;
+import com.strategy.util.preferences.Preferences;
 
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
@@ -16,7 +18,7 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	public BoardAnalyzerHavannah(Board board) {
 		initFactory(board);
-		paths = new PathsIter(fac, board);
+		paths = Preferences.getInstance().getAlg().provide(fac, board);
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
@@ -38,14 +40,6 @@ public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	private void initFactory(Board board) {
 		fac = BddFactoryProvider.getOrCreateBddFactory(board);
-	}
-
-	// ************************************************************************
-
-	protected interface PathCalculator {
-		BDD getPath(Position p, Position q, StoneColor color);
-
-		void done();
 	}
 
 }

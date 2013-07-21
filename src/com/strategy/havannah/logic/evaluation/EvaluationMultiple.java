@@ -79,6 +79,11 @@ public class EvaluationMultiple implements Evaluation {
 		return allBestBdd;
 	}
 
+	@Override
+	public void log() {
+		// TODO log
+	}
+
 	// ************************************************************************
 
 	private void init() {

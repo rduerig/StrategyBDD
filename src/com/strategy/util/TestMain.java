@@ -16,6 +16,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig

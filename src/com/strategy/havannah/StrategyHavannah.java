@@ -10,10 +10,10 @@ import com.strategy.api.interpreter.StrategyInterpreter;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
-import com.strategy.util.Preferences;
 import com.strategy.util.PrimitiveBoardProvider;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -46,6 +46,10 @@ public class StrategyHavannah {
 		System.setProperty("bdd", "bdd");
 		// Output.setDebug(PredictionHavannah.class, true);
 		Preferences.createInstance(args);
+
+		if (Preferences.getInstance().isHelp()) {
+			return;
+		}
 
 		Thread interpreter;
 		if (!Preferences.getInstance().isModeInterpreter()) {

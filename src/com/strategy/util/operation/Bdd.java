@@ -4,7 +4,7 @@ import java.io.PrintStream;
 
 import net.sf.javabdd.BDD;
 
-import com.strategy.util.Preferences;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -18,7 +18,7 @@ public class Bdd {
 	private long sumNodes;
 
 	/**
-	 * Creates a {@link Bdd} logging to stdout.
+	 * Creates a {@link Bdd} logging to {@link Preferences#getOut()}.
 	 */
 	public static Bdd create(String caption) {
 		return new Bdd(Preferences.getInstance().getOut(), caption);
@@ -40,6 +40,10 @@ public class Bdd {
 
 	public BDD orLog(BDD x, BDD y) {
 		return applyOp(x, y, Op.OR);
+	}
+
+	public BDD restrictLog(BDD x, BDD y) {
+		return applyOp(x, y, Op.RESTRICT);
 	}
 
 	public void log() {

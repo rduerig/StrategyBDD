@@ -21,8 +21,8 @@ import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.GameParser;
 import com.strategy.util.GameParser.GameParserException;
+import com.strategy.util.preferences.Preferences;
 import com.strategy.util.Output;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 
 /**

@@ -12,8 +12,8 @@ import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.util.BddFactoryProvider;
 import com.strategy.util.Output;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig

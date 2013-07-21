@@ -12,9 +12,9 @@ import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Bdd;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig

@@ -260,6 +260,9 @@ public class PredictionHavannah implements Prediction {
 		print("best var count BDD BLACK:\n" + evalBlack.getBestIndex() + ":"
 				+ varProfileBlack[evalBlack.getBestIndex()],
 				PredictionHavannah.class);
+
+		evalWhite.log();
+		evalBlack.log();
 	}
 
 }

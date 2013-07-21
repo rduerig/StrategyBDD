@@ -1,10 +1,12 @@
 package com.strategy.havannah.logic.evaluation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
@@ -13,6 +15,7 @@ import com.strategy.api.logic.Position;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.util.StoneColor;
+import com.strategy.util.operation.Bdd;
 import com.strategy.util.predicates.EmptyPositionFilter;
 import com.strategy.util.predicates.ValidPositionFilter;
 
@@ -26,9 +29,10 @@ public class EvaluationHavannah implements Evaluation {
 	private int best;
 	private Board board;
 	private BDD win;
-	private BDD varset;
 	private BDD bestBdd;
 	private StoneColor color;
+	private Bdd logRestrictWhite;
+	private Bdd logRestrictBlack;
 
 	public static Evaluation create(Situation sit) {
 		return new EvaluationHavannah(sit.getBoard(),
@@ -42,10 +46,13 @@ public class EvaluationHavannah implements Evaluation {
 	private EvaluationHavannah(Board board, BDD win, StoneColor color) {
 		this.board = board;
 		this.win = win;
-		this.varset = win.fullSatOne();
 		this.color = color;
 		avg = 0d;
 		best = 0;
+		logRestrictWhite = Bdd.create("evaluation " + StoneColor.WHITE
+				+ " - restrict");
+		logRestrictBlack = Bdd.create("evaluation " + StoneColor.BLACK
+				+ " - restrict");
 		init();
 	}
 
@@ -69,6 +76,12 @@ public class EvaluationHavannah implements Evaluation {
 		return bestBdd;
 	}
 
+	@Override
+	public void log() {
+		logRestrictWhite.log();
+		logRestrictBlack.log();
+	}
+
 	// ************************************************************************
 
 	private void init() {
@@ -81,15 +94,20 @@ public class EvaluationHavannah implements Evaluation {
 		rating = new double[board.getRows() * board.getColumns()];
 		double sum = 0d;
 		double bestValue = 0d;
+		BDD varset = getVarset();
 		for (Position pos : filtered) {
 			Field field = board.getField(pos.getRow(), pos.getCol());
 			BDD bddWin = win.id();
 			if (StoneColor.WHITE.equals(color)) {
-				bddWin.restrictWith(fac.ithVar(field.getIndex()));
+				// bddWin.restrictWith(fac.ithVar(field.getIndex()));
+				logRestrictWhite.restrictLog(bddWin,
+						fac.ithVar(field.getIndex()));
 			} else {
-				bddWin.restrictWith(fac.nithVar(field.getIndex()));
+				// bddWin.restrictWith(fac.nithVar(field.getIndex()));
+				logRestrictBlack.restrictLog(bddWin,
+						fac.nithVar(field.getIndex()));
 			}
-			double valuation = bddWin.satCount();
+			double valuation = bddWin.satCount(varset);
 			rating[field.getIndex()] = valuation;
 			sum += valuation;
 			if (valuation > bestValue) {
@@ -101,6 +119,18 @@ public class EvaluationHavannah implements Evaluation {
 		}
 
 		avg = sum / filtered.size();
+	}
+
+	private BDD getVarset() {
+		Collection<Position> allPos = board.getPositions();
+		Collection<Position> filtered = Collections2.filter(allPos,
+				new ValidPositionFilter(board));
+		int[] varset = new int[filtered.size()];
+		int count = 0;
+		for (Position p : filtered) {
+			varset[count++] = board.getField(p.getRow(), p.getCol()).getIndex();
+		}
+		return win.getFactory().makeSet(varset);
 	}
 
 }

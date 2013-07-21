@@ -5,14 +5,17 @@ import static com.strategy.api.interpreter.InterpreterCommands.CMD_BLACK;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_COORDINATES;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_EXIT;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_HELP;
+import static com.strategy.api.interpreter.InterpreterCommands.CMD_MEM;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_NODES;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_NUMBERS;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_PREFIX;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_RATING;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_REDO;
+import static com.strategy.api.interpreter.InterpreterCommands.CMD_SOLUTIONS;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_SWAP;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_SWITCH;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_THINK;
+import static com.strategy.api.interpreter.InterpreterCommands.CMD_VALUE;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_WHITE;
 
 import java.io.PrintStream;
@@ -91,6 +94,11 @@ public class StrategyInterpreter extends Thread {
 
 			if (CMD_EXIT.equals(line)) {
 				cmdExit();
+				return;
+			}
+
+			if (CMD_MEM.equals(line)) {
+				printMem();
 				return;
 			}
 
@@ -176,6 +184,17 @@ public class StrategyInterpreter extends Thread {
 				return;
 			}
 
+			if (CMD_VALUE.equals(line)) {
+				printValue(p.getWhite());
+				printValue(p.getBlack());
+				return;
+			}
+
+			if (CMD_SOLUTIONS.equals(line)) {
+				printSolutions(p.getWhite());
+				printSolutions(p.getBlack());
+			}
+
 			Integer fieldIndex = null;
 			Matcher turnHgfMatcher = isManualTurnHgf.matcher(line);
 			Matcher turnIndexMatcher = isManualTurnIndex.matcher(line);
@@ -247,6 +266,8 @@ public class StrategyInterpreter extends Thread {
 		}
 	}
 
+	// ************************************************************************
+
 	private void cmdChangeColor(String line) {
 		StoneColor parsed = StoneColor.parse(line.substring(1));
 		if (!StoneColor.EMPTY.equals(parsed)) {
@@ -278,8 +299,6 @@ public class StrategyInterpreter extends Thread {
 	private void cmdSwitch() {
 		cpuColor = cpuColor.getOpposite();
 	}
-
-	// ************************************************************************
 
 	private void cmdExit() {
 		exit();
@@ -362,6 +381,7 @@ public class StrategyInterpreter extends Thread {
 
 	private void printEvaluation(Evaluation eval) {
 		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
+		eval.log();
 	}
 
 	private void printNodes(Situation sit) {
@@ -374,18 +394,49 @@ public class StrategyInterpreter extends Thread {
 		sit.getWinningCondition().printDot();
 	}
 
+	private void printValue(Situation sit) {
+		double value = sit.getWinningCondition().satCount();
+		out.println("Value " + sit.getStoneColor().name() + ": "
+				+ String.format("%e", value));
+	}
+
+	private void printSolutions(Situation sit) {
+		double value = sit.getWinningCondition().pathCount();
+		out.println("Solutions " + sit.getStoneColor().name() + ": "
+				+ String.format("%f", value));
+	}
+
+	private void printMem() {
+		int mb = 1024 * 1024;
+		Runtime runtime = Runtime.getRuntime();
+
+		// Print used memory
+		out.println("Used Memory:"
+				+ (runtime.totalMemory() - runtime.freeMemory()) / mb + " MB");
+
+		// Print free memory
+		out.println("Free Memory:" + runtime.freeMemory() / mb + " MB");
+
+		// Print total available memory
+		out.println("Total Memory:" + runtime.totalMemory() / mb + " MB");
+
+		// Print Maximum available memory
+		out.println("Max Memory:" + runtime.maxMemory() / mb + " MB");
+	}
+
 	private void printUsage() {
 		out.println("Usage:");
-		out.println("\t " + CMD_REDO + " \t executes the previous command");
-		out.println("\t " + CMD_EXIT + " \t quits the program");
-		out.println("\t " + CMD_HELP + " \t prints this text");
+		out.println("\t " + CMD_REDO + " \t\t executes the previous command");
+		out.println("\t " + CMD_EXIT + " \t\t quits the program");
+		out.println("\t " + CMD_HELP + " \t\t prints this text");
+		out.println("\t " + CMD_MEM + " \t\t prints memory information");
 		out.println("\t " + CMD_WHITE
 				+ " \t switches the player's color to white");
 		out.println("\t " + CMD_BLACK
 				+ " \t switches the player's color to black");
 		out.println("\t " + CMD_THINK + " \t makes the cpu doing your turn");
 		out.println("\t " + CMD_SWAP
-				+ " \t swaps the color of the last set stone");
+				+ " \t\t swaps the color of the last set stone");
 		out.println("\t " + CMD_SWITCH
 				+ " \t switches the player's and the cpu's color");
 		out.println("\t " + CMD_NUMBERS
@@ -398,7 +449,13 @@ public class StrategyInterpreter extends Thread {
 		out.println("\t " + CMD_NODES
 				+ " \t prints information about the nodes the BDDs are using");
 		out.println("\t " + CMD_BDD
-				+ " \t prints the currently used BDDs in dot graph notation");
+				+ " \t\t prints the currently used BDDs in dot graph notation");
+		out.println("\t "
+				+ CMD_VALUE
+				+ " \t prints the value (= number of satisfying variable assignments) for the current situation");
+		out.println("\t "
+				+ CMD_SOLUTIONS
+				+ " \t prints the solutions (= number of paths to the BDD's true terminal) for the current situation");
 		out.println("\t :[NUMBER] \t sets a stone to the field specified by the given number");
 		out.println("\t :[CHARACTER][NUMBER] \t sets a stone to the field specified by the given hgf-coordinate");
 		out.println("\t [NUMBER] \t sets a stone to the field specified by the given number and let the cpu answer");

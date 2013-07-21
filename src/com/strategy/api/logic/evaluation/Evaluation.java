@@ -19,4 +19,6 @@ public interface Evaluation {
 
 	BDD getBestBdd();
 
+	void log();
+
 }

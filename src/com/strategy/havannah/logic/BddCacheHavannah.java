@@ -10,8 +10,8 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.Position;
-import com.strategy.util.Preferences;
 import com.strategy.util.StoneColor;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig

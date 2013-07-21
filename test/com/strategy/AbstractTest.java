@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.strategy.util.BddFactoryProvider;
-import com.strategy.util.Preferences;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * Abstract test class. Sets the buddy library and the force generate files flag
