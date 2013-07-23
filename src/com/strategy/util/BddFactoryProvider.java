@@ -39,11 +39,12 @@ public class BddFactoryProvider {
 		int dimension = board.getRows() * board.getColumns();
 		Double size = (BASE * Math.pow(10, board.getBoardSize()))
 				* factorial(board.getBoardSize());
-		BDDFactory result = BDDFactory.init(size.intValue(),
-				size.intValue() * 10);
+		BDDFactory result = BDDFactory.init(size.intValue() / 2,
+				size.intValue() / 5);
 		result.setVarNum(dimension);
 		result.reorderVerbose(0);
-		result.setIncreaseFactor(0.5);
+		result.setIncreaseFactor(0.8);
+		result.setMaxIncrease(Double.valueOf((size / 2) * 0.8).intValue());
 
 		return result;
 	}

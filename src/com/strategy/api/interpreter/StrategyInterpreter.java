@@ -193,6 +193,7 @@ public class StrategyInterpreter extends Thread {
 			if (CMD_SOLUTIONS.equals(line)) {
 				printSolutions(p.getWhite());
 				printSolutions(p.getBlack());
+				return;
 			}
 
 			Integer fieldIndex = null;
@@ -385,7 +386,7 @@ public class StrategyInterpreter extends Thread {
 	}
 
 	private void printNodes(Situation sit) {
-		out.println("Nodes " + sit.getStoneColor().name() + ": ");
+		out.print("Nodes " + sit.getStoneColor().name() + ": ");
 		out.println(sit.getWinningCondition().nodeCount());
 	}
 
@@ -403,7 +404,7 @@ public class StrategyInterpreter extends Thread {
 	private void printSolutions(Situation sit) {
 		double value = sit.getWinningCondition().pathCount();
 		out.println("Solutions " + sit.getStoneColor().name() + ": "
-				+ String.format("%f", value));
+				+ String.format("%e", value));
 	}
 
 	private void printMem() {

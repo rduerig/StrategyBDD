@@ -1,12 +1,11 @@
 package com.strategy.havannah.logic;
 
-import java.util.List;
+import java.math.RoundingMode;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import com.google.common.math.IntMath;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BddCache;
@@ -15,7 +14,6 @@ import com.strategy.api.logic.Position;
 import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Bdd;
-import com.strategy.util.predicates.ValidPositionFilter;
 
 /**
  * @author Ralph Dürig
@@ -29,10 +27,8 @@ public class PathsRec implements PathCalculator {
 	private Bdd logNPandNQ = Bdd.create("not p and not q");
 	private Bdd logPMandMQ = Bdd.create("pm and mq");
 	private Bdd logPQorPMMQ = Bdd.create("pq or (pm and mq)");
+	private Bdd logPMMQ = Bdd.create("or pm and mq");
 
-	/**
-	 * 
-	 */
 	public PathsRec(BDDFactory fac, Board board) {
 		this.fac = fac;
 		this.board = board;
@@ -52,6 +48,7 @@ public class PathsRec implements PathCalculator {
 		logNPandNQ.log();
 		logPMandMQ.log();
 		logPQorPMMQ.log();
+		logPMMQ.log();
 		cache.free();
 	}
 
@@ -59,8 +56,8 @@ public class PathsRec implements PathCalculator {
 
 	private BDD getPathTransitiveClosure(Position p, Position q,
 			StoneColor color) {
-		// int i = IntMath.log2(board.getBoardSize(), RoundingMode.HALF_UP);
-		int i = 2 * board.getBoardSize() + 1;
+		int i = IntMath.log2(board.getBoardSize(), RoundingMode.HALF_UP);
+		// int i = 2 * board.getBoardSize() + 1;
 		if (!cache.isCached(color, p, q, i)) {
 			BDD path = recursiveTransitiveClosure(i, p, q, color);
 			cache.store(color, p, q, i, path);
@@ -107,11 +104,8 @@ public class PathsRec implements PathCalculator {
 				pq = cache.restore(color, p, q, i - 1);
 			}
 
-			BDD result = null;
-			List<Position> neighbors = p.getNeighbors();
-			List<Position> validNeighbors = Lists.newArrayList(Iterables
-					.filter(neighbors, new ValidPositionFilter(board)));
-			for (Position m : validNeighbors) {
+			BDD pmAndmq = fac.zero();
+			for (Position m : board.getPositions()) {
 				BDD pm;
 				if (!cache.isCached(color, p, m, i - 1)) {
 					pm = cache.store(color, p, m, i - 1,
@@ -126,21 +120,11 @@ public class PathsRec implements PathCalculator {
 				} else {
 					mq = cache.restore(color, m, q, i - 1);
 				}
-				if (null == result) {
-					// result = pq.orWith(pm.andWith(mq));
-					result = logPQorPMMQ.orLog(pq, logPMandMQ.andLog(pm, mq));
-					if (result.isOne()) {
-						break;
-					}
-				} else {
-					// result = result.orWith(pm.andWith(mq));
-					result = logPQorPMMQ.orLog(result,
-							logPMandMQ.andLog(pm, mq));
-				}
-				if (result.isOne()) {
-					break;
-				}
+				// pmAndmq = pmAndmq.orWith(pm.andWith(mq));
+				pmAndmq = logPMMQ.orLog(pmAndmq, logPMandMQ.andLog(pm, mq));
 			}
+
+			BDD result = logPQorPMMQ.orLog(pq, pmAndmq);
 
 			cache.store(color, p, q, i, result);
 			result.free();
