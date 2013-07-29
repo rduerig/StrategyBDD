@@ -10,7 +10,7 @@ import com.strategy.api.board.Board;
 import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 import com.strategy.util.predicates.ValidPositionFilter;
 
 /**
@@ -20,10 +20,10 @@ public class PathsIter implements PathCalculator {
 	private BDDFactory fac;
 	private Board board;
 
-	private Bdd logPandQ = Bdd.create("p and q");
-	private Bdd logNPandNQ = Bdd.create("not p and not q");
-	private Bdd logPMandMQ = Bdd.create("pm and mq");
-	private Bdd logPQorPMMQ = Bdd.create("pq or (pm and mq)");
+	private Logging logPandQ = Logging.create("p and q");
+	private Logging logNPandNQ = Logging.create("not p and not q");
+	private Logging logPMandMQ = Logging.create("pm and mq");
+	private Logging logPQorPMMQ = Logging.create("pq or (pm and mq)");
 	private BDD[][] reachWhite;
 	private BDD[][] reachBlack;
 

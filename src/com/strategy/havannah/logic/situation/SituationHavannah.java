@@ -1,6 +1,7 @@
 package com.strategy.havannah.logic.situation;
 
 import java.io.IOException;
+import java.io.PrintStream;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -13,7 +14,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 import com.strategy.util.preferences.Preferences;
 
 /**
@@ -22,9 +23,6 @@ import com.strategy.util.preferences.Preferences;
 public class SituationHavannah implements Situation {
 
 	private static final String BDD_FILE_PREFIX = "win";
-	// private BDD winFork;
-	// private BDD winBridge;
-	// private BDD winOpponentHasRing;
 	private BDD win;
 	private Board board;
 	private StoneColor color;
@@ -35,21 +33,6 @@ public class SituationHavannah implements Situation {
 		this.color = color;
 		init(analyzer);
 	}
-
-	// @Override
-	// public BDD getWinningConditionFork() {
-	// return winFork;
-	// }
-	//
-	// @Override
-	// public BDD getWinningConditionBridge() {
-	// return winBridge;
-	// }
-	//
-	// @Override
-	// public BDD getWinningConditionOpponentHasRing() {
-	// return winOpponentHasRing;
-	// }
 
 	@Override
 	public BDD getWinningCondition() {
@@ -66,97 +49,83 @@ public class SituationHavannah implements Situation {
 		return color;
 	}
 
-	// @Override
-	// public boolean hasBridge() {
-	// return winBridge.isOne();
-	// }
-	//
-	// @Override
-	// public boolean hasFork() {
-	// return winFork.isOne();
-	// }
-	//
-	// @Override
-	// public boolean hasOpponentRing() {
-	// return winOpponentHasRing.isOne();
-	// }
-
 	@Override
 	public void update(int fieldIndex, StoneColor color) {
-		// System.out.println("setting stone on: " + fieldIndex);
 		Field field = FieldGenerator.create(
 				color.getPrimitive(),
 				PositionHexagon.get(fieldIndex / board.getRows(), fieldIndex
 						% board.getColumns()), fieldIndex);
 		board.setField(field);
-		// BDDFactory fac = winFork.getFactory();
 		BDDFactory fac = win.getFactory();
-		// if (this.color.equals(color)) {
+		Logging logUpdate;
+		String capPrefix = this.color + "'s situation updated for ";
+		String capSuffix = "'s move";
 		if (StoneColor.WHITE.equals(color)) {
-			// winBridge.restrictWith(fac.ithVar(field.getIndex()));
-			// winFork.restrictWith(fac.ithVar(field.getIndex()));
-			// winOpponentHasRing.restrictWith(fac.ithVar(field.getIndex()));
-			win.restrictWith(fac.ithVar(field.getIndex()));
+			logUpdate = Logging.create(capPrefix + color + capSuffix);
+			logUpdate.restrictLog(win, fac.ithVar(field.getIndex()));
 		} else {
-			// winBridge.restrictWith(fac.nithVar(field.getIndex()));
-			// winFork.restrictWith(fac.nithVar(field.getIndex()));
-			// winOpponentHasRing.restrictWith(fac.nithVar(field.getIndex()));
-			win.restrictWith(fac.nithVar(field.getIndex()));
+			logUpdate = Logging.create(capPrefix + color + capSuffix);
+			logUpdate.restrictLog(win, fac.nithVar(field.getIndex()));
 		}
+		logUpdate.log();
 
 	}
 
 	// ************************************************************************
 
 	private void init(BoardAnalyzer analyzer) {
+		PrintStream out = Preferences.getInstance().getOut();
 		if (Preferences.getInstance().isGenerateFiles()) {
-			initFromScratch(analyzer);
+			if (null != out) {
+				long tBefore = System.nanoTime();
+				initFromScratch(analyzer);
+				long tAfter = System.nanoTime();
+				double diff = (tAfter - tBefore) / 1000;
+				out.println("BDD initialization from scratch took: " + diff);
+			} else {
+				initFromScratch(analyzer);
+			}
 		} else {
 			try {
-				// winBridge = analyzer.getFactory()
-				// .load(getFileName() + "bridge");
-				// winFork = analyzer.getFactory().load(getFileName() + "fork");
-				// winOpponentHasRing = analyzer.getFactory().load(
-				// getFileName() + "ring");
-				win = analyzer.getFactory().load(getFileName());
+				if (null != out) {
+					long tBefore = System.nanoTime();
+					win = analyzer.getFactory().load(getFileName());
+					long tAfter = System.nanoTime();
+					double diff = (tAfter - tBefore) / 1000;
+					out.println("BDD loading from files took: " + diff);
+				} else {
+					win = analyzer.getFactory().load(getFileName());
+				}
 			} catch (IOException e) {
 				System.out
 						.println("Could not load files, BDDs are generated vom scratch.");
-				initFromScratch(analyzer);
+				if (null != out) {
+					long tBefore = System.nanoTime();
+					initFromScratch(analyzer);
+					long tAfter = System.nanoTime();
+					double diff = (tAfter - tBefore) / 1000;
+					out.println("BDD initialization from scratch after files not found took: "
+							+ diff);
+				} else {
+					initFromScratch(analyzer);
+				}
 			}
 		}
 	}
 
 	private void initFromScratch(BoardAnalyzer analyzer) {
 
-		// computes bdd representation of the bridge condition
-		// winBridge = getBridgeCondition(analyzer);
-
-		// computes bdd representation of the fork condition
-		// winFork = getForkCondition(analyzer);
-
-		// computes bdd representation of the ring condition
-		// winOpponentHasRing = getRingCondition(analyzer);
-
 		BDD b = getBridgeCondition(analyzer);
-		// System.out.println("bridge: " + b);
 		BDD f = getForkCondition(analyzer);
-		// System.out.println("fork: " + f);
 		BDD r = getRingCondition(analyzer);
-		// System.out.println("ring: " + r);
 
-		Bdd logBF = Bdd.create("bridge OR fork");
-		Bdd logBFR = Bdd.create("bf OR ring");
+		Logging logBF = Logging.create("bridge OR fork");
+		Logging logBFR = Logging.create("bf OR ring");
 		win = logBFR.orLog(logBF.orLog(b, f), r);
 		logBF.log();
 		logBFR.log();
-		// win = b.orWith(f).orWith(r);
 
 		try {
-			// analyzer.getFactory().save(getFileName() + "fork", winFork);
-			// analyzer.getFactory().save(getFileName() + "bridge", winBridge);
-			// analyzer.getFactory().save(getFileName() + "ring",
-			// winOpponentHasRing);
 			analyzer.getFactory().save(getFileName(), win);
 		} catch (IOException e) {
 			e.printStackTrace();

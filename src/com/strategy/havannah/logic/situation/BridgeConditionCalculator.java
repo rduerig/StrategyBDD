@@ -11,7 +11,7 @@ import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.havannah.logic.PositionHexagon;
 import com.strategy.util.Output;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 
 public class BridgeConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
@@ -60,7 +60,7 @@ public class BridgeConditionCalculator implements ConditionCalculator,
 		 * ______|5|| ||6|<br>
 		 */
 
-		Bdd logBridgePath = Bdd.create("or bridge path");
+		Logging logBridgePath = Logging.create("or bridge path");
 		result = analyzer.getFactory().zero();
 		for (int i = 0; i < corners.length; i++) {
 			for (int j = i + 1; j < corners.length; j++) {

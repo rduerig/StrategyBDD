@@ -1,6 +1,7 @@
 package com.strategy.havannah;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.Iterables;
 import com.strategy.api.board.Board;
@@ -44,8 +45,8 @@ public class StrategyHavannah {
 	 */
 	public static void main(String[] args) {
 		System.setProperty("bdd", "bdd");
-		// Output.setDebug(PredictionHavannah.class, true);
 		Preferences.createInstance(args);
+		Locale.setDefault(Locale.US);
 
 		if (Preferences.getInstance().isHelp()) {
 			return;
@@ -53,7 +54,6 @@ public class StrategyHavannah {
 
 		Thread interpreter;
 		if (!Preferences.getInstance().isModeInterpreter()) {
-			// System.err.println("loading gtp interpreter");
 			interpreter = new GtpInterpreter();
 		} else {
 			Board board;
@@ -75,7 +75,6 @@ public class StrategyHavannah {
 						last.getCoordNumber()).getIndex();
 				p = new PredictionHavannah(board, lastIndex, turns);
 			}
-			// System.err.println("loading interactive interpreter");
 			interpreter = new StrategyInterpreter(board, cpuColor, p);
 		}
 		InterpreterManager.scheduleInterpreter(interpreter);

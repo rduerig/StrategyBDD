@@ -13,7 +13,7 @@ import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
 import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 
 /**
  * @author Ralph Dürig
@@ -23,11 +23,11 @@ public class PathsRec implements PathCalculator {
 	private BddCache cache;
 	private Board board;
 
-	private Bdd logPandQ = Bdd.create("p and q");
-	private Bdd logNPandNQ = Bdd.create("not p and not q");
-	private Bdd logPMandMQ = Bdd.create("pm and mq");
-	private Bdd logPQorPMMQ = Bdd.create("pq or (pm and mq)");
-	private Bdd logPMMQ = Bdd.create("or pm and mq");
+	private Logging logPandQ = Logging.create("p and q");
+	private Logging logNPandNQ = Logging.create("not p and not q");
+	private Logging logPMandMQ = Logging.create("pm and mq");
+	private Logging logPQorPMMQ = Logging.create("pq or (pm and mq)");
+	private Logging logPMMQ = Logging.create("or pm and mq");
 
 	public PathsRec(BDDFactory fac, Board board) {
 		this.fac = fac;

@@ -2,6 +2,7 @@ package com.strategy.havannah.logic.prediction;
 
 import static com.strategy.util.Output.print;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * Uses a {@link Situation} and its {@link Evaluation} to predict where to set
@@ -156,10 +158,29 @@ public class PredictionHavannah implements Prediction {
 	private void init(Board board, List<Turn> turns) {
 		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 
-		situationWhite = new SituationHavannah(analyzer, board,
-				StoneColor.WHITE);
-		situationBlack = new SituationHavannah(analyzer, board,
-				StoneColor.BLACK);
+		PrintStream out = Preferences.getInstance().getOut();
+		if (null != out) {
+			long tBefore = System.nanoTime();
+			situationWhite = new SituationHavannah(analyzer, board,
+					StoneColor.WHITE);
+			long tAfter = System.nanoTime();
+			double diff = tAfter - tBefore;
+			out.println("BDD creation for " + StoneColor.WHITE + " took: "
+					+ diff / 1000 + " microsec");
+
+			tBefore = System.nanoTime();
+			situationBlack = new SituationHavannah(analyzer, board,
+					StoneColor.BLACK);
+			tAfter = System.nanoTime();
+			diff = tAfter - tBefore;
+			out.println("BDD creation for " + StoneColor.BLACK + " took: "
+					+ diff / 1000 + " microsec");
+		} else {
+			situationWhite = new SituationHavannah(analyzer, board,
+					StoneColor.WHITE);
+			situationBlack = new SituationHavannah(analyzer, board,
+					StoneColor.BLACK);
+		}
 
 		debugInit();
 

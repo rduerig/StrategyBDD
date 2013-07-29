@@ -9,24 +9,26 @@ import com.strategy.util.preferences.Preferences;
 /**
  * @author Ralph Dürig
  */
-public class Bdd {
+public class Logging {
 
 	private PrintStream out;
 	private String caption;
 	private int sumTimes;
-	private long sumDurations;
+	private double sumDurations;
 	private long sumNodes;
 
 	/**
-	 * Creates a {@link Bdd} logging to {@link Preferences#getOut()}.
+	 * Creates a {@link Logging} that logs to {@link Preferences#getOut()}. If
+	 * no debug stream was given the logging object performs no output. No
+	 * warning or error is thrown in this case.
 	 */
-	public static Bdd create(String caption) {
-		return new Bdd(Preferences.getInstance().getOut(), caption);
+	public static Logging create(String caption) {
+		return new Logging(Preferences.getInstance().getOut(), caption);
 	}
 
 	// ************************************************************************
 
-	private Bdd(PrintStream out, String caption) {
+	private Logging(PrintStream out, String caption) {
 		this.out = out;
 		this.caption = caption;
 		sumDurations = 0;
@@ -46,6 +48,18 @@ public class Bdd {
 		return applyOp(x, y, Op.RESTRICT);
 	}
 
+	public double satCountLog(BDD x) {
+		return applyOp(x, UnaryOp.SATS);
+	}
+
+	public double pathCountLog(BDD x) {
+		return applyOp(x, UnaryOp.PATHS);
+	}
+
+	public double nodeCountLog(BDD x) {
+		return applyOp(x, UnaryOp.NODES);
+	}
+
 	public void log() {
 		// ignore if no output stream was given
 		if (null == out) {
@@ -57,7 +71,7 @@ public class Bdd {
 		sb.append(sumTimes);
 		sb.append(" times, ");
 		sb.append(sumDurations);
-		sb.append(" msec, ");
+		sb.append(" microsec, ");
 		sb.append(sumNodes);
 		sb.append(" nodes");
 
@@ -69,13 +83,21 @@ public class Bdd {
 	private BDD applyOp(BDD x, BDD y, Op op) {
 		sumTimes++;
 		int nodesBefore = x.nodeCount();
-		long millisBefore = System.currentTimeMillis();
+		long millisBefore = System.nanoTime();
 		BDD result = op.apply(x, y);
-		long millisAfter = System.currentTimeMillis();
+		long millisAfter = System.nanoTime();
 		int nodesAfter = result.nodeCount();
-		sumDurations += millisAfter - millisBefore;
+		sumDurations += (millisAfter - millisBefore) / 1000;
 		sumNodes += nodesAfter - nodesBefore;
 		return result;
 	}
 
+	private double applyOp(BDD x, UnaryOp op) {
+		sumTimes++;
+		long millisBefore = System.nanoTime();
+		double result = op.apply(x);
+		long millisAfter = System.nanoTime();
+		sumDurations += (millisAfter - millisBefore) / 1000;
+		return result;
+	}
 }

@@ -24,6 +24,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.math.IntMath;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.evaluation.Evaluation;
@@ -34,6 +35,8 @@ import com.strategy.util.FieldGenerator;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
+import com.strategy.util.operation.Logging;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -247,7 +250,19 @@ public class StrategyInterpreter extends Thread {
 					return;
 				}
 
-				Integer next = p.answerTurn(fieldIndex, cpuColor.getOpposite());
+				Integer next;
+				PrintStream debugOut = Preferences.getInstance().getOut();
+				if (null != debugOut) {
+					long tBefore = System.nanoTime();
+					next = p.answerTurn(fieldIndex, cpuColor.getOpposite());
+					long tAfter = System.nanoTime();
+					double diff = tAfter - tBefore;
+					debugOut.println("answering turn took: " + diff / 1000
+							+ " microsec");
+				} else {
+					next = p.answerTurn(fieldIndex, cpuColor.getOpposite());
+				}
+
 				if (null != next) {
 					printCpuTurn(next, board.getBoardSize(), cpuColor);
 				} else {
@@ -359,6 +374,7 @@ public class StrategyInterpreter extends Thread {
 
 	private void exit() {
 		out.println("Bye");
+		out.println(board.toMarkLastTurnString(p.getLastTurn()));
 		interrupt();
 		scanner.close();
 		InterpreterManager.exit();
@@ -386,8 +402,10 @@ public class StrategyInterpreter extends Thread {
 	}
 
 	private void printNodes(Situation sit) {
-		out.print("Nodes " + sit.getStoneColor().name() + ": ");
-		out.println(sit.getWinningCondition().nodeCount());
+		Logging l = Logging.create("nodes computing");
+		double value = l.nodeCountLog(sit.getWinningCondition());
+		out.println("Nodes " + sit.getStoneColor().name() + ": " + value);
+		l.log();
 	}
 
 	private void printBdd(Situation sit) {
@@ -396,15 +414,24 @@ public class StrategyInterpreter extends Thread {
 	}
 
 	private void printValue(Situation sit) {
-		double value = sit.getWinningCondition().satCount();
+		Logging l = Logging.create("value computing");
+		double value = l.satCountLog(sit.getWinningCondition());
+		double total = IntMath.pow(2, sit.getWinningCondition().getFactory()
+				.varNum());
+		System.out.println("var num: "
+				+ sit.getWinningCondition().getFactory().varNum());
+		System.out.println("pos num: " + board.getPositions().size());
 		out.println("Value " + sit.getStoneColor().name() + ": "
-				+ String.format("%e", value));
+				+ String.format("%e", value) + " satisfying out of " + total);
+		l.log();
 	}
 
 	private void printSolutions(Situation sit) {
-		double value = sit.getWinningCondition().pathCount();
+		Logging l = Logging.create("solutions computing");
+		double value = l.pathCountLog(sit.getWinningCondition());
 		out.println("Solutions " + sit.getStoneColor().name() + ": "
 				+ String.format("%e", value));
+		l.log();
 	}
 
 	private void printMem() {

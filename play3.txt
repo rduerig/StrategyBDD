@@ -1,0 +1,112 @@
+or bridge path: 15 times, 3086.0 microsec, 243 nodes
+or fork path: 20 times, 4137.0 microsec, 410 nodes
+ring: or opponent outerPosCanReachInnerPos: 504 times, 10836.0 microsec, 1500 nodes
+ring: or opponent innerPosReachableFromOut: 84 times, 5741.0 microsec, 421 nodes
+ring: and opponent canReachAllInnerPos: 7 times, 758.0 microsec, 151 nodes
+bridge OR fork: 1 times, 3770.0 microsec, 1448 nodes
+bf OR ring: 1 times, 2777.0 microsec, 248 nodes
+BDD initialization from scratch took: 343202.0
+BDD creation for WHITE took: 343931.895 microsec
+or bridge path: 15 times, 8955.0 microsec, 243 nodes
+or fork path: 20 times, 21650.0 microsec, 410 nodes
+ring: or opponent outerPosCanReachInnerPos: 504 times, 31823.0 microsec, 1500 nodes
+ring: or opponent innerPosReachableFromOut: 84 times, 17921.0 microsec, 421 nodes
+ring: and opponent canReachAllInnerPos: 7 times, 2475.0 microsec, 151 nodes
+bridge OR fork: 1 times, 8881.0 microsec, 1448 nodes
+bf OR ring: 1 times, 1065.0 microsec, 248 nodes
+BDD initialization from scratch took: 169642.0
+BDD creation for BLACK took: 169700.842 microsec
+p and q: 61 times, 254.0 microsec, 42 nodes
+not p and not q: 61 times, 233.0 microsec, 42 nodes
+pm and mq: 13376 times, 23966.0 microsec, -1772 nodes
+pq or (pm and mq): 704 times, 971.0 microsec, 3452 nodes
+or pm and mq: 13376 times, 18304.0 microsec, 4170 nodes
+CacheStats{hitCount=29758, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}
+prediction for WHITE took: 51380.51 microsec
+prediction for BLACK took: 6386.908 microsec
+evaluation WHITE - restrict: 19 times, 31262.0 microsec, -14252 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 19 times, 2881.0 microsec, -14252 nodes
+WHITE's situation updated for BLACK's move: 1 times, 175.0 microsec, -718 nodes
+BLACK's situation updated for BLACK's move: 1 times, 108.0 microsec, -1036 nodes
+prediction for WHITE took: 8075.473 microsec
+prediction for BLACK took: 5010.457 microsec
+evaluation WHITE - restrict: 18 times, 3694.0 microsec, -7719 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 18 times, 2021.0 microsec, -6513 nodes
+WHITE's situation updated for WHITE's move: 1 times, 96.0 microsec, -481 nodes
+BLACK's situation updated for WHITE's move: 1 times, 143.0 microsec, -82 nodes
+prediction for WHITE took: 4328.27 microsec
+prediction for BLACK took: 3606.539 microsec
+evaluation WHITE - restrict: 17 times, 1820.0 microsec, -4673 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 17 times, 1510.0 microsec, -5472 nodes
+WHITE's situation updated for BLACK's move: 1 times, 115.0 microsec, -104 nodes
+BLACK's situation updated for BLACK's move: 1 times, 5.0 microsec, -404 nodes
+prediction for WHITE took: 2888.733 microsec
+prediction for BLACK took: 1754.973 microsec
+evaluation WHITE - restrict: 16 times, 1332.0 microsec, -3651 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 16 times, 622.0 microsec, -2672 nodes
+WHITE's situation updated for WHITE's move: 1 times, 5.0 microsec, -312 nodes
+BLACK's situation updated for WHITE's move: 1 times, 67.0 microsec, -128 nodes
+prediction for WHITE took: 2030.867 microsec
+prediction for BLACK took: 2574.504 microsec
+evaluation WHITE - restrict: 15 times, 777.0 microsec, -1847 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 15 times, 1311.0 microsec, -1595 nodes
+WHITE's situation updated for BLACK's move: 1 times, 60.0 microsec, -105 nodes
+BLACK's situation updated for BLACK's move: 1 times, 47.0 microsec, -164 nodes
+prediction for WHITE took: 1692.49 microsec
+prediction for BLACK took: 1102.971 microsec
+evaluation WHITE - restrict: 14 times, 542.0 microsec, -1084 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 14 times, 299.0 microsec, -676 nodes
+WHITE's situation updated for WHITE's move: 1 times, 5.0 microsec, -65 nodes
+BLACK's situation updated for WHITE's move: 1 times, 31.0 microsec, -15 nodes
+prediction for WHITE took: 1324.832 microsec
+prediction for BLACK took: 1070.673 microsec
+evaluation WHITE - restrict: 13 times, 390.0 microsec, -739 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 13 times, 264.0 microsec, -493 nodes
+WHITE's situation updated for BLACK's move: 1 times, 42.0 microsec, -32 nodes
+BLACK's situation updated for BLACK's move: 1 times, 4.0 microsec, -66 nodes
+prediction for WHITE took: 1114.14 microsec
+prediction for BLACK took: 686.112 microsec
+evaluation WHITE - restrict: 12 times, 308.0 microsec, -513 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 12 times, 133.0 microsec, -198 nodes
+WHITE's situation updated for WHITE's move: 1 times, 5.0 microsec, -33 nodes
+BLACK's situation updated for WHITE's move: 1 times, 17.0 microsec, -1 nodes
+prediction for WHITE took: 870.544 microsec
+prediction for BLACK took: 645.965 microsec
+evaluation WHITE - restrict: 11 times, 227.0 microsec, -383 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 11 times, 120.0 microsec, -154 nodes
+WHITE's situation updated for BLACK's move: 1 times, 27.0 microsec, -25 nodes
+BLACK's situation updated for BLACK's move: 1 times, 4.0 microsec, -21 nodes
+prediction for WHITE took: 469.381 microsec
+prediction for BLACK took: 340.792 microsec
+evaluation WHITE - restrict: 10 times, 113.0 microsec, -247 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 10 times, 56.0 microsec, -94 nodes
+WHITE's situation updated for WHITE's move: 1 times, 2.0 microsec, -25 nodes
+BLACK's situation updated for WHITE's move: 1 times, 5.0 microsec, -4 nodes
+prediction for WHITE took: 562.352 microsec
+prediction for BLACK took: 450.969 microsec
+evaluation WHITE - restrict: 9 times, 101.0 microsec, -153 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 9 times, 56.0 microsec, -60 nodes
+WHITE's situation updated for BLACK's move: 1 times, 15.0 microsec, -20 nodes
+BLACK's situation updated for BLACK's move: 1 times, 4.0 microsec, -18 nodes

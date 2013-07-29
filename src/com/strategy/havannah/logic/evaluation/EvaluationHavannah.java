@@ -1,5 +1,6 @@
 package com.strategy.havannah.logic.evaluation;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -15,9 +16,10 @@ import com.strategy.api.logic.Position;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 import com.strategy.util.predicates.EmptyPositionFilter;
 import com.strategy.util.predicates.ValidPositionFilter;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -31,8 +33,8 @@ public class EvaluationHavannah implements Evaluation {
 	private BDD win;
 	private BDD bestBdd;
 	private StoneColor color;
-	private Bdd logRestrictWhite;
-	private Bdd logRestrictBlack;
+	private Logging logRestrictWhite;
+	private Logging logRestrictBlack;
 
 	public static Evaluation create(Situation sit) {
 		return new EvaluationHavannah(sit.getBoard(),
@@ -49,11 +51,22 @@ public class EvaluationHavannah implements Evaluation {
 		this.color = color;
 		avg = 0d;
 		best = 0;
-		logRestrictWhite = Bdd.create("evaluation " + StoneColor.WHITE
+		logRestrictWhite = Logging.create("evaluation " + StoneColor.WHITE
 				+ " - restrict");
-		logRestrictBlack = Bdd.create("evaluation " + StoneColor.BLACK
+		logRestrictBlack = Logging.create("evaluation " + StoneColor.BLACK
 				+ " - restrict");
-		init();
+
+		PrintStream out = Preferences.getInstance().getOut();
+		if (null != out) {
+			long tBefore = System.nanoTime();
+			init();
+			long tAfter = System.nanoTime();
+			double diff = tAfter - tBefore;
+			out.println("prediction for " + color + " took: " + diff / 1000
+					+ " microsec");
+		} else {
+			init();
+		}
 	}
 
 	@Override

@@ -16,7 +16,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 import com.strategy.util.predicates.ValidPositionFilter;
 
 public class RingConditionCalculator implements ConditionCalculator,
@@ -53,11 +53,11 @@ public class RingConditionCalculator implements ConditionCalculator,
 
 		BDD selfCanReachAllInnerPos = analyzer.getFactory().one();
 
-		Bdd logOrOuterPosCanReachInnerPos = Bdd
+		Logging logOrOuterPosCanReachInnerPos = Logging
 				.create("ring: or opponent outerPosCanReachInnerPos");
-		Bdd logOrInnerPosReachableFromOut = Bdd
+		Logging logOrInnerPosReachableFromOut = Logging
 				.create("ring: or opponent innerPosReachableFromOut");
-		Bdd logAndSelfCanReachAllInnerPos = Bdd
+		Logging logAndSelfCanReachAllInnerPos = Logging
 				.create("ring: and opponent canReachAllInnerPos");
 		// Bdd logNotSelfCanReachAllInnerPos =
 		// Bdd.create("ring: not selfCanReachAllInnerPos");

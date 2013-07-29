@@ -16,7 +16,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.util.StoneColor;
-import com.strategy.util.operation.Bdd;
+import com.strategy.util.operation.Logging;
 
 public class ForkConditionCalculator implements ConditionCalculator,
 		HasDebugFlag {
@@ -50,7 +50,7 @@ public class ForkConditionCalculator implements ConditionCalculator,
 
 		int size = edgePositions.size();
 
-		Bdd logForkPath = Bdd.create("or fork path");
+		Logging logForkPath = Logging.create("or fork path");
 
 		for (int i = 0; i < size; i++) {
 			for (int j = i + 1; j < size; j++) {
