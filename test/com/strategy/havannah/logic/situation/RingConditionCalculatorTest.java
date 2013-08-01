@@ -70,7 +70,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Assert.assertEquals(expected, actual);
 
 		sit.update(actual, StoneColor.BLACK);
-		Assert.assertTrue(eval.getBestBdd().isOne());
+		Assert.assertTrue(sit.getWinningCondition().isOne());
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		Assert.assertEquals(expected, actual);
 
 		sit.update(actual, StoneColor.BLACK);
-		Assert.assertTrue(eval.getBestBdd().isOne());
+		Assert.assertTrue(sit.getWinningCondition().isOne());
 	}
 
 	@Test

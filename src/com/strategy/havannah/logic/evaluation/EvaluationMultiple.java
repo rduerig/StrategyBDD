@@ -74,10 +74,6 @@ public class EvaluationMultiple implements Evaluation {
 		return rating;
 	}
 
-	@Override
-	public BDD getBestBdd() {
-		return allBestBdd;
-	}
 
 	@Override
 	public void log() {
