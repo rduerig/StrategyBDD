@@ -30,10 +30,12 @@ public class EvaluationHavannah implements Evaluation {
 	private double avg;
 	private int best;
 	private Board board;
-	private BDD win;
+	private final BDD win;
 	private StoneColor color;
 	private Logging logRestrictWhite;
 	private Logging logRestrictBlack;
+	private Logging logId;
+	private Logging logSat;
 
 	public static Evaluation create(Situation sit) {
 		return new EvaluationHavannah(sit.getBoard(),
@@ -54,6 +56,8 @@ public class EvaluationHavannah implements Evaluation {
 				+ " - restrict");
 		logRestrictBlack = Logging.create("evaluation " + StoneColor.BLACK
 				+ " - restrict");
+		logId = Logging.create("evaluation " + color + " - copy win");
+		logSat = Logging.create("evaluation " + color + " - sat count");
 
 		PrintStream out = Preferences.getInstance().getOut();
 		if (null != out) {
@@ -87,6 +91,8 @@ public class EvaluationHavannah implements Evaluation {
 	public void log() {
 		logRestrictWhite.log();
 		logRestrictBlack.log();
+		logId.log();
+		logSat.log();
 	}
 
 	// ************************************************************************
@@ -101,20 +107,22 @@ public class EvaluationHavannah implements Evaluation {
 		rating = new double[board.getRows() * board.getColumns()];
 		double sum = 0d;
 		double bestValue = 0d;
-		BDD varset = getVarset();
+		// BDD varset = getVarset();
 		for (Position pos : filtered) {
 			Field field = board.getField(pos.getRow(), pos.getCol());
-			BDD bddWin = win.id();
+			// BDD bddWin = win.id();
+			BDD bddWin = logId.id(win);
 			if (StoneColor.WHITE.equals(color)) {
 				// bddWin.restrictWith(fac.ithVar(field.getIndex()));
-				logRestrictWhite.restrictLog(bddWin,
+				bddWin = logRestrictWhite.restrictLog(bddWin,
 						fac.ithVar(field.getIndex()));
 			} else {
 				// bddWin.restrictWith(fac.nithVar(field.getIndex()));
-				logRestrictBlack.restrictLog(bddWin,
+				bddWin = logRestrictBlack.restrictLog(bddWin,
 						fac.nithVar(field.getIndex()));
 			}
-			double valuation = bddWin.satCount(varset);
+			// double valuation = bddWin.satCount();
+			double valuation = logSat.satCountLog(bddWin);
 			rating[field.getIndex()] = valuation;
 			sum += valuation;
 			if (valuation > bestValue) {

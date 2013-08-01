@@ -62,10 +62,10 @@ public class SituationHavannah implements Situation {
 		String capSuffix = "'s move";
 		if (StoneColor.WHITE.equals(color)) {
 			logUpdate = Logging.create(capPrefix + color + capSuffix);
-			logUpdate.restrictLog(win, fac.ithVar(field.getIndex()));
+			win = logUpdate.restrictLog(win, fac.ithVar(field.getIndex()));
 		} else {
 			logUpdate = Logging.create(capPrefix + color + capSuffix);
-			logUpdate.restrictLog(win, fac.nithVar(field.getIndex()));
+			win = logUpdate.restrictLog(win, fac.nithVar(field.getIndex()));
 		}
 		logUpdate.log();
 

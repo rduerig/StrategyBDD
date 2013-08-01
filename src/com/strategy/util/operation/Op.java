@@ -10,6 +10,7 @@ public interface Op {
 	public static Op AND = new And();
 	public static Op OR = new Or();
 	public static Op RESTRICT = new Restrict();
+	public static Op ID = new Id();
 
 	/**
 	 * Applies the operation and returns the result. <b>Important: The y BDD is

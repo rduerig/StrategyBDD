@@ -29,7 +29,6 @@ public class EvaluationMultiple implements Evaluation {
 	private Board board;
 	private BDD bridge;
 	private BDD fork;
-	private BDD allBestBdd;
 	private BDD ring;
 	private BDD varsetBridge;
 	private BDD varsetFork;
@@ -74,7 +73,6 @@ public class EvaluationMultiple implements Evaluation {
 		return rating;
 	}
 
-
 	@Override
 	public void log() {
 		// TODO log
@@ -93,7 +91,6 @@ public class EvaluationMultiple implements Evaluation {
 			rating = new double[board.getRows() * board.getColumns()];
 			double bestValue = 0d;
 			int bestIndex = 0;
-			BDD bestBdd = null;
 			for (Position pos : filtered) {
 				Field field = board.getField(pos.getRow(), pos.getCol());
 				BDD bddBridge = bridge.id();
@@ -112,7 +109,6 @@ public class EvaluationMultiple implements Evaluation {
 				if (valuation.getValue() > bestValue) {
 					bestIndex = field.getIndex();
 					bestValue = valuation.getValue();
-					bestBdd = valuation.getKey().id();
 				}
 				bddBridge.free();
 				bddFork.free();
@@ -122,7 +118,6 @@ public class EvaluationMultiple implements Evaluation {
 			if (bestValue > allBestValue) {
 				allBestValue = bestValue;
 				allBestIndex = bestIndex;
-				allBestBdd = bestBdd;
 			}
 
 			polarity = !polarity;

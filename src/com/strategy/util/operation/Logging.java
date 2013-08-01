@@ -48,6 +48,10 @@ public class Logging {
 		return applyOp(x, y, Op.RESTRICT);
 	}
 
+	public BDD id(BDD x) {
+		return applyOp(x, null, Op.ID);
+	}
+
 	public double satCountLog(BDD x) {
 		return applyOp(x, UnaryOp.SATS);
 	}

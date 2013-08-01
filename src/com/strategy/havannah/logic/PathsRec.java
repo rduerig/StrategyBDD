@@ -56,7 +56,7 @@ public class PathsRec implements PathCalculator {
 
 	private BDD getPathTransitiveClosure(Position p, Position q,
 			StoneColor color) {
-		int i = IntMath.log2(board.getBoardSize(), RoundingMode.HALF_UP);
+		int i = IntMath.log2(board.getBoardSize(), RoundingMode.UP) + 1;
 		// int i = 2 * board.getBoardSize() + 1;
 		if (!cache.isCached(color, p, q, i)) {
 			BDD path = recursiveTransitiveClosure(i, p, q, color);
