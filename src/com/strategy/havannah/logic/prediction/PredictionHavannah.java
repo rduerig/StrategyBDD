@@ -226,61 +226,6 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	private void debug(Evaluation evalWhite, Evaluation evalBlack) {
-		print("Rating WHITE:\n"
-				+ situationWhite.getBoard().toRatingString(
-						evalWhite.getRating(), evalWhite.getBestIndex()),
-				PredictionHavannah.class);
-		print("Rating BLACK:\n"
-				+ situationBlack.getBoard().toRatingString(
-						evalBlack.getRating(), evalBlack.getBestIndex()),
-				PredictionHavannah.class);
-
-		print("Nodes BDD WHITE:\n" + evalWhite.getBestBdd().nodeCount(),
-				PredictionHavannah.class);
-		print("Nodes BDD BLACK:\n" + evalBlack.getBestBdd().nodeCount(),
-				PredictionHavannah.class);
-		print("Satcount BDD WHITE:\n" + evalWhite.getBestBdd().satCount(),
-				PredictionHavannah.class);
-		print("Satcount BDD BLACK:\n" + evalBlack.getBestBdd().satCount(),
-				PredictionHavannah.class);
-		print("Paths BDD WHITE:\n" + evalWhite.getBestBdd().pathCount(),
-				PredictionHavannah.class);
-		print("Paths BDD BLACK:\n" + evalBlack.getBestBdd().pathCount(),
-				PredictionHavannah.class);
-
-		Comparator<Entry<Integer, Integer>> comparator = new Comparator<Entry<Integer, Integer>>() {
-
-			@Override
-			public int compare(Entry<Integer, Integer> o1,
-					Entry<Integer, Integer> o2) {
-				return o1.getValue().compareTo(o2.getValue());
-			}
-		};
-		Map<Integer, Integer> varsWhite = Maps.newHashMap();
-		int[] varProfileWhite = evalWhite.getBestBdd().varProfile();
-		for (int i = 0; i < varProfileWhite.length; i++) {
-			varsWhite.put(i, varProfileWhite[i]);
-		}
-		Entry<Integer, Integer> maxEntryWhite = Collections.max(
-				varsWhite.entrySet(), comparator);
-		print("var count BDD WHITE:\n" + maxEntryWhite.getKey() + ":"
-				+ maxEntryWhite.getValue(), PredictionHavannah.class);
-		print("best var count BDD WHITE:\n" + evalWhite.getBestIndex() + ":"
-				+ varProfileWhite[evalWhite.getBestIndex()],
-				PredictionHavannah.class);
-
-		Map<Integer, Integer> varsBlack = Maps.newHashMap();
-		int[] varProfileBlack = evalBlack.getBestBdd().varProfile();
-		for (int i = 0; i < varProfileBlack.length; i++) {
-			varsBlack.put(i, varProfileBlack[i]);
-		}
-		Entry<Integer, Integer> maxEntryBlack = Collections.max(
-				varsBlack.entrySet(), comparator);
-		print("var count BDD BLACK:\n" + maxEntryBlack.getKey() + ":"
-				+ maxEntryBlack.getValue(), PredictionHavannah.class);
-		print("best var count BDD BLACK:\n" + evalBlack.getBestIndex() + ":"
-				+ varProfileBlack[evalBlack.getBestIndex()],
-				PredictionHavannah.class);
 
 		evalWhite.log();
 		evalBlack.log();

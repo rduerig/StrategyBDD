@@ -31,7 +31,6 @@ public class EvaluationHavannah implements Evaluation {
 	private int best;
 	private Board board;
 	private BDD win;
-	private BDD bestBdd;
 	private StoneColor color;
 	private Logging logRestrictWhite;
 	private Logging logRestrictBlack;
@@ -85,11 +84,6 @@ public class EvaluationHavannah implements Evaluation {
 	}
 
 	@Override
-	public BDD getBestBdd() {
-		return bestBdd;
-	}
-
-	@Override
 	public void log() {
 		logRestrictWhite.log();
 		logRestrictBlack.log();
@@ -126,7 +120,6 @@ public class EvaluationHavannah implements Evaluation {
 			if (valuation > bestValue) {
 				best = field.getIndex();
 				bestValue = valuation;
-				bestBdd = bddWin.id();
 			}
 			bddWin.free();
 		}

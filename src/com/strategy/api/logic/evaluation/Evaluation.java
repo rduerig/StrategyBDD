@@ -1,8 +1,5 @@
 package com.strategy.api.logic.evaluation;
 
-import net.sf.javabdd.BDD;
-
-import com.strategy.api.logic.situation.Situation;
 
 /**
  * Evaluates a {@link Situation}.
@@ -16,8 +13,6 @@ public interface Evaluation {
 	int getBestIndex();
 
 	double[] getRating();
-
-	BDD getBestBdd();
 
 	void log();
 
