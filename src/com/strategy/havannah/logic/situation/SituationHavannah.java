@@ -125,10 +125,12 @@ public class SituationHavannah implements Situation {
 		logBF.log();
 		logBFR.log();
 
-		try {
-			analyzer.getFactory().save(getFileName(), win);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(!Preferences.getInstance().isAvoidFiles()){
+			try {
+				analyzer.getFactory().save(getFileName(), win);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -6,6 +6,7 @@ package com.strategy.util.preferences;
 public class ArgumentStrings {
 
 	protected static final String PAR_GENERATE_FILES = "-f";
+	protected static final String PAR_AVOID_FILES = "-f";
 	protected static final String PAR_MODE = "-gtp";
 	protected static final String PAR_BOARD_SIZE = "-s";
 	protected static final String PAR_TURNS = "-hgf";

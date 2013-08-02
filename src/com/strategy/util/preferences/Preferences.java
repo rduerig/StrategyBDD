@@ -28,6 +28,7 @@ public class Preferences {
 
 	private static Preferences instance;
 	private static boolean defaultGenerateFiles = false;
+	private static boolean defaultAvoidFiles = false;
 	private static int defaultBoardSize = 4;
 	private static List<Turn> defaultTurns = null;
 	private static boolean defaultModeInterpreter = true; // defaults to
@@ -38,6 +39,7 @@ public class Preferences {
 	private static PathCalculatorKey defaultAlg = PathCalculatorKey.RECURSIVE;
 
 	private boolean generateFiles;
+	private boolean avoidFiles;
 	private final int boardSize;
 	private final List<Turn> turns;
 	private boolean modeInterpreter;
@@ -59,6 +61,7 @@ public class Preferences {
 		}
 
 		boolean parGenerateFiles = parseGenerateFiles(params);
+		boolean parAvoidFiles = parseAvoidFiles(params);
 		boolean parModeInterpreter = parseMode(params);
 		int parBoardSize = parseBoardSize(params);
 		List<Turn> parTurns = defaultTurns;
@@ -83,7 +86,7 @@ public class Preferences {
 
 		instance = new Preferences(
 				null == parTurns || parTurns.isEmpty() ? parGenerateFiles
-						: false, parBoardSize, parTurns, parModeInterpreter,
+						: false, parAvoidFiles, parBoardSize, parTurns, parModeInterpreter,
 				out, alg);
 
 		return instance;
@@ -97,9 +100,10 @@ public class Preferences {
 		return instance;
 	}
 
-	private Preferences(boolean generateFiles, int boardSize, List<Turn> turns,
+	private Preferences(boolean generateFiles, boolean avoidFiles, int boardSize, List<Turn> turns,
 			boolean modeInterpreter, PrintStream out, PathCalculatorKey alg) {
 		this.generateFiles = generateFiles;
+		this.avoidFiles = avoidFiles;
 		this.boardSize = boardSize;
 		this.turns = turns;
 		this.modeInterpreter = modeInterpreter;
@@ -122,6 +126,10 @@ public class Preferences {
 
 	public void setGenerateFiles(boolean generateFiles) {
 		this.generateFiles = generateFiles;
+	}
+
+	public boolean isAvoidFiles() {
+		return avoidFiles;
 	}
 
 	public boolean isModeInterpreter() {
@@ -151,7 +159,7 @@ public class Preferences {
 	// ************************************************************************
 
 	private static Preferences getDefault() {
-		return new Preferences(defaultGenerateFiles, defaultBoardSize,
+		return new Preferences(defaultGenerateFiles, defaultAvoidFiles, defaultBoardSize,
 				defaultTurns, defaultModeInterpreter, defaultOut, defaultAlg);
 	}
 
@@ -173,6 +181,16 @@ public class Preferences {
 			return true;
 		} else {
 			return defaultGenerateFiles;
+		}
+	}
+
+	private static boolean parseAvoidFiles(List<String> params) {
+		Optional<String> opt = Iterables.tryFind(params,
+				new ParameterPredicate(ArgumentStrings.PAR_AVOID_FILES));
+		if (opt.isPresent()) {
+			return true;
+		} else {
+			return defaultAvoidFiles;
 		}
 	}
 
