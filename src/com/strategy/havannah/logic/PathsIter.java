@@ -46,6 +46,23 @@ public class PathsIter implements PathCalculator {
 			path = reachBlack[indexP][indexQ].id();
 		}
 		return path;
+
+		//int V = board.getColumns() * board.getRows();
+		//for (int k = 0; k < V; k++) {
+		//	if (color.equals(StoneColor.WHITE)) {
+		//		doReach(reachWhite, k, indexP, indexQ, board);
+		//	} else {
+		//		doReach(reachBlack, k, indexP, indexQ, board);
+		//	}
+		//}
+
+		//BDD result;
+		//if (color.equals(StoneColor.WHITE)) {
+		//	result = reachWhite[indexP][indexQ];
+		//} else {
+		//	result = reachBlack[indexP][indexQ];
+		//}
+		//return result;
 	}
 
 	public void done() {
@@ -94,34 +111,25 @@ public class PathsIter implements PathCalculator {
 			}
 		}
 
-		// doFill(reachWhite, graphWhite, V);
-		// doFill(reachBlack, graphBlack, V);
+//		doFill(reachWhite, graphWhite, V);
+//		doFill(reachBlack, graphBlack, V);
 
-		// reachability matrix with floyd-warshall-algorithm and bdd style also
-		for (int k = 0; k < V; k++) {
-			// Pick all vertices as source one by one
-			for (int i = 0; i < V; i++) {
-				// Pick all vertices as destination for the
-				// above picked source
-				for (int j = 0; j < V; j++) {
-					// If vertex k is on a path from i to j,
-					// then make sure that the value of reach[i][j] is 1
+//		reachability matrix with floyd-warshall-algorithm and bdd style also
+			for (int k = 0; k < V; k++) {
+				// Pick all vertices as source one by one
+				for (int i = 0; i < V; i++) {
+					// Pick all vertices as destination for the
+					// above picked source
+					for (int j = 0; j < V; j++) {
+						// If vertex k is on a path from i to j,
+						// then make sure that the value of reach[i][j] is 1
 
-					doReach(reachWhite, k, i, j, board);
-					doReach(reachBlack, k, i, j, board);
+						doReach(reachWhite, k, i, j, board);
+						doReach(reachBlack, k, i, j, board);
 
+					}
 				}
 			}
-		}
-	}
-
-	private void doFill(BDD[][] todo, BDD[][] graph, int V) {
-		for (int i = 0; i < V; i++) {
-			for (int j = 0; j < V; j++) {
-				BDD bdd = graph[i][j];
-				todo[i][j] = bdd;
-			}
-		}
 	}
 
 	private void doReach(BDD[][] todo, int m, int p, int q, Board b) {
@@ -159,7 +167,7 @@ public class PathsIter implements PathCalculator {
 
 	private void printMatrix(int V, BDD[][] reach) {
 		System.out
-				.println("Following matrix is transitive closure of the given graph");
+			.println("Following matrix is transitive closure of the given graph");
 		for (int i = 0; i < V; i++) {
 			for (int j = 0; j < V; j++)
 				System.out.print(reach[i][j]);
