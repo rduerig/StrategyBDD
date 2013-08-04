@@ -156,6 +156,10 @@ public class Preferences {
 		return alg;
 	}
 
+	public void setAlg(PathCalculatorKey alg){
+		this.alg = alg;
+	}
+
 	// ************************************************************************
 
 	private static Preferences getDefault() {

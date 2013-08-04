@@ -11,6 +11,7 @@ module GtpWrapperModule
 	import "com.google.common.base"
 	import "com.google.common.collect"
 	import "com.strategy.havannah.logic.prediction"
+	import "com.strategy.util.preferences"
 end
 
 class HBdd < LittleGolemInterface
@@ -23,6 +24,7 @@ class HBdd < LittleGolemInterface
 		super(LOGIN,PSW,BOSS_ID)
 	end
 	def call_hbdd(size, moves)
+		GtpWrapperModule::Preferences.createInstance(ARGV)
 		wrapper = GtpWrapperModule::GtpWrapper.new
 		wrapper.setBoardSize(size)
 		wrapper.setMoves(moves.join(' '))

@@ -14,6 +14,8 @@ import com.strategy.util.PrimitiveBoardProvider;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
+import com.strategy.havannah.logic.PathCalculatorProvider;
+import com.strategy.util.preferences.Preferences;
 
 public class GtpWrapper {
 
@@ -24,6 +26,8 @@ public class GtpWrapper {
 	private Prediction p;
 
 	public GtpWrapper() {
+		//Preferences.getInstance().setAlg(PathCalculatorProvider.PathCalculatorKey.ITERATIVE);
+		System.out.println("Using Algorithm "+Preferences.getInstance().getAlg());
 	}
 
 	public void setBoardSize(Integer size) {
