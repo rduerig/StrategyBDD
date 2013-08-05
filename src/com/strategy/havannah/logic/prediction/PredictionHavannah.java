@@ -102,20 +102,20 @@ public class PredictionHavannah implements Prediction {
 
 		//Evaluation evalWhite = createEvaluationWhite();
 		//Evaluation evalBlack = createEvaluationBlack();
-		Evaluation evalWhite = EvaluationHavannah.create(situationWhite.getBoard(), situationWhite.getWinningCondition().id().orWith(situationBlack.getWinningCondition().id().not()), StoneColor.WHITE);
-		Evaluation evalBlack = EvaluationHavannah.create(situationBlack.getBoard(), situationBlack.getWinningCondition().id().orWith(situationWhite.getWinningCondition().id().not()), StoneColor.BLACK);
 
-		debug(evalWhite, evalBlack);
+		//debug(evalWhite, evalBlack);
 
-		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
-		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
+		//double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
+		//double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
 
 		Integer best = 0;
 		if (StoneColor.WHITE.equals(colorToUse)) {
+		Evaluation evalWhite = EvaluationHavannah.create(situationWhite.getBoard(), situationWhite.getWinningCondition().id().andWith(situationBlack.getWinningCondition().id().not()), StoneColor.WHITE);
 			best = evalWhite.getBestIndex();
 		//	best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
 		//			.getBestIndex();
 		} else {
+		Evaluation evalBlack = EvaluationHavannah.create(situationBlack.getBoard(), situationBlack.getWinningCondition().id().andWith(situationWhite.getWinningCondition().id().not()), StoneColor.BLACK);
 			evalBlack.getBestIndex();
 		//	best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
 		//			.getBestIndex();
