@@ -100,28 +100,26 @@ public class PredictionHavannah implements Prediction {
 			return null;
 		}
 
-		Evaluation evalWhite = createEvaluationWhite();
-		Evaluation evalBlack = createEvaluationBlack();
+		//Evaluation evalWhite = createEvaluationWhite();
+		//Evaluation evalBlack = createEvaluationBlack();
+		Evaluation evalWhite = EvaluationHavannah.create(situationWhite.getBoard(), situationWhite.getWinningCondition().id().orWith(situationBlack.getWinningCondition().id().not()), StoneColor.WHITE);
+		Evaluation evalBlack = EvaluationHavannah.create(situationBlack.getBoard(), situationBlack.getWinningCondition().id().orWith(situationWhite.getWinningCondition().id().not()), StoneColor.BLACK);
 
 		debug(evalWhite, evalBlack);
 
 		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
 		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
+
 		Integer best = 0;
 		if (StoneColor.WHITE.equals(colorToUse)) {
-			best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
-					.getBestIndex();
+			best = evalWhite.getBestIndex();
+		//	best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
+		//			.getBestIndex();
 		} else {
-			best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
-					.getBestIndex();
+			evalBlack.getBestIndex();
+		//	best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
+		//			.getBestIndex();
 		}
-
-		// situationWhite.update(best, colorToUse);
-		// situationBlack.update(best, colorToUse);
-		//
-		// lastTurn = best;
-		//
-		// checkVictory();
 
 		doManualTurn(best, colorToUse);
 
@@ -156,35 +154,43 @@ public class PredictionHavannah implements Prediction {
 	// ************************************************************************
 
 	private void init(Board board, List<Turn> turns) {
-		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
+		//BoardAnalyzer analyzer = new BoardAnalyzerHavannah(board);
 
 		PrintStream out = Preferences.getInstance().getOut();
 		if (null != out) {
+			BoardAnalyzer analyzerW = new BoardAnalyzerHavannah(board);
 			long tBefore = System.nanoTime();
-			situationWhite = new SituationHavannah(analyzer, board,
+			situationWhite = new SituationHavannah(analyzerW, board,
 					StoneColor.WHITE);
 			long tAfter = System.nanoTime();
 			double diff = tAfter - tBefore;
 			out.println("BDD creation for " + StoneColor.WHITE + " took: "
 					+ diff / 1000 + " microsec");
+			analyzerW.done();
 
+			BoardAnalyzer analyzerB = new BoardAnalyzerHavannah(board);
 			tBefore = System.nanoTime();
-			situationBlack = new SituationHavannah(analyzer, board,
+			situationBlack = new SituationHavannah(analyzerB, board,
 					StoneColor.BLACK);
 			tAfter = System.nanoTime();
 			diff = tAfter - tBefore;
 			out.println("BDD creation for " + StoneColor.BLACK + " took: "
 					+ diff / 1000 + " microsec");
+			analyzerB.done();
 		} else {
-			situationWhite = new SituationHavannah(analyzer, board,
+			BoardAnalyzer analyzerW = new BoardAnalyzerHavannah(board);
+			situationWhite = new SituationHavannah(analyzerW, board,
 					StoneColor.WHITE);
-			situationBlack = new SituationHavannah(analyzer, board,
+			analyzerW.done();
+			BoardAnalyzer analyzerB = new BoardAnalyzerHavannah(board);
+			situationBlack = new SituationHavannah(analyzerB, board,
 					StoneColor.BLACK);
+			analyzerB.done();
 		}
 
 		debugInit();
 
-		analyzer.done();
+		//analyzer.done();
 
 		if (null != turns && !turns.isEmpty()) {
 			for (Turn turn : turns) {

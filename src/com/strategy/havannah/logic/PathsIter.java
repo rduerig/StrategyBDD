@@ -8,6 +8,7 @@ import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * TODO matrices are symmetrical - can be exploited to save memory
@@ -26,12 +27,15 @@ public class PathsIter implements PathCalculator {
 	private BDD[] reachWhite;
 	private BDD[] reachBlack;
 
+	private int rec;
+
 	/**
 	 * 
 	 */
 	public PathsIter(BDDFactory fac, Board board) {
 		this.fac = fac;
 		this.board = board;
+		this.rec = 0;
 		initReachability();
 	}
 
@@ -50,8 +54,9 @@ public class PathsIter implements PathCalculator {
 	}
 
 	public void done() {
-		// fac.done();
-		// System.out.println("all recursions: " + allrec);
+		if(null != Preferences.getInstance().getOut()){
+			Preferences.getInstance().getOut().println("all iterations: " + rec);
+		}
 		logPandQ.log();
 		logNPandNQ.log();
 		logPMandMQ.log();
@@ -79,6 +84,8 @@ public class PathsIter implements PathCalculator {
 				if (!board.isValidField(q)) {
 					continue;
 				}
+
+				rec++;
 
 				Position posP = board.getField(p).getPosition();
 				Position posQ = board.getField(q).getPosition();
@@ -130,7 +137,7 @@ public class PathsIter implements PathCalculator {
 		BDD reachmq = todo[V * m + q];
 
 		// todo[p][q] = reachpq.or(reachpm.and(reachmq));
-		// System.out.println("p=" + p + ", q=" + q + ", m=" + m);
+		//System.out.println("p=" + p + ", q=" + q + ", m=" + m);
 		todo[V * p + q] = logPQorPMMQ.orLog(reachpq,
 				logPMandMQ.andLog(reachpm.id(), reachmq.id()));
 	}

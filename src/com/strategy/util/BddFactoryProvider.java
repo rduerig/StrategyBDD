@@ -43,8 +43,9 @@ public class BddFactoryProvider {
 				size.intValue() / 5);
 		result.setVarNum(dimension);
 		result.reorderVerbose(0);
-		result.setIncreaseFactor(0.8);
-		result.setMaxIncrease(Double.valueOf((size / 2) * 0.8).intValue());
+		result.setIncreaseFactor(0.5);
+		result.setMaxIncrease(Double.valueOf((size / 2) * 0.5).intValue());
+		result.setMinFreeNodes(0.05);
 
 		return result;
 	}

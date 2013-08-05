@@ -217,7 +217,7 @@ public class StrategyInterpreter extends Thread {
 				}
 
 				p.doManualTurn(fieldIndex, cpuColor.getOpposite());
-				cmdSwitch();
+				//cmdSwitch();
 				if (p.isWinWhite()) {
 					win(StoneColor.WHITE);
 					return;

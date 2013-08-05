@@ -14,6 +14,7 @@ import com.strategy.api.logic.Position;
 import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
+import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -29,21 +30,29 @@ public class PathsRec implements PathCalculator {
 	private Logging logPQorPMMQ = Logging.create("pq or (pm and mq)");
 	private Logging logPMMQ = Logging.create("or pm and mq");
 
+	private int pathLength;
+	private int rec;
+
 	public PathsRec(BDDFactory fac, Board board) {
 		this.fac = fac;
 		this.board = board;
 		cache = new BddCacheHavannah();
+		//this.pathLength = IntMath.log2(board.getBoardSize()*board.getBoardSize(), RoundingMode.DOWN);
+		this.pathLength = Double.valueOf((Math.log(board.getBoardSize()) / Math.log(2)) * 2).intValue();
+		this.rec = 0;
+		//System.out.println("path length: "+pathLength);
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
 		BDD path = getPathTransitiveClosure(p, q, color);
-		getPathTransitiveClosure(p, q, color.getOpposite());
+		//getPathTransitiveClosure(p, q, color.getOpposite());
 		return path;
 	}
 
 	public void done() {
-		// fac.done();
-		// System.out.println("all recursions: " + allrec);
+		if(null != Preferences.getInstance().getOut()){
+			Preferences.getInstance().getOut().println("all recursions: " + rec);
+		}
 		logPandQ.log();
 		logNPandNQ.log();
 		logPMandMQ.log();
@@ -56,20 +65,20 @@ public class PathsRec implements PathCalculator {
 
 	private BDD getPathTransitiveClosure(Position p, Position q,
 			StoneColor color) {
-		// int i = IntMath.log2(board.getBoardSize(), RoundingMode.UP) + 1;
-		int i = board.getBoardSize();
-		if (!cache.isCached(color, p, q, i)) {
-			BDD path = recursiveTransitiveClosure(i, p, q, color);
-			cache.store(color, p, q, i, path);
+		//int i = IntMath.log2(board.getBoardSize()*board.getBoardSize(), RoundingMode.DOWN);
+		//int i = board.getBoardSize();
+		if (!cache.isCached(color, p, q, pathLength)) {
+			BDD path = recursiveTransitiveClosure(pathLength, p, q, color);
+			cache.store(color, p, q, pathLength, path);
 			path.free();
 		}
 
-		return cache.restore(color, p, q, i);
+		return cache.restore(color, p, q, pathLength);
 	}
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
 			StoneColor color) {
-		// rec++;
+		rec++;
 		if (i == 0) {
 			if (!cache.isCached(color, p, q, i)) {
 				if (p.isNeighbour(q)) {
