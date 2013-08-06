@@ -398,6 +398,8 @@ public class StrategyInterpreter extends Thread {
 
 	private void printEvaluation(Evaluation eval) {
 		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
+		String coord = RowConstant.parseToCoordString(eval.getBestIndex(), board.getBoardSize());
+		out.println("Best index: "+eval.getBestIndex()+" - "+coord);
 		eval.log();
 	}
 
@@ -405,6 +407,8 @@ public class StrategyInterpreter extends Thread {
 		Logging l = Logging.create("nodes computing");
 		double value = l.nodeCountLog(sit.getWinningCondition());
 		out.println("Nodes " + sit.getStoneColor().name() + ": " + value);
+		out.println("Factory active nodes: "+sit.getWinningCondition().getFactory().getNodeNum());
+		out.println("Factory node table size: "+sit.getWinningCondition().getFactory().getNodeTableSize());
 		l.log();
 	}
 

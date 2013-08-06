@@ -100,25 +100,41 @@ public class PredictionHavannah implements Prediction {
 			return null;
 		}
 
-		//Evaluation evalWhite = createEvaluationWhite();
-		//Evaluation evalBlack = createEvaluationBlack();
+		Evaluation evalWhite = createEvaluationWhite();
+		Evaluation evalBlack = createEvaluationBlack();
 
-		//debug(evalWhite, evalBlack);
+		debug(evalWhite, evalBlack);
 
-		//double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
-		//double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
+		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
+		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
 
-		Integer best = 0;
+
+		//double valW = situationWhite.getWinningCondition().satCount();
+		//double valB = situationBlack.getWinningCondition().satCount();
+		//double bestValW = evalWhite.getRating()[evalWhite.getBestIndex()];
+		//double bestValB = evalBlack.getRating()[evalBlack.getBestIndex()];
+		//double maxWhite = bestValW-valW;
+		//double maxBlack = bestValB-valB;
+		//System.out.println("val white: "+valW);
+		//System.out.println("val black: "+valB);
+		//System.out.println("best value white: "+bestValW);
+		//System.out.println("best value black: "+bestValB);
+		//System.out.println("best / val white: "+(bestValW/valW));
+		//System.out.println("best / val black: "+(bestValB/valB));
+		//System.out.println("best - val white: "+(bestValW-valW));
+		//System.out.println("best - val black: "+(bestValB-valB));
+
+		Integer best;
 		if (StoneColor.WHITE.equals(colorToUse)) {
-		Evaluation evalWhite = EvaluationHavannah.create(situationWhite.getBoard(), situationWhite.getWinningCondition().id().andWith(situationBlack.getWinningCondition().id().not()), StoneColor.WHITE);
-			best = evalWhite.getBestIndex();
-		//	best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
-		//			.getBestIndex();
+		//Evaluation evalWhite = EvaluationHavannah.create(situationWhite.getBoard(), situationWhite.getWinningCondition().id().andWith(situationBlack.getWinningCondition().id().not()), StoneColor.WHITE);
+		//	best = evalWhite.getBestIndex();
+			best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
+					.getBestIndex();
 		} else {
-		Evaluation evalBlack = EvaluationHavannah.create(situationBlack.getBoard(), situationBlack.getWinningCondition().id().andWith(situationWhite.getWinningCondition().id().not()), StoneColor.BLACK);
-			evalBlack.getBestIndex();
-		//	best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
-		//			.getBestIndex();
+		//Evaluation evalBlack = EvaluationHavannah.create(situationBlack.getBoard(), situationBlack.getWinningCondition().id().andWith(situationWhite.getWinningCondition().id().not()), StoneColor.BLACK);
+		//	best = evalBlack.getBestIndex();
+			best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
+				.getBestIndex();
 		}
 
 		doManualTurn(best, colorToUse);
