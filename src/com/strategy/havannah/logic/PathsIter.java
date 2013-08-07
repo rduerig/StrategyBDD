@@ -85,8 +85,6 @@ public class PathsIter implements PathCalculator {
 					continue;
 				}
 
-				rec++;
-
 				Position posP = board.getField(p).getPosition();
 				Position posQ = board.getField(q).getPosition();
 				if (posP.isNeighbour(posQ)) {
@@ -119,6 +117,8 @@ public class PathsIter implements PathCalculator {
 					if (!board.isValidField(j) || j == k || j == i) {
 						continue;
 					}
+
+					rec++;
 
 					// If vertex k is on a path from i to j,
 					// then make sure that the value of reach[i][j] is 1

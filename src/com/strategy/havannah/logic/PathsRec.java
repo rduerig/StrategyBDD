@@ -67,13 +67,16 @@ public class PathsRec implements PathCalculator {
 			StoneColor color) {
 		//int i = IntMath.log2(board.getBoardSize()*board.getBoardSize(), RoundingMode.DOWN);
 		//int i = board.getBoardSize();
-		if (!cache.isCached(color, p, q, pathLength)) {
-			BDD path = recursiveTransitiveClosure(pathLength, p, q, color);
-			cache.store(color, p, q, pathLength, path);
-			path.free();
-		}
 
-		return cache.restore(color, p, q, pathLength);
+		//if (!cache.isCached(color, p, q, pathLength)) {
+			BDD path = recursiveTransitiveClosure(pathLength, p, q, color);
+		//	cache.store(color, p, q, pathLength, path);
+		//	path.free();
+		//}
+
+		//return cache.restore(color, p, q, pathLength);
+	
+		return path;
 	}
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
@@ -104,7 +107,7 @@ public class PathsRec implements PathCalculator {
 			return cache.restore(color, p, q, i);
 		}
 
-		if (!cache.isCached(color, p, q, i)) {
+		//if (!cache.isCached(color, p, q, i)) {
 			BDD pq;
 			if (!cache.isCached(color, p, q, i - 1)) {
 				pq = cache.store(color, p, q, i - 1,
@@ -134,12 +137,12 @@ public class PathsRec implements PathCalculator {
 			}
 
 			BDD result = logPQorPMMQ.orLog(pq, pmAndmq);
+			return result;
+			//cache.store(color, p, q, i, result);
+			//result.free();
+		//}
 
-			cache.store(color, p, q, i, result);
-			result.free();
-		}
-
-		return cache.restore(color, p, q, i);
+		//return cache.restore(color, p, q, i);
 	}
 
 	private BDD getBDDForPosition(Position p) {
