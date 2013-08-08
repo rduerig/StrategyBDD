@@ -5,18 +5,15 @@ import java.math.RoundingMode;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import com.google.common.math.IntMath;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
-import com.strategy.api.logic.BddCache;
-import com.strategy.api.logic.PathCalculator;
-import com.strategy.api.logic.Position;
 import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
 import com.strategy.util.preferences.Preferences;
+import com.strategy.api.logic.*;
 
 /**
  * @author Ralph Dürig
@@ -34,7 +31,7 @@ public class PathsRec implements PathCalculator {
 
 	private int pathLength;
 	private int rec;
-	private Map<
+	private Map<com.strategy.api.logic.BddCache.BddCacheIndex, Set<Position>> distance;
 
 	public PathsRec(BDDFactory fac, Board board) {
 		this.fac = fac;
@@ -45,6 +42,20 @@ public class PathsRec implements PathCalculator {
 		//this.pathLength = Double.valueOf(Math.log(board.getBoardSize()) / Math.log(2)).intValue();
 		//this.pathLength = 1;
 		this.rec = 0;
+		distance = new HashMap<com.strategy.api.logic.BddCache.BddCacheIndex, Set<Position>>();
+		for(Position p : board.getPositions()){
+			if(!board.isValidField(p)){
+				continue;
+			}
+			for(Position q : board.getPositions()){
+				if(!board.isValidField(q) || p.equals(q)){
+					continue;
+				}
+				for(int i = pathLength; i>0;i--){
+					distance.put(com.strategy.api.logic.BddCache.BddCacheIndex.getIndex(StoneColor.EMPTY, p, q, i-1), getIntermediateNodes(p, q, i - 1));
+				}
+			}
+		}
 
 		for(Position p : board.getPositions()){
 //				System.out.println("checking for doing for p="+p);
@@ -149,7 +160,9 @@ public class PathsRec implements PathCalculator {
 			}
 
 			BDD pmAndmq = fac.zero();
-			Set<Position> ms = getIntermediateNodes(p, q, i - 1);
+			//Set<Position> ms = getIntermediateNodes(p, q, i - 1);
+			Set<Position> ms = distance.get(com.strategy.api.logic.BddCache.BddCacheIndex.getIndex(StoneColor.EMPTY, p, q, i - 1));
+			if(null != ms){
 			//System.out.println("ms for p="+p+", q="+q+", dist=2^"+(i-1)+": "+ms.size());
 			//System.out.println(ms.toString());
 			for (Position m : ms) {
@@ -174,6 +187,7 @@ public class PathsRec implements PathCalculator {
 				}
 				// pmAndmq = pmAndmq.orWith(pm.andWith(mq));
 				pmAndmq = logPMMQ.orLog(pmAndmq, logPMandMQ.andLog(pm, mq));
+			}
 			}
 
 			BDD result = logPQorPMMQ.orLog(pq, pmAndmq);

@@ -72,7 +72,7 @@ public interface BddCache extends HasDebugFlag {
 	 * 
 	 * @author Ralph Dürig
 	 */
-	class BddCacheIndex {
+	public class BddCacheIndex {
 		private StoneColor color;
 		private Position p;
 		private Position q;
