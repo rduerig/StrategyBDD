@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import java.util.Set;
+import java.util.HashSet;
 import com.google.common.math.IntMath;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
@@ -32,6 +34,7 @@ public class PathsRec implements PathCalculator {
 
 	private int pathLength;
 	private int rec;
+	private Map<
 
 	public PathsRec(BDDFactory fac, Board board) {
 		this.fac = fac;
@@ -39,13 +42,39 @@ public class PathsRec implements PathCalculator {
 		cache = new BddCacheHavannah();
 		//this.pathLength = IntMath.log2(board.getBoardSize()*board.getBoardSize(), RoundingMode.DOWN);
 		this.pathLength = Double.valueOf((Math.log(board.getBoardSize()) / Math.log(2)) * 2).intValue();
+		//this.pathLength = Double.valueOf(Math.log(board.getBoardSize()) / Math.log(2)).intValue();
+		//this.pathLength = 1;
 		this.rec = 0;
+
+		for(Position p : board.getPositions()){
+//				System.out.println("checking for doing for p="+p);
+			if(!board.isValidField(p)){
+				continue;
+			}
+//				System.out.println("doing for p="+p);
+			for(Position q : board.getPositions()){
+//				System.out.println("checking for doing for q="+p);
+				if(!board.isValidField(q) || p.equals(q)){
+					continue;
+				}
+//				System.out.println("doing for q= "+q);
+				getPathTransitiveClosure(p, q, StoneColor.WHITE);
+				getPathTransitiveClosure(p, q, StoneColor.BLACK);
+			}
+		}
+
 		//System.out.println("path length: "+pathLength);
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
-		BDD path = getPathTransitiveClosure(p, q, color);
+		//BDD path = getPathTransitiveClosure(p, q, color);
 		//getPathTransitiveClosure(p, q, color.getOpposite());
+		BDD path;
+		if(p.equals(q)){
+			return getBDDForPosition(p);
+		} else {
+			path = cache.restore(color, p, q, pathLength);
+		}
 		return path;
 	}
 
@@ -68,46 +97,49 @@ public class PathsRec implements PathCalculator {
 		//int i = IntMath.log2(board.getBoardSize()*board.getBoardSize(), RoundingMode.DOWN);
 		//int i = board.getBoardSize();
 
-		//if (!cache.isCached(color, p, q, pathLength)) {
+		if (!cache.isCached(color, p, q, pathLength)) {
 			BDD path = recursiveTransitiveClosure(pathLength, p, q, color);
-		//	cache.store(color, p, q, pathLength, path);
-		//	path.free();
-		//}
+			cache.store(color, p, q, pathLength, path);
+			path.free();
+		}
 
-		//return cache.restore(color, p, q, pathLength);
+		return cache.restore(color, p, q, pathLength);
 	
-		return path;
+		//return path;
 	}
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
 			StoneColor color) {
 		rec++;
 		if (i == 0) {
-			if (!cache.isCached(color, p, q, i)) {
+			//if (!cache.isCached(color, p, q, i)) {
 				if (p.isNeighbour(q)) {
 					if (StoneColor.WHITE.equals(color)) {
 						// BDD bdd = getBDDForPosition(p).andWith(
 						// getBDDForPosition(q));
 						BDD bdd = logPandQ.andLog(getBDDForPosition(p),
 								getBDDForPosition(q));
-						cache.store(color, p, q, i, bdd);
-						bdd.free();
+						//cache.store(color, p, q, i, bdd);
+						//bdd.free();
+						return bdd;
 					} else {
 						// BDD bdd = getBDDForPosition(p).not().andWith(
 						// getBDDForPosition(q).not());
 						BDD bdd = logNPandNQ.andLog(getBDDForPosition(p).not(),
 								getBDDForPosition(q).not());
-						cache.store(color, p, q, i, bdd);
-						bdd.free();
+						//cache.store(color, p, q, i, bdd);
+						//bdd.free();
+						return bdd;
 					}
 				} else {
 					return fac.zero();
 				}
-			}
-			return cache.restore(color, p, q, i);
+			//}
+			//return cache.restore(color, p, q, i);
 		}
 
-		//if (!cache.isCached(color, p, q, i)) {
+		if (!cache.isCached(color, p, q, i)) {
+			//BDD pq = recursiveTransitiveClosure(i-1, p, q, color);
 			BDD pq;
 			if (!cache.isCached(color, p, q, i - 1)) {
 				pq = cache.store(color, p, q, i - 1,
@@ -117,7 +149,14 @@ public class PathsRec implements PathCalculator {
 			}
 
 			BDD pmAndmq = fac.zero();
-			for (Position m : board.getPositions()) {
+			Set<Position> ms = getIntermediateNodes(p, q, i - 1);
+			//System.out.println("ms for p="+p+", q="+q+", dist=2^"+(i-1)+": "+ms.size());
+			//System.out.println(ms.toString());
+			for (Position m : ms) {
+				if(!board.isValidField(m) || p.equals(q) || p.equals(m) || q.equals(m)){
+					continue;
+				}
+				//BDD pm = recursiveTransitiveClosure(i-1, p, m, color);
 				BDD pm;
 				if (!cache.isCached(color, p, m, i - 1)) {
 					pm = cache.store(color, p, m, i - 1,
@@ -125,6 +164,7 @@ public class PathsRec implements PathCalculator {
 				} else {
 					pm = cache.restore(color, p, m, i - 1);
 				}
+				//BDD mq = recursiveTransitiveClosure(i-1, m, q, color);
 				BDD mq;
 				if (!cache.isCached(color, m, q, i - 1)) {
 					mq = cache.store(color, m, q, i - 1,
@@ -137,18 +177,57 @@ public class PathsRec implements PathCalculator {
 			}
 
 			BDD result = logPQorPMMQ.orLog(pq, pmAndmq);
-			return result;
-			//cache.store(color, p, q, i, result);
-			//result.free();
-		//}
+			//return result;
+			cache.store(color, p, q, i, result);
+			result.free();
+		}
 
-		//return cache.restore(color, p, q, i);
+		return cache.restore(color, p, q, i);
+	}
+
+	private Set<Position> getIntermediateNodes(Position p, Position q, int i){
+		Set<Position> result = new HashSet<Position>();
+		Set<Position> ps = getDistantNodes(p, Math.pow(2,i));
+		Set<Position> qs = getDistantNodes(q, Math.pow(2,i));
+		for(Position ppos : ps){
+			for(Position qpos : qs){
+				if(ppos.equals(qpos)){
+					result.add(ppos);
+				}
+			}
+		}
+		return result;
+	}
+
+	private Set<Position> getDistantNodes(Position p, double dist){
+		if(dist == 1){
+			Set<Position> ns = new HashSet<Position>();
+			for(Position n : p.getNeighbors()){
+				if(board.isValidField(n)){
+					ns.add(n);
+				}
+			}
+			return ns;
+		}
+
+		Set<Position> result = new HashSet<Position>();
+		for(Position n : p.getNeighbors()){
+			if(board.isValidField(n)){
+				Set<Position> nodes = getDistantNodes(n, dist-1);
+				for(Position node : nodes){
+					if(!node.equals(p) && !p.getNeighbors().contains(node)){
+						result.add(node);
+					}
+				}
+			}
+		}
+
+		return result;
 	}
 
 	private BDD getBDDForPosition(Position p) {
 		Field field = board.getField(p.getRow(), p.getCol());
-		ColorDependingBDDFieldVisitor visitor = new ColorDependingBDDFieldVisitor(
-				fac);
+		ColorDependingBDDFieldVisitor visitor = new ColorDependingBDDFieldVisitor(fac);
 		field.accept(visitor);
 		return visitor.getBDD();
 	}
