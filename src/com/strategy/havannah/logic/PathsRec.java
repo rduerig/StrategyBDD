@@ -42,20 +42,22 @@ public class PathsRec implements PathCalculator {
 		//this.pathLength = Double.valueOf(Math.log(board.getBoardSize()) / Math.log(2)).intValue();
 		//this.pathLength = 1;
 		this.rec = 0;
-		distance = new HashMap<com.strategy.api.logic.BddCache.BddCacheIndex, Set<Position>>();
-		for(Position p : board.getPositions()){
-			if(!board.isValidField(p)){
-				continue;
-			}
-			for(Position q : board.getPositions()){
-				if(!board.isValidField(q) || p.equals(q)){
-					continue;
-				}
-				for(int i = pathLength; i>0;i--){
-					distance.put(com.strategy.api.logic.BddCache.BddCacheIndex.getIndex(StoneColor.EMPTY, p, q, i-1), getIntermediateNodes(p, q, i - 1));
-				}
-			}
-		}
+//		System.out.println("starting distance calculation");
+		//distance = new HashMap<com.strategy.api.logic.BddCache.BddCacheIndex, Set<Position>>();
+		//for(Position p : board.getPositions()){
+		//	if(!board.isValidField(p)){
+		//		continue;
+		//	}
+		//	for(Position q : board.getPositions()){
+		//		if(!board.isValidField(q) || p.equals(q)){
+		//			continue;
+		//		}
+		//		for(int i = pathLength; i>0;i--){
+		//			distance.put(com.strategy.api.logic.BddCache.BddCacheIndex.getIndex(StoneColor.EMPTY, p, q, i-1), getIntermediateNodes(p, q, i - 1));
+		//		}
+		//	}
+		//}
+//		System.out.println("finished distance calculation");
 
 		for(Position p : board.getPositions()){
 //				System.out.println("checking for doing for p="+p);
@@ -65,7 +67,7 @@ public class PathsRec implements PathCalculator {
 //				System.out.println("doing for p="+p);
 			for(Position q : board.getPositions()){
 //				System.out.println("checking for doing for q="+p);
-				if(!board.isValidField(q) || p.equals(q)){
+				if(!board.isValidField(q) || p.equals(q) || p.isNeighbour(q)){
 					continue;
 				}
 //				System.out.println("doing for q= "+q);
@@ -83,6 +85,8 @@ public class PathsRec implements PathCalculator {
 		BDD path;
 		if(p.equals(q)){
 			return getBDDForPosition(p);
+		} else if(p.isNeighbour(q)){
+			return recursiveTransitiveClosure(0, p, q, color);
 		} else {
 			path = cache.restore(color, p, q, pathLength);
 		}
@@ -108,15 +112,15 @@ public class PathsRec implements PathCalculator {
 		//int i = IntMath.log2(board.getBoardSize()*board.getBoardSize(), RoundingMode.DOWN);
 		//int i = board.getBoardSize();
 
-		if (!cache.isCached(color, p, q, pathLength)) {
+		//if (!cache.isCached(color, p, q, pathLength)) {
 			BDD path = recursiveTransitiveClosure(pathLength, p, q, color);
-			cache.store(color, p, q, pathLength, path);
-			path.free();
-		}
+		//	cache.store(color, p, q, pathLength, path);
+		//	path.free();
+		//}
 
-		return cache.restore(color, p, q, pathLength);
+		//return cache.restore(color, p, q, pathLength);
 	
-		//return path;
+		return path;
 	}
 
 	private BDD recursiveTransitiveClosure(int i, Position p, Position q,
@@ -160,9 +164,9 @@ public class PathsRec implements PathCalculator {
 			}
 
 			BDD pmAndmq = fac.zero();
-			//Set<Position> ms = getIntermediateNodes(p, q, i - 1);
-			Set<Position> ms = distance.get(com.strategy.api.logic.BddCache.BddCacheIndex.getIndex(StoneColor.EMPTY, p, q, i - 1));
-			if(null != ms){
+			//Set<Position> ms = distance.get(com.strategy.api.logic.BddCache.BddCacheIndex.getIndex(StoneColor.EMPTY, p, q, i - 1));
+			Collection<Position> ms = board.getPositions();
+			//if(null != ms){
 			//System.out.println("ms for p="+p+", q="+q+", dist=2^"+(i-1)+": "+ms.size());
 			//System.out.println(ms.toString());
 			for (Position m : ms) {
@@ -188,7 +192,7 @@ public class PathsRec implements PathCalculator {
 				// pmAndmq = pmAndmq.orWith(pm.andWith(mq));
 				pmAndmq = logPMMQ.orLog(pmAndmq, logPMandMQ.andLog(pm, mq));
 			}
-			}
+			//}
 
 			BDD result = logPQorPMMQ.orLog(pq, pmAndmq);
 			//return result;
@@ -201,8 +205,10 @@ public class PathsRec implements PathCalculator {
 
 	private Set<Position> getIntermediateNodes(Position p, Position q, int i){
 		Set<Position> result = new HashSet<Position>();
-		Set<Position> ps = getDistantNodes(p, Math.pow(2,i));
-		Set<Position> qs = getDistantNodes(q, Math.pow(2,i));
+		//Set<Position> ps = getDistantNodes(p, Math.pow(2,i));
+		//Set<Position> qs = getDistantNodes(q, Math.pow(2,i));
+		Set<Position> ps = getDistantNodes(p, i);
+		Set<Position> qs = getDistantNodes(q, i);
 		for(Position ppos : ps){
 			for(Position qpos : qs){
 				if(ppos.equals(qpos)){
@@ -214,7 +220,7 @@ public class PathsRec implements PathCalculator {
 	}
 
 	private Set<Position> getDistantNodes(Position p, double dist){
-		if(dist == 1){
+		if(dist == 0){
 			Set<Position> ns = new HashSet<Position>();
 			for(Position n : p.getNeighbors()){
 				if(board.isValidField(n)){
