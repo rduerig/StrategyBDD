@@ -1,17 +1,15 @@
 package com.strategy.util;
 
+import java.util.ArrayList;
+
 import net.sf.javabdd.BDDFactory;
-import net.sf.javabdd.MicroFactory;
-import com.google.common.collect.Collections2;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import com.strategy.util.predicates.EmptyPositionFilter;
-import com.strategy.util.predicates.ValidPositionFilter;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.Position;
+import com.strategy.util.predicates.EmptyPositionFilter;
+import com.strategy.util.predicates.ValidPositionFilter;
 
 public class BddFactoryProvider {
 
@@ -46,21 +44,23 @@ public class BddFactoryProvider {
 		 * (5 * 10^b) * b!
 		 */
 		int dimension = board.getRows() * board.getColumns();
-		//Double size = (BASE * Math.pow(10, board.getBoardSize()))
-		//		* factorial(board.getBoardSize());
-		//BDDFactory result = BDDFactory.init(size.intValue() / 2,
-		//		size.intValue() / 5);
+		// Double size = (BASE * Math.pow(10, board.getBoardSize()))
+		// * factorial(board.getBoardSize());
+		// BDDFactory result = BDDFactory.init(size.intValue() / 2,
+		// size.intValue() / 5);
 		Iterable<Position> empty = Iterables.filter(board.getPositions(),
 				new EmptyPositionFilter(board));
 		Iterable<Position> validEmpty = Iterables.filter(empty,
 				new ValidPositionFilter(board));
 		ArrayList<Position> filtered = Lists.newArrayList(validEmpty);
-		Double size = Math.pow(10, board.getBoardSize())*filtered.size()*factorial(board.getBoardSize()-2);
-		BDDFactory result = BDDFactory.init(size.intValue(), size.intValue()/5);
+		Double size = Math.pow(10, board.getBoardSize()) * filtered.size()
+				* factorial(board.getBoardSize() - 2);
+		BDDFactory result = BDDFactory.init(size.intValue(),
+				size.intValue() / 5);
 		result.setVarNum(dimension);
 		result.reorderVerbose(0);
-		result.setIncreaseFactor(0.0);
-		//result.setMaxIncrease(Double.valueOf((size / 2) * 0.5).intValue());
+		result.setIncreaseFactor(0.1);
+		// result.setMaxIncrease(Double.valueOf((size / 2) * 0.5).intValue());
 		result.setMaxIncrease(0);
 		result.setMinFreeNodes(0.05);
 
