@@ -53,15 +53,18 @@ public class PathsIter implements PathCalculator {
 
 	}
 
-	public void done() {
-		if(null != Preferences.getInstance().getOut()){
-			Preferences.getInstance().getOut().println("all iterations: " + rec);
+	public void log() {
+		if (null != Preferences.getInstance().getOut()) {
+			Preferences.getInstance().getOut()
+					.println("all iterations: " + rec);
 		}
 		logPandQ.log();
 		logNPandNQ.log();
 		logPMandMQ.log();
 		logPQorPMMQ.log();
+	}
 
+	public void done() {
 		freeMatrix(reachWhite);
 		freeMatrix(reachBlack);
 	}
@@ -137,7 +140,7 @@ public class PathsIter implements PathCalculator {
 		BDD reachmq = todo[V * m + q];
 
 		// todo[p][q] = reachpq.or(reachpm.and(reachmq));
-		//System.out.println("p=" + p + ", q=" + q + ", m=" + m);
+		// System.out.println("p=" + p + ", q=" + q + ", m=" + m);
 		todo[V * p + q] = logPQorPMMQ.orLog(reachpq,
 				logPMandMQ.andLog(reachpm.id(), reachmq.id()));
 	}

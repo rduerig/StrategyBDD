@@ -38,6 +38,10 @@ public class BoardAnalizerPrototype implements BoardAnalyzer {
 		return path;
 	}
 
+	public void log() {
+		// nothing to log here
+	}
+
 	public void done() {
 		freeAll();
 		fac.done();

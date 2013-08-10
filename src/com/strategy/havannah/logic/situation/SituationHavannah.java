@@ -81,7 +81,8 @@ public class SituationHavannah implements Situation {
 				initFromScratch(analyzer);
 				long tAfter = System.nanoTime();
 				double diff = (tAfter - tBefore) / 1000;
-				out.println("BDD initialization from scratch took: " + diff);
+				out.println("BDD initialization from scratch took: " + diff
+						+ " microsecs");
 			} else {
 				initFromScratch(analyzer);
 			}
@@ -92,7 +93,8 @@ public class SituationHavannah implements Situation {
 					win = analyzer.getFactory().load(getFileName());
 					long tAfter = System.nanoTime();
 					double diff = (tAfter - tBefore) / 1000;
-					out.println("BDD loading from files took: " + diff);
+					out.println("BDD loading from files took: " + diff
+							+ " microsecs");
 				} else {
 					win = analyzer.getFactory().load(getFileName());
 				}
@@ -105,7 +107,7 @@ public class SituationHavannah implements Situation {
 					long tAfter = System.nanoTime();
 					double diff = (tAfter - tBefore) / 1000;
 					out.println("BDD initialization from scratch after files not found took: "
-							+ diff);
+							+ diff + " microsecs");
 				} else {
 					initFromScratch(analyzer);
 				}
@@ -125,7 +127,7 @@ public class SituationHavannah implements Situation {
 		logBF.log();
 		logBFR.log();
 
-		if(!Preferences.getInstance().isAvoidFiles()){
+		if (!Preferences.getInstance().isAvoidFiles()) {
 			try {
 				analyzer.getFactory().save(getFileName(), win);
 			} catch (IOException e) {

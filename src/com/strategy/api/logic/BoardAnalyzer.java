@@ -14,6 +14,11 @@ public interface BoardAnalyzer {
 	public BDD getPath(Position p, Position q, StoneColor color);
 
 	/**
+	 * Calls all available logging methods.
+	 */
+	public void log();
+
+	/**
 	 * Releases all used BDDs and frees memory.
 	 */
 	public void done();

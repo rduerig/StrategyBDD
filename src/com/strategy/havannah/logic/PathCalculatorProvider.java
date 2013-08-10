@@ -12,20 +12,30 @@ public class PathCalculatorProvider {
 
 	public enum PathCalculatorKey {
 		RECURSIVE("rec") {
+			private PathCalculator calc;
+
 			@Override
 			public PathCalculator provide(BDDFactory fac, Board board) {
-				return new PathsRec(fac, board);
+				if (null == calc) {
+					calc = new PathsRec(fac, board);
+				}
+				return calc;
 			}
 		},
 
 		ITERATIVE("iter") {
+			private PathCalculator calc;
+
 			@Override
 			public PathCalculator provide(BDDFactory fac, Board board) {
-				return new PathsIter(fac, board);
+				if (null == calc) {
+					calc = new PathsIter(fac, board);
+				}
+				return calc;
 			}
 		};
 
-		private String key;
+		private final String key;
 
 		private PathCalculatorKey(String key) {
 			this.key = key;

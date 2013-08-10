@@ -14,21 +14,32 @@ import com.strategy.util.preferences.Preferences;
 public class BoardAnalyzerHavannah implements BoardAnalyzer {
 
 	private BDDFactory fac;
+	private Board board;
 	private PathCalculator paths;
 
 	public BoardAnalyzerHavannah(Board board) {
+		this.board = board;
 		initFactory(board);
-		paths = Preferences.getInstance().getAlg().provide(fac, board);
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
+		if (null == paths) {
+			paths = Preferences.getInstance().getAlg().provide(fac, board);
+		}
 		BDD path = paths.getPath(p, q, color);
-
 		return path;
 	}
 
+	public void log() {
+		if (null != paths) {
+			paths.log();
+		}
+	}
+
 	public void done() {
-		paths.done();
+		if (null != paths) {
+			paths.done();
+		}
 	}
 
 	@Override

@@ -7,5 +7,7 @@ import com.strategy.util.StoneColor;
 public interface PathCalculator {
 	BDD getPath(Position p, Position q, StoneColor color);
 
+	void log();
+
 	void done();
 }
