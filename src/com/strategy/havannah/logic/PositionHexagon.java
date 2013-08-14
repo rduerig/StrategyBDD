@@ -115,7 +115,7 @@ public class PositionHexagon implements Position {
 				|| other.equals(this.getNorthWest())
 				|| other.equals(this.getSouthWest())
 				|| other.equals(this.getNorthEast())
-				|| other.equals(this.getSouthEast()) || other.equals(this);
+				|| other.equals(this.getSouthEast()); // || other.equals(this);
 	}
 
 	@Override
