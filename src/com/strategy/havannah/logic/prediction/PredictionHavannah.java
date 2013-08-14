@@ -187,7 +187,7 @@ public class PredictionHavannah implements Prediction {
 			out.println("BDD creation for " + StoneColor.WHITE + " took: "
 					+ diff / 1000 + " microsec");
 			// analyzerW.log();
-			analyzer.log();
+			// analyzer.log();
 
 			// analyzerB = new BoardAnalyzerHavannah(board);
 			tBefore = System.nanoTime();
@@ -200,7 +200,6 @@ public class PredictionHavannah implements Prediction {
 			out.println("BDD creation for " + StoneColor.BLACK + " took: "
 					+ diff / 1000 + " microsec");
 			// analyzerB.log();
-			analyzer.log();
 		} else {
 			// analyzerW = new BoardAnalyzerHavannah(board);
 			// situationWhite = new SituationHavannah(analyzerW, board,
@@ -208,18 +207,18 @@ public class PredictionHavannah implements Prediction {
 			situationWhite = new SituationHavannah(analyzer, board,
 					StoneColor.WHITE);
 			// analyzerW.log();
-			analyzer.log();
+			// analyzer.log();
 			// analyzerB = new BoardAnalyzerHavannah(board);
 			// situationBlack = new SituationHavannah(analyzerB, board,
 			// StoneColor.BLACK);
 			situationBlack = new SituationHavannah(analyzer, board,
 					StoneColor.BLACK);
-			analyzer.log();
 			// analyzerB.log();
 		}
 
 		debugInit();
 
+		analyzer.log();
 		analyzer.done();
 		// analyzerW.done();
 		// analyzerB.done();
