@@ -46,7 +46,12 @@ public class PathsRec implements PathCalculator {
 		// this.pathLength = IntMath.log2(
 		// board.getBoardSize() * board.getBoardSize(),
 		// RoundingMode.HALF_UP);
-		this.pathLength = IntMath.log2(board.getRows() * board.getColumns(),
+
+		// System.out
+		// .println("all cells: " + board.getColumns() * board.getRows());
+		// System.out.println("legal cells: " + board.getPositions().size());
+
+		this.pathLength = IntMath.log2(board.getPositions().size(),
 				RoundingMode.HALF_UP);
 		// this.pathLength = 1;
 		this.rec = 0;
