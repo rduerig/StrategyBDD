@@ -1,5 +1,6 @@
 package com.strategy.havannah.logic;
 
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +8,7 @@ import java.util.Set;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.google.common.math.IntMath;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BddCache;
@@ -44,8 +46,8 @@ public class PathsRec implements PathCalculator {
 		// this.pathLength = IntMath.log2(
 		// board.getBoardSize() * board.getBoardSize(),
 		// RoundingMode.HALF_UP);
-		this.pathLength = Double.valueOf(
-				(Math.log(board.getBoardSize()) / Math.log(2)) * 2).intValue();
+		this.pathLength = IntMath.log2(board.getRows() * board.getColumns(),
+				RoundingMode.HALF_UP);
 		// this.pathLength = 1;
 		this.rec = 0;
 		// System.out.println("starting distance calculation");
