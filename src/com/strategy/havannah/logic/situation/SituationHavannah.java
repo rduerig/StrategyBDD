@@ -1,7 +1,6 @@
 package com.strategy.havannah.logic.situation;
 
 import java.io.IOException;
-import java.io.PrintStream;
 
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
@@ -12,6 +11,7 @@ import com.strategy.api.logic.BoardAnalyzer;
 import com.strategy.api.logic.situation.ConditionCalculator;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.PositionHexagon;
+import com.strategy.util.Debug;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
@@ -74,52 +74,37 @@ public class SituationHavannah implements Situation {
 	// ************************************************************************
 
 	private void init(BoardAnalyzer analyzer) {
-		PrintStream out = Preferences.getInstance().getOut();
 		if (Preferences.getInstance().isGenerateFiles()) {
-			if (null != out) {
-				long tBefore = System.nanoTime();
-				initFromScratch(analyzer);
-				long tAfter = System.nanoTime();
-				double diff = (tAfter - tBefore) / 1000;
-				out.println("BDD initialization from scratch took: " + diff
-						+ " microsecs");
-			} else {
-				initFromScratch(analyzer);
-			}
+			Debug initlog = Debug.create("BDD initialization from scratch");
+			initFromScratch(analyzer);
+			initlog.log();
 		} else {
 			try {
-				if (null != out) {
-					long tBefore = System.nanoTime();
-					win = analyzer.getFactory().load(getFileName());
-					long tAfter = System.nanoTime();
-					double diff = (tAfter - tBefore) / 1000;
-					out.println("BDD loading from files took: " + diff
-							+ " microsecs");
-				} else {
-					win = analyzer.getFactory().load(getFileName());
-				}
+				Debug loadlog = Debug.create("BDD loading from files");
+				win = analyzer.getFactory().load(getFileName());
+				loadlog.log();
 			} catch (IOException e) {
 				System.out
 						.println("Could not load files, BDDs are generated vom scratch.");
-				if (null != out) {
-					long tBefore = System.nanoTime();
-					initFromScratch(analyzer);
-					long tAfter = System.nanoTime();
-					double diff = (tAfter - tBefore) / 1000;
-					out.println("BDD initialization from scratch after files not found took: "
-							+ diff + " microsecs");
-				} else {
-					initFromScratch(analyzer);
-				}
+				Debug initlog = Debug
+						.create("BDD initialization from scratch after files not found");
+				initFromScratch(analyzer);
+				initlog.log();
 			}
 		}
 	}
 
 	private void initFromScratch(BoardAnalyzer analyzer) {
 
+		Debug blog = Debug.create("creating bridge for " + color);
 		BDD b = getBridgeCondition(analyzer);
+		blog.log();
+		Debug flog = Debug.create("creating fork for " + color);
 		BDD f = getForkCondition(analyzer);
+		flog.log();
+		Debug rlog = Debug.create("creating ring for " + color);
 		BDD r = getRingCondition(analyzer);
+		rlog.log();
 
 		Logging logBF = Logging.create("bridge OR fork");
 		Logging logBFR = Logging.create("bf OR ring");

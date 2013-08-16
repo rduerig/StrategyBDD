@@ -31,12 +31,12 @@ import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
+import com.strategy.util.Debug;
 import com.strategy.util.FieldGenerator;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
 import com.strategy.util.operation.Logging;
-import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -217,7 +217,7 @@ public class StrategyInterpreter extends Thread {
 				}
 
 				p.doManualTurn(fieldIndex, cpuColor.getOpposite());
-				//cmdSwitch();
+				// cmdSwitch();
 				if (p.isWinWhite()) {
 					win(StoneColor.WHITE);
 					return;
@@ -251,17 +251,9 @@ public class StrategyInterpreter extends Thread {
 				}
 
 				Integer next;
-				PrintStream debugOut = Preferences.getInstance().getOut();
-				if (null != debugOut) {
-					long tBefore = System.nanoTime();
-					next = p.answerTurn(fieldIndex, cpuColor.getOpposite());
-					long tAfter = System.nanoTime();
-					double diff = tAfter - tBefore;
-					debugOut.println("answering turn took: " + diff / 1000
-							+ " microsec");
-				} else {
-					next = p.answerTurn(fieldIndex, cpuColor.getOpposite());
-				}
+				Debug answerlog = Debug.create("answering turn");
+				next = p.answerTurn(fieldIndex, cpuColor.getOpposite());
+				answerlog.log();
 
 				if (null != next) {
 					printCpuTurn(next, board.getBoardSize(), cpuColor);
@@ -398,8 +390,9 @@ public class StrategyInterpreter extends Thread {
 
 	private void printEvaluation(Evaluation eval) {
 		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
-		String coord = RowConstant.parseToCoordString(eval.getBestIndex(), board.getBoardSize());
-		out.println("Best index: "+eval.getBestIndex()+" - "+coord);
+		String coord = RowConstant.parseToCoordString(eval.getBestIndex(),
+				board.getBoardSize());
+		out.println("Best index: " + eval.getBestIndex() + " - " + coord);
 		eval.log();
 	}
 
@@ -407,8 +400,10 @@ public class StrategyInterpreter extends Thread {
 		Logging l = Logging.create("nodes computing");
 		double value = l.nodeCountLog(sit.getWinningCondition());
 		out.println("Nodes " + sit.getStoneColor().name() + ": " + value);
-		out.println("Factory active nodes: "+sit.getWinningCondition().getFactory().getNodeNum());
-		out.println("Factory node table size: "+sit.getWinningCondition().getFactory().getNodeTableSize());
+		out.println("Factory active nodes: "
+				+ sit.getWinningCondition().getFactory().getNodeNum());
+		out.println("Factory node table size: "
+				+ sit.getWinningCondition().getFactory().getNodeTableSize());
 		l.log();
 	}
 

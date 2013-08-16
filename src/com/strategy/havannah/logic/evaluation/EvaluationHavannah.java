@@ -1,6 +1,5 @@
 package com.strategy.havannah.logic.evaluation;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -15,11 +14,11 @@ import com.strategy.api.field.Field;
 import com.strategy.api.logic.Position;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.Situation;
+import com.strategy.util.Debug;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
 import com.strategy.util.predicates.EmptyPositionFilter;
 import com.strategy.util.predicates.ValidPositionFilter;
-import com.strategy.util.preferences.Preferences;
 
 /**
  * @author Ralph Dürig
@@ -59,17 +58,10 @@ public class EvaluationHavannah implements Evaluation {
 		logId = Logging.create("evaluation " + color + " - copy win");
 		logSat = Logging.create("evaluation " + color + " - sat count");
 
-		PrintStream out = Preferences.getInstance().getOut();
-		if (null != out) {
-			long tBefore = System.nanoTime();
-			init();
-			long tAfter = System.nanoTime();
-			double diff = tAfter - tBefore;
-			out.println("prediction for " + color + " took: " + diff / 1000
-					+ " microsec");
-		} else {
-			init();
-		}
+		String caption = "prediction for " + color;
+		Debug initlog = Debug.create(caption);
+		init();
+		initlog.log();
 	}
 
 	@Override
