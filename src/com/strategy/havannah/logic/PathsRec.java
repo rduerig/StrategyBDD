@@ -15,6 +15,7 @@ import com.strategy.api.logic.BddCache;
 import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
 import com.strategy.util.ColorDependingBDDFieldVisitor;
+import com.strategy.util.Debug;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
 import com.strategy.util.preferences.Preferences;
@@ -75,6 +76,7 @@ public class PathsRec implements PathCalculator {
 		// }
 		// System.out.println("finished distance calculation");
 
+		Debug initlog = Debug.create("recursively creating reachability");
 		for (Position p : board.getPositions()) {
 			// System.out.println("checking for doing for p="+p);
 			if (!board.isValidField(p)) {
@@ -91,6 +93,7 @@ public class PathsRec implements PathCalculator {
 				getPathTransitiveClosure(p, q, StoneColor.BLACK);
 			}
 		}
+		initlog.log();
 
 		// System.out.println("path length: "+pathLength);
 	}

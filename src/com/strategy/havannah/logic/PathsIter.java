@@ -6,6 +6,7 @@ import net.sf.javabdd.BDDFactory;
 import com.strategy.api.board.Board;
 import com.strategy.api.logic.PathCalculator;
 import com.strategy.api.logic.Position;
+import com.strategy.util.Debug;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
 import com.strategy.util.preferences.Preferences;
@@ -36,7 +37,9 @@ public class PathsIter implements PathCalculator {
 		this.fac = fac;
 		this.board = board;
 		this.rec = 0;
+		Debug initlog = Debug.create("iteratively creating reachability");
 		initReachability();
+		initlog.log();
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
