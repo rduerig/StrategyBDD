@@ -65,13 +65,7 @@ public interface Prediction extends HasDebugFlag {
 	 * 
 	 * @return {@link Evaluation} for white's situation
 	 */
-	Evaluation getEvaluationWhite();
-
-	/**
-	 * 
-	 * @return {@link Evaluation} for black's situation
-	 */
-	Evaluation getEvaluationBlack();
+	Evaluation getEvaluation();
 
 	/**
 	 * 

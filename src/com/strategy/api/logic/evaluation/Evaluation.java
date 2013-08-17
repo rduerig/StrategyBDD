@@ -1,5 +1,6 @@
 package com.strategy.api.logic.evaluation;
 
+import com.strategy.api.logic.situation.Situation;
 
 /**
  * Evaluates a {@link Situation}.
@@ -10,7 +11,7 @@ public interface Evaluation {
 
 	double getAverageRating();
 
-	int getBestIndex();
+	int getMaxIndex();
 
 	double[] getRating();
 

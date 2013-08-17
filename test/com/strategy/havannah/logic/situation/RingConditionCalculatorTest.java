@@ -60,13 +60,15 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
+		Situation sit2 = new SituationHavannah(analyzer, board,
+				StoneColor.WHITE);
 
-		Evaluation eval = EvaluationHavannah.create(sit);
+		Evaluation eval = EvaluationHavannah.create(sit, sit2);
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getBestIndex()));
+				eval.getMaxIndex()));
 		int expected = 38;
-		int actual = eval.getBestIndex();
+		int actual = eval.getMaxIndex();
 		Assert.assertEquals(expected, actual);
 
 		sit.update(actual, StoneColor.BLACK);
@@ -85,13 +87,15 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
+		Situation sit2 = new SituationHavannah(analyzer, board,
+				StoneColor.WHITE);
 
-		Evaluation eval = EvaluationHavannah.create(sit);
+		Evaluation eval = EvaluationHavannah.create(sit, sit2);
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getBestIndex()));
+				eval.getMaxIndex()));
 		int expected = 38;
-		int actual = eval.getBestIndex();
+		int actual = eval.getMaxIndex();
 		Assert.assertEquals(expected, actual);
 
 		sit.update(actual, StoneColor.BLACK);

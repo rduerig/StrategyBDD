@@ -168,10 +168,12 @@ public class StrategyInterpreter extends Thread {
 			}
 
 			if (CMD_RATING.equals(line)) {
-				out.println("Rating WHITE:");
-				printEvaluation(p.getEvaluationWhite());
-				out.println("Rating BLACK:");
-				printEvaluation(p.getEvaluationBlack());
+				// out.println("Rating WHITE:");
+				// printEvaluation(p.getEvaluationWhite());
+				// out.println("Rating BLACK:");
+				// printEvaluation(p.getEvaluationBlack());
+				out.println("Rating: ");
+				printEvaluation(p.getEvaluation());
 				return;
 			}
 
@@ -389,10 +391,10 @@ public class StrategyInterpreter extends Thread {
 	}
 
 	private void printEvaluation(Evaluation eval) {
-		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
-		String coord = RowConstant.parseToCoordString(eval.getBestIndex(),
+		out.println(board.toRatingString(eval.getRating(), eval.getMaxIndex()));
+		String coord = RowConstant.parseToCoordString(eval.getMaxIndex(),
 				board.getBoardSize());
-		out.println("Best index: " + eval.getBestIndex() + " - " + coord);
+		out.println("Best index: " + eval.getMaxIndex() + " - " + coord);
 		eval.log();
 	}
 
