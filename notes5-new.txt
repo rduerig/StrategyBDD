@@ -1,0 +1,84 @@
+SIZE 5 NEW:
+===========
+
+or bridge path: 15 times, 145.0 microsec, 46 nodes
+Start reordering
+Garbage collection #1: 30000001 nodes / 29999369 free / 0.422s / 0.422s total
+End reordering. Went from 786 to 632 nodes, gain = 19% (1.37517286E9 sec)
+or fork path: 540 times, 8306.0 microsec, 3572 nodes
+Start reordering
+Garbage collection #2: 30000001 nodes / 29995197 free / 0.418s / 0.84s total
+End reordering. Went from 10401 to 4804 nodes, gain = 53% (1.37517286E9 sec)
+ring: or opponent outerPosCanReachInnerPos: 5328 times, 9226.0 microsec, 15882 nodes
+ring: or opponent innerPosReachableFromOut: 888 times, 84703.0 microsec, 35226 nodes
+ring: and opponent canReachAllInnerPos: 37 times, 2823047.0 microsec, 1275702 nodes
+Start reordering
+Garbage collection #3: 30000001 nodes / 27437873 free / 0.755s / 1.595s total
+End reordering. Went from 5948159 to 2562128 nodes, gain = 56% (1.37517286E9 sec)
+bridge OR fork: 1 times, 3418.0 microsec, 9180 nodes
+bf OR ring: 1 times, 8370110.0 microsec, 9687695 nodes
+BDD initialization from scratch took: 2.25741092E8
+BDD creation for WHITE took: 2.25741828099E8 microsec
+or bridge path: 15 times, 75.0 microsec, 46 nodes
+Start reordering
+Garbage collection #4: 30000001 nodes / 19020107 free / 1.845s / 3.44s total
+End reordering. Went from 12263952 to 10979894 nodes, gain = 10% (1.37517312E9 sec)
+or fork path: 540 times, 4666.0 microsec, 3572 nodes
+Start reordering
+Garbage collection #5: 30000001 nodes / 19016589 free / 1.842s / 5.282s total
+End reordering. Went from 10988263 to 10983412 nodes, gain = 0% (1.37517312E9 sec)
+ring: or opponent outerPosCanReachInnerPos: 5328 times, 9546.0 microsec, 15882 nodes
+ring: or opponent innerPosReachableFromOut: 888 times, 92119.0 microsec, 35226 nodes
+ring: and opponent canReachAllInnerPos: 37 times, 3062284.0 microsec, 1275702 nodes
+Start reordering
+Garbage collection #6: 30000001 nodes / 16465365 free / 2.175s / 7.457s total
+End reordering. Went from 16911666 to 13534636 nodes, gain = 19% (1.37517312E9 sec)
+bridge OR fork: 1 times, 3922.0 microsec, 9180 nodes
+bf OR ring: 1 times, 9333357.0 microsec, 9687695 nodes
+BDD initialization from scratch took: 2.71769321E8
+BDD creation for BLACK took: 2.71769447376E8 microsec
+p and q: 217 times, 892.0 microsec, 156 nodes
+not p and not q: 217 times, 546.0 microsec, 156 nodes
+pm and mq: 375638 times, 1357001.0 microsec, -83198 nodes
+pq or (pm and mq): 6158 times, 241.0 microsec, 13950 nodes
+or pm and mq: 375638 times, 9800.0 microsec, 15928 nodes
+CacheStats{hitCount=782154, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}
+
+BLACKs turn: :mem
+Used Memory:1427 MB
+Free Memory:738 MB
+Total Memory:2166 MB
+Max Memory:3640 MB
+------------------after loading BDDs from file
+BLACKs turn: :mem
+Used Memory:1882 MB
+Free Memory:783 MB
+Total Memory:2666 MB
+Max Memory:2666 MB
+
+BLACKs turn: :value
+var num: 81
+pos num: 61
+Value WHITE: 1.593846e+24 satisfying out of 0.0
+value computing: 1 times, 1198895.0 microsec, 0 nodes
+var num: 81
+pos num: 61
+Value BLACK: 1.593846e+24 satisfying out of 0.0
+value computing: 1 times, 2114395.0 microsec, 0 nodes
+
+BLACKs turn: :solutions
+Solutions WHITE: 1.871939e+16
+solutions computing: 1 times, 606250.0 microsec, 0 nodes
+Solutions BLACK: 1.871939e+16
+solutions computing: 1 times, 1205785.0 microsec, 0 nodes
+
+BLACKs turn: :nodes
+Nodes WHITE: 9696921.0
+nodes computing: 1 times, 441080.0 microsec, 0 nodes
+Nodes BLACK: 9696921.0
+nodes computing: 1 times, 446993.0 microsec, 0 nodes
+
+File sizes:
+win5white: 247 megabytes
+win5black: 268 megabytes
+newnewnew :::: 666 megabytes ~ 698327040 bytes

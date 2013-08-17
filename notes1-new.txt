@@ -1,0 +1,120 @@
+recursively creating reachability took: 23.0 microsec
+or bridge path: 15 times, 346.0 microsec, 1 nodes
+Start reordering
+End reordering. Went from 4 to 4 nodes, gain = 0% (1.37668915E9 sec)
+creating bridge for WHITE took: 24648.0 microsec
+or fork path: 0 times, 0.0 microsec, 0 nodes
+Start reordering
+End reordering. Went from 4 to 4 nodes, gain = 0% (1.37668915E9 sec)
+creating fork for WHITE took: 1281.0 microsec
+ring: or opponent outerPosCanReachInnerPos: 0 times, 0.0 microsec, 0 nodes
+ring: or opponent innerPosReachableFromOut: 0 times, 0.0 microsec, 0 nodes
+ring: and opponent canReachAllInnerPos: 0 times, 0.0 microsec, 0 nodes
+Start reordering
+End reordering. Went from 4 to 4 nodes, gain = 0% (1.37668915E9 sec)
+creating ring for WHITE took: 878.0 microsec
+bridge OR fork: 1 times, 3.0 microsec, 0 nodes
+bf OR ring: 1 times, 1.0 microsec, 0 nodes
+BDD initialization from scratch took: 26982.0 microsec
+BDD creation for WHITE took: 27489.0 microsec
+or bridge path: 15 times, 30.0 microsec, 1 nodes
+Start reordering
+End reordering. Went from 4 to 4 nodes, gain = 0% (1.37668915E9 sec)
+creating bridge for BLACK took: 392.0 microsec
+or fork path: 0 times, 0.0 microsec, 0 nodes
+Start reordering
+End reordering. Went from 4 to 4 nodes, gain = 0% (1.37668915E9 sec)
+creating fork for BLACK took: 270.0 microsec
+ring: or opponent outerPosCanReachInnerPos: 0 times, 0.0 microsec, 0 nodes
+ring: or opponent innerPosReachableFromOut: 0 times, 0.0 microsec, 0 nodes
+ring: and opponent canReachAllInnerPos: 0 times, 0.0 microsec, 0 nodes
+Start reordering
+End reordering. Went from 4 to 4 nodes, gain = 0% (1.37668915E9 sec)
+creating ring for BLACK took: 196.0 microsec
+bridge OR fork: 1 times, 2.0 microsec, 0 nodes
+bf OR ring: 1 times, 1.0 microsec, 0 nodes
+BDD initialization from scratch took: 1023.0 microsec
+BDD creation for BLACK took: 1051.0 microsec
+all recursions: 0
+p and q: 0 times, 0.0 microsec, 0 nodes
+not p and not q: 0 times, 0.0 microsec, 0 nodes
+pm and mq: 0 times, 0.0 microsec, 0 nodes
+pq or (pm and mq): 0 times, 0.0 microsec, 0 nodes
+or pm and mq: 0 times, 0.0 microsec, 0 nodes
+CacheStats{hitCount=0, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}
+
+BLACKs turn: :mem
+Used Memory:5 MB
+Free Memory:112 MB
+Total Memory:118 MB
+Max Memory:1758 MB
+You are playing BLACK
+     . 
+
+BLACKs turn: :value
+var num: 1
+pos num: 1
+Value WHITE: 1.000000e+00 satisfying out of 2.0
+value computing: 1 times, 245.0 microsec, 0 nodes
+var num: 1
+pos num: 1
+Value BLACK: 1.000000e+00 satisfying out of 2.0
+value computing: 1 times, 7.0 microsec, 0 nodes
+You are playing BLACK
+     . 
+
+BLACKs turn: :solutions
+Solutions WHITE: 1.000000e+00
+solutions computing: 1 times, 26.0 microsec, 0 nodes
+Solutions BLACK: 1.000000e+00
+solutions computing: 1 times, 4.0 microsec, 0 nodes
+You are playing BLACK
+     . 
+
+BLACKs turn: :nodes
+Nodes WHITE: 1.0
+Factory active nodes: 4
+Factory node table size: 11
+nodes computing: 1 times, 17.0 microsec, 0 nodes
+Nodes BLACK: 1.0
+Factory active nodes: 4
+Factory node table size: 11
+nodes computing: 1 times, 4.0 microsec, 0 nodes
+You are playing BLACK
+     . 
+
+BLACKs turn: :rating
+Rating WHITE:
+prediction for WHITE took: 288.833 microsec
+            [2.000000e+00]
+
+Best index: 0 - a1
+evaluation WHITE - restrict: 1 times, 125.0 microsec, -1 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 1 times, 7.0 microsec, 0 nodes
+evaluation WHITE - sat count: 1 times, 4.0 microsec, 0 nodes
+Rating BLACK:
+prediction for BLACK took: 72.758 microsec
+            [2.000000e+00]
+
+Best index: 0 - a1
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 1 times, 10.0 microsec, -1 nodes
+evaluation BLACK - copy win: 1 times, 2.0 microsec, 0 nodes
+evaluation BLACK - sat count: 1 times, 2.0 microsec, 0 nodes
+You are playing BLACK
+     . 
+
+BLACKs turn: a1
+WHITE's situation updated for BLACK's move: 1 times, 14.0 microsec, -1 nodes
+BLACK's situation updated for BLACK's move: 1 times, 7.0 microsec, -1 nodes
+answering turn took: 1557.102 microsec
+BLACK wins!
+
+win1white: 15 bytes
+win1black: 15 bytes
+
+BDD loading from files took: 3315.0 microsecs
+BDD creation for WHITE took: 5617.561 microsec
+BDD loading from files took: 190.0 microsecs
+BDD creation for BLACK took: 253.599 microsec

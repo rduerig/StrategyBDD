@@ -1,0 +1,116 @@
+iteratively creating reachability took: 330342.0 microsec
+or bridge path: 15 times, 198.0 microsec, 279 nodes
+Start reordering
+End reordering. Went from 18140 to 6752 nodes, gain = 62% (1.37668851E9 sec)
+creating bridge for WHITE took: 391317.0 microsec
+or fork path: 20 times, 301.0 microsec, 339 nodes
+Start reordering
+End reordering. Went from 8652 to 7068 nodes, gain = 18% (1.37668851E9 sec)
+creating fork for WHITE took: 7669.0 microsec
+ring: or opponent outerPosCanReachInnerPos: 504 times, 2031.0 microsec, 4363 nodes
+ring: or opponent innerPosReachableFromOut: 84 times, 535.0 microsec, 690 nodes
+ring: and opponent canReachAllInnerPos: 7 times, 167.0 microsec, 591 nodes
+Start reordering
+End reordering. Went from 8546 to 8177 nodes, gain = 4% (1.37668851E9 sec)
+creating ring for WHITE took: 11841.0 microsec
+bridge OR fork: 1 times, 138.0 microsec, 760 nodes
+bf OR ring: 1 times, 127.0 microsec, 194 nodes
+BDD initialization from scratch took: 411397.0 microsec
+BDD creation for WHITE took: 411987.0 microsec
+or bridge path: 15 times, 186.0 microsec, 279 nodes
+Start reordering
+End reordering. Went from 11012 to 8541 nodes, gain = 22% (1.37668851E9 sec)
+creating bridge for BLACK took: 2394.0 microsec
+or fork path: 20 times, 242.0 microsec, 339 nodes
+Start reordering
+End reordering. Went from 10440 to 8856 nodes, gain = 15% (1.37668851E9 sec)
+creating fork for BLACK took: 4899.0 microsec
+ring: or opponent outerPosCanReachInnerPos: 504 times, 1837.0 microsec, 4363 nodes
+ring: or opponent innerPosReachableFromOut: 84 times, 492.0 microsec, 690 nodes
+ring: and opponent canReachAllInnerPos: 7 times, 145.0 microsec, 591 nodes
+Start reordering
+End reordering. Went from 12228 to 9945 nodes, gain = 18% (1.37668851E9 sec)
+creating ring for BLACK took: 8485.0 microsec
+bridge OR fork: 1 times, 128.0 microsec, 760 nodes
+bf OR ring: 1 times, 122.0 microsec, 194 nodes
+BDD initialization from scratch took: 16263.0 microsec
+BDD creation for BLACK took: 16290.0 microsec
+all iterations: 5814
+iterative: p and q: 84 times, 1328.0 microsec, 84 nodes
+iterative: not p and not q: 84 times, 337.0 microsec, 84 nodes
+iterative: pm and mq: 11628 times, 153341.0 microsec, 22388 nodes
+iterative: pq or (pm and mq): 11628 times, 109601.0 microsec, 35724 nodes
+
+BLACKs turn: :mem
+Used Memory:9 MB
+Free Memory:108 MB
+Total Memory:118 MB
+Max Memory:1820 MB
+
+BLACKs turn: :value
+var num: 25
+pos num: 19
+Value WHITE: 2.571123e+07 satisfying out of 3.3554432E7
+value computing: 1 times, 4279.0 microsec, 0 nodes
+var num: 25
+pos num: 19
+Value BLACK: 2.571123e+07 satisfying out of 3.3554432E7
+value computing: 1 times, 1609.0 microsec, 0 nodes
+
+BLACKs turn: :solutions
+Solutions WHITE: 4.216300e+04
+solutions computing: 1 times, 882.0 microsec, 0 nodes
+Solutions BLACK: 4.216300e+04
+solutions computing: 1 times, 889.0 microsec, 0 nodes
+
+BLACKs turn: :nodes
+Nodes WHITE: 1126.0
+nodes computing: 1 times, 82.0 microsec, 0 nodes
+Nodes BLACK: 1126.0
+nodes computing: 1 times, 78.0 microsec, 0 nodes
+
+BLACKs turn: :rating
+Rating WHITE:
+prediction for WHITE took: 31078.228 microsec
+evaluation WHITE - restrict: 19 times, 19841.0 microsec, -7348 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 19 times, 61.0 microsec, 0 nodes
+evaluation WHITE - sat count: 19 times, 7417.0 microsec, 0 nodes
+Rating BLACK:
+prediction for BLACK took: 15652.878 microsec
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 19 times, 11655.0 microsec, -7348 nodes
+evaluation BLACK - copy win: 19 times, 0.0 microsec, 0 nodes
+evaluation BLACK - sat count: 19 times, 2310.0 microsec, 0 nodes
+
+BLACKs turn: a1
+WHITE's situation updated for BLACK's move: 1 times, 454.0 microsec, -177 nodes
+BLACK's situation updated for BLACK's move: 1 times, 5.0 microsec, -481 nodes
+prediction for WHITE took: 7147.43 microsec
+prediction for BLACK took: 4486.442 microsec
+evaluation WHITE - restrict: 18 times, 2999.0 microsec, -5849 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 18 times, 1.0 microsec, 0 nodes
+evaluation WHITE - sat count: 18 times, 1433.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 18 times, 1648.0 microsec, -4260 nodes
+evaluation BLACK - copy win: 18 times, 0.0 microsec, 0 nodes
+evaluation BLACK - sat count: 18 times, 941.0 microsec, 0 nodes
+WHITE's situation updated for WHITE's move: 1 times, 110.0 microsec, -404 nodes
+BLACK's situation updated for WHITE's move: 1 times, 95.0 microsec, -172 nodes
+answering turn took: 15474.155 microsec
+WHITEs turn: 10 - A3
+
+BLACKs turn: :mem
+Used Memory:10 MB
+Free Memory:108 MB
+Total Memory:118 MB
+Max Memory:1820 MB
+
+win3white: 18881 bytes ~ 19 kilobytes
+win3black: 18966 bytes ~ 19 kilobytes
+
+BDD loading from files took: 61824.0 microsecs
+BDD creation for WHITE took: 64153.892 microsec
+BDD loading from files took: 28437.0 microsecs
+BDD creation for BLACK took: 28538.394 microsec
