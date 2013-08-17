@@ -1,0 +1,69 @@
+SIZE 5 - REC - EMPTY BOARD:
+===========================
+
+Initialization:
+---------------
+or bridge path: 15 times, 1 msec, 46 nodes
+Start reordering
+Garbage collection #1: 30000001 nodes / 29999369 free / 0.807s / 0.807s total
+End reordering. Went from 786 to 632 nodes, gain = 19% (1.37461466E9 sec)
+or fork path: 540 times, 14 msec, 3572 nodes
+Start reordering
+Garbage collection #2: 30000001 nodes / 29995197 free / 0.799s / 1.606s total
+End reordering. Went from 10401 to 4804 nodes, gain = 53% (1.37461466E9 sec)
+ring: or opponent outerPosCanReachInnerPos: 5328 times, 16 msec, 15882 nodes
+ring: or opponent innerPosReachableFromOut: 888 times, 137 msec, 35226 nodes
+ring: and opponent canReachAllInnerPos: 37 times, 4565 msec, 1275702 nodes
+Start reordering
+Garbage collection #3: 30000001 nodes / 27437873 free / 1.28s / 2.886s total
+End reordering. Went from 5948159 to 2562128 nodes, gain = 56% (1.37461466E9 sec)
+bridge OR fork: 1 times, 5 msec, 9180 nodes
+bf OR ring: 1 times, 12089 msec, 9687695 nodes
+or bridge path: 15 times, 0 msec, 46 nodes
+Start reordering
+Garbage collection #4: 30000001 nodes / 19020107 free / 2.891s / 5.777s total
+End reordering. Went from 12263952 to 10979894 nodes, gain = 10% (1.37461466E9 sec)
+or fork path: 540 times, 6 msec, 3572 nodes
+Start reordering
+Garbage collection #5: 30000001 nodes / 19016589 free / 2.89s / 8.667s total
+End reordering. Went from 10988263 to 10983412 nodes, gain = 0% (1.37461466E9 sec)
+ring: or opponent outerPosCanReachInnerPos: 5328 times, 16 msec, 15882 nodes
+ring: or opponent innerPosReachableFromOut: 888 times, 151 msec, 35226 nodes
+ring: and opponent canReachAllInnerPos: 37 times, 4878 msec, 1275702 nodes
+Start reordering
+End reordering. Went from 16911666 to 13534636 nodes, gain = 19% (1.37461466E9 sec)
+Garbage collection #6: 30000001 nodes / 16465365 free / 3.382s / 12.049s total
+bridge OR fork: 1 times, 6 msec, 9180 nodes
+bf OR ring: 1 times, 13291 msec, 9687695 nodes
+p and q: 217 times, 3 msec, 156 nodes
+not p and not q: 217 times, 1 msec, 156 nodes
+pm and mq: 375638 times, 15326 msec, -83198 nodes
+pq or (pm and mq): 6158 times, 2 msec, 13950 nodes
+or pm and mq: 375638 times, 57 msec, 15928 nodes
+CacheStats{hitCount=782154, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}
+
+Memory usage:
+-------------
+JVM was initialized with -Xmx5128m (max heap)
+after BDD creation: Used Memory:1678 MB
+after BDD loading : Used Memory:2146 MB
+
+BDD nodes:
+----------
+Nodes WHITE: 9696921
+Nodes BLACK: 9696921
+
+BDD models (sat count):
+-----------------------
+Value WHITE: 1,593846e+24
+Value BLACK: 1,593846e+24
+
+BDD solutions (paths):
+----------------------
+Solutions WHITE: 1,871939e+16
+Solutions BLACK: 1,871939e+16
+
+BDD file size:
+--------------
+win5white: 247 MB
+win5black: 268 MB

@@ -46,51 +46,65 @@ pq or (pm and mq): 6480 times, 289047.0 microsec, 746920 nodes
 or pm and mq: 226800 times, 2.0602188E7 microsec, 2270498 nodes
 CacheStats{hitCount=465442, missCount=0, loadSuccessCount=0, loadExceptionCount=0, totalLoadTime=0, evictionCount=0}
 
-BLACKs turn: :mem
-Used Memory:128 MB
-Free Memory:77 MB
-Total Memory:206 MB
-Max Memory:1856 MB
+BLACKs turn: :mem 
+Used Memory:64 MB
+Free Memory:82 MB
+Total Memory:147 MB
+Max Memory:5333 MB
 
 BLACKs turn: :value
 var num: 49
 pos num: 37
-Value WHITE: 4.441597e+14 satisfying out of 0.0
-value computing: 1 times, 38414.0 microsec, 0 nodes
+Value WHITE: 4.386636e+14 satisfying out of 0.0
+value computing: 1 times, 6.0 microsec, 0 nodes
 var num: 49
 pos num: 37
 Value BLACK: 4.441597e+14 satisfying out of 0.0
-value computing: 1 times, 5267.0 microsec, 0 nodes
+value computing: 1 times, 2.0 microsec, 0 nodes
 
 BLACKs turn: :solutions
-Solutions WHITE: 4.325908e+09
-solutions computing: 1 times, 21488.0 microsec, 0 nodes
+Solutions WHITE: 4.265570e+09
+solutions computing: 1 times, 21551.0 microsec, 0 nodes
 Solutions BLACK: 4.325908e+09
-solutions computing: 1 times, 4332.0 microsec, 0 nodes
+solutions computing: 1 times, 4378.0 microsec, 0 nodes
 
 BLACKs turn: :nodes
-Nodes WHITE: 32593.0
-nodes computing: 1 times, 2334.0 microsec, 0 nodes
+Nodes WHITE: 30690.0
+Factory active nodes: 806566
+Factory node table size: 814007
+nodes computing: 1 times, 2485.0 microsec, 0 nodes
 Nodes BLACK: 32593.0
-nodes computing: 1 times, 2317.0 microsec, 0 nodes
+Factory active nodes: 806566
+Factory node table size: 814007
+nodes computing: 1 times, 2320.0 microsec, 0 nodes
 
 BLACKs turn: :rating
 Rating WHITE:
-prediction for WHITE took: 505852.604 microsec
-                               4.692005e+14  4.629102e+14  4.629102e+14  4.692005e+14 
-                         4.629102e+14  4.653842e+14  4.652345e+14  4.653842e+14  4.629102e+14 
-                   4.629102e+14  4.652345e+14  4.657097e+14  4.657097e+14  4.652345e+14  4.629102e+14 
-             4.692005e+14  4.653842e+14  4.657097e+14  4.652763e+14  4.657097e+14  4.653842e+14  4.692005e+14 
-                   4.629102e+14  4.652345e+14  4.657097e+14  4.657097e+14  4.652345e+14  4.629102e+14 
-                         4.629102e+14  4.653842e+14  4.652345e+14  4.653842e+14  4.629102e+14 
-                               4.692005e+14  4.629102e+14  4.629102e+14 [4.692005e+14]
+Garbage collection #432: 814007 nodes / 27508 free / 0.085s / 27.918s total
+Resizing node table from 814007 to 895393
+Garbage collection #433: 895393 nodes / 116205 free / 0.082s / 28.0s total
+Garbage collection #434: 895393 nodes / 102713 free / 0.084s / 28.084s total
+Garbage collection #435: 895393 nodes / 91733 free / 0.085s / 28.169s total
+prediction for WHITE took: 824105.0 microsec
+                               4.648229e+14  4.575786e+14  4.575786e+14  4.648229e+14 
+                         4.575786e+14  4.600271e+14  4.601350e+14  4.600271e+14  4.575786e+14 
+                   4.575786e+14  4.601350e+14  4.601184e+14  4.601184e+14  4.601350e+14  4.575786e+14 
+             4.648229e+14  4.600271e+14  4.601184e+14  4.621044e+14  4.601184e+14  4.600271e+14  4.648229e+14 
+                   4.575786e+14  4.601350e+14  4.601184e+14  4.601184e+14  4.601350e+14  4.575786e+14 
+                         4.575786e+14  4.600271e+14  4.601350e+14  4.600271e+14  4.575786e+14 
+                               4.648229e+14  4.575786e+14  4.575786e+14 [4.648229e+14]
 
-evaluation WHITE - restrict: 37 times, 319578.0 microsec, -234967 nodes
+Best index: 48 - d1
+evaluation WHITE - restrict: 37 times, 636542.0 microsec, -230557 nodes
 evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
-evaluation WHITE - copy win: 37 times, 66.0 microsec, 0 nodes
-evaluation WHITE - sat count: 37 times, 52481.0 microsec, 0 nodes
+evaluation WHITE - copy win: 37 times, 60.0 microsec, 0 nodes
+evaluation WHITE - sat count: 37 times, 52190.0 microsec, 0 nodes
 Rating BLACK:
-prediction for BLACK took: 561348.716 microsec
+Garbage collection #436: 895393 nodes / 106388 free / 0.084s / 28.253s total
+Garbage collection #437: 895393 nodes / 98540 free / 0.084s / 28.337s total
+Garbage collection #438: 895393 nodes / 112984 free / 0.083s / 28.42s total
+Garbage collection #439: 895393 nodes / 99369 free / 0.084s / 28.504s total
+prediction for BLACK took: 763464.0 microsec
                                4.692005e+14  4.629102e+14  4.629102e+14  4.692005e+14 
                          4.629102e+14  4.653842e+14  4.652345e+14  4.653842e+14  4.629102e+14 
                    4.629102e+14  4.652345e+14  4.657097e+14  4.657097e+14  4.652345e+14  4.629102e+14 
@@ -99,39 +113,149 @@ prediction for BLACK took: 561348.716 microsec
                          4.629102e+14  4.653842e+14  4.652345e+14  4.653842e+14  4.629102e+14 
                                4.692005e+14  4.629102e+14  4.629102e+14 [4.692005e+14]
 
+Best index: 48 - d1
 evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
-evaluation BLACK - restrict: 37 times, 373969.0 microsec, -234967 nodes
-evaluation BLACK - copy win: 37 times, 7.0 microsec, 0 nodes
-evaluation BLACK - sat count: 37 times, 53384.0 microsec, 0 nodes
+evaluation BLACK - restrict: 37 times, 573810.0 microsec, -234967 nodes
+evaluation BLACK - copy win: 37 times, 2.0 microsec, 0 nodes
+evaluation BLACK - sat count: 37 times, 54845.0 microsec, 0 nodes
 
 BLACKs turn: a1
-WHITE's situation updated for BLACK's move: 1 times, 11813.0 microsec, -2357 nodes
-BLACK's situation updated for BLACK's move: 1 times, 8.0 microsec, -5552 nodes
-prediction for WHITE took: 503999.456 microsec
-prediction for BLACK took: 464267.72 microsec
-evaluation WHITE - restrict: 36 times, 351431.0 microsec, -218433 nodes
+WHITE's situation updated for BLACK's move: 1 times, 11650.0 microsec, -2301 nodes
+BLACK's situation updated for BLACK's move: 1 times, 2153.0 microsec, -5552 nodes
+Garbage collection #440: 895393 nodes / 121463 free / 0.083s / 28.587s total
+Garbage collection #441: 895393 nodes / 109564 free / 0.083s / 28.67s total
+Garbage collection #442: 895393 nodes / 123181 free / 0.082s / 28.752s total
+prediction for WHITE took: 582078.0 microsec
+Garbage collection #443: 895393 nodes / 114294 free / 0.083s / 28.835s total
+Garbage collection #444: 895393 nodes / 111061 free / 0.083s / 28.918s total
+Garbage collection #445: 895393 nodes / 117304 free / 0.083s / 29.001s total
+prediction for BLACK took: 579426.0 microsec
+evaluation WHITE - restrict: 36 times, 438076.0 microsec, -213165 nodes
 evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
-evaluation WHITE - copy win: 36 times, 3.0 microsec, 0 nodes
-evaluation WHITE - sat count: 36 times, 47083.0 microsec, 0 nodes
+evaluation WHITE - copy win: 36 times, 1.0 microsec, 0 nodes
+evaluation WHITE - sat count: 36 times, 43390.0 microsec, 0 nodes
 evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
-evaluation BLACK - restrict: 36 times, 323994.0 microsec, -208048 nodes
-evaluation BLACK - copy win: 36 times, 3.0 microsec, 0 nodes
-evaluation BLACK - sat count: 36 times, 41181.0 microsec, 0 nodes
-WHITE's situation updated for WHITE's move: 1 times, 6119.0 microsec, -3371 nodes
-BLACK's situation updated for WHITE's move: 1 times, 5765.0 microsec, -1343 nodes
-answering turn took: 1005008.607 microsec
+evaluation BLACK - restrict: 36 times, 434657.0 microsec, -208048 nodes
+evaluation BLACK - copy win: 36 times, 0.0 microsec, 0 nodes
+evaluation BLACK - sat count: 36 times, 42566.0 microsec, 0 nodes
+Garbage collection #446: 895393 nodes / 109863 free / 0.083s / 29.084s total
+WHITE's situation updated for WHITE's move: 1 times, 93529.0 microsec, -3316 nodes
+BLACK's situation updated for WHITE's move: 1 times, 5936.0 microsec, -1343 nodes
+answering turn took: 1287693.0 microsec
 WHITEs turn: 48 - D1
 
 BLACKs turn: :mem
-Used Memory:55 MB
-Free Memory:151 MB
-Total Memory:207 MB
-Max Memory:1856 MB
+Used Memory:63 MB
+Free Memory:95 MB
+Total Memory:159 MB
+Max Memory:5333 MB
 
-win4white: 733135 bytes ~ 716 kilobytes
-win4black: 747948 bytes ~ 731 kilobytes
+win4white: 694148 bytes ~ 678 kilobytes
+win4black: 750604 bytes ~ 734 kilobytes
 
-BDD loading from files took: 251524.0 microsecs
-BDD creation for WHITE took: 254018.514 microsec
-BDD loading from files took: 44091.0 microsecs
-BDD creation for BLACK took: 44190.824 microsec
+BDD loading from files took: 121434.0 microsec
+BDD creation for WHITE took: 122120.0 microsec
+BDD loading from files took: 22871.0 microsec
+BDD creation for BLACK took: 22930.0 microsec
+overall loading took: 145050 microsec
+
+BLACKs turn: :mem
+Used Memory:41 MB
+Free Memory:76 MB
+Total Memory:118 MB
+Max Memory:5333 MB
+
+BLACKs turn: value
+Invalid input. Use ':help' to get a list of valid commands.
+
+BLACKs turn: :mem      
+Used Memory:41 MB
+Free Memory:76 MB
+Total Memory:118 MB
+Max Memory:5333 MB
+
+BLACKs turn: :value
+var num: 49
+pos num: 37
+Value WHITE: 4.386636e+14 satisfying out of 0.0
+value computing: 1 times, 35404.0 microsec, 0 nodes
+var num: 49
+pos num: 37
+Value BLACK: 4.441597e+14 satisfying out of 0.0
+value computing: 1 times, 7465.0 microsec, 0 nodes
+
+BLACKs turn: :solutions
+Solutions WHITE: 4.265570e+09
+solutions computing: 1 times, 20668.0 microsec, 0 nodes
+Solutions BLACK: 4.325908e+09
+solutions computing: 1 times, 6864.0 microsec, 0 nodes
+
+BLACKs turn: :nodes
+Nodes WHITE: 30690.0
+Factory active nodes: 63375
+Factory node table size: 740011
+nodes computing: 1 times, 24627.0 microsec, 0 nodes
+Nodes BLACK: 32593.0
+Factory active nodes: 63375
+Factory node table size: 740011
+nodes computing: 1 times, 996.0 microsec, 0 nodes
+
+BLACKs turn: :rating
+Rating WHITE:
+prediction for WHITE took: 344933.0 microsec
+                               4.648229e+14  4.575786e+14  4.575786e+14  4.648229e+14 
+                         4.575786e+14  4.600271e+14  4.601350e+14  4.600271e+14  4.575786e+14 
+                   4.575786e+14  4.601350e+14  4.601184e+14  4.601184e+14  4.601350e+14  4.575786e+14 
+             4.648229e+14  4.600271e+14  4.601184e+14  4.621044e+14  4.601184e+14  4.600271e+14  4.648229e+14 
+                   4.575786e+14  4.601350e+14  4.601184e+14  4.601184e+14  4.601350e+14  4.575786e+14 
+                         4.575786e+14  4.600271e+14  4.601350e+14  4.600271e+14  4.575786e+14 
+                               4.648229e+14  4.575786e+14  4.575786e+14 [4.648229e+14]
+
+Best index: 48 - d1
+evaluation WHITE - restrict: 37 times, 188008.0 microsec, -230557 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 37 times, 82.0 microsec, 0 nodes
+evaluation WHITE - sat count: 37 times, 44232.0 microsec, 0 nodes
+Rating BLACK:
+Garbage collection #1: 740011 nodes / 657347 free / 0.027s / 0.027s total
+prediction for BLACK took: 385485.0 microsec
+                               4.692005e+14  4.629102e+14  4.629102e+14  4.692005e+14 
+                         4.629102e+14  4.653842e+14  4.652345e+14  4.653842e+14  4.629102e+14 
+                   4.629102e+14  4.652345e+14  4.657097e+14  4.657097e+14  4.652345e+14  4.629102e+14 
+             4.692005e+14  4.653842e+14  4.657097e+14  4.652763e+14  4.657097e+14  4.653842e+14  4.692005e+14 
+                   4.629102e+14  4.652345e+14  4.657097e+14  4.657097e+14  4.652345e+14  4.629102e+14 
+                         4.629102e+14  4.653842e+14  4.652345e+14  4.653842e+14  4.629102e+14 
+                               4.692005e+14  4.629102e+14  4.629102e+14 [4.692005e+14]
+
+Best index: 48 - d1
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 37 times, 217155.0 microsec, -234967 nodes
+evaluation BLACK - copy win: 37 times, 70.0 microsec, 0 nodes
+evaluation BLACK - sat count: 37 times, 49652.0 microsec, 0 nodes
+overall evaluation took: 730418 microsec
+
+BLACKs turn: a1
+WHITE's situation updated for BLACK's move: 1 times, 8088.0 microsec, -2301 nodes
+BLACK's situation updated for BLACK's move: 1 times, 1536.0 microsec, -5552 nodes
+prediction for WHITE took: 274498.0 microsec
+Garbage collection #2: 740011 nodes / 669505 free / 0.017s / 0.044s total
+prediction for BLACK took: 307485.0 microsec
+evaluation WHITE - restrict: 36 times, 138450.0 microsec, -213165 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 36 times, 50.0 microsec, 0 nodes
+evaluation WHITE - sat count: 36 times, 38966.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 36 times, 176484.0 microsec, -208048 nodes
+evaluation BLACK - copy win: 36 times, 46.0 microsec, 0 nodes
+evaluation BLACK - sat count: 36 times, 35388.0 microsec, 0 nodes
+WHITE's situation updated for WHITE's move: 1 times, 4579.0 microsec, -3316 nodes
+BLACK's situation updated for WHITE's move: 1 times, 6121.0 microsec, -1343 nodes
+answering turn took: 614908.0 microsec
+WHITEs turn: 48 - D1
+
+BLACKs turn: :mem
+Used Memory:52 MB
+Free Memory:66 MB
+Total Memory:118 MB
+Max Memory:5333 MB
+

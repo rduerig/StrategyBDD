@@ -1,7 +1,7 @@
 SIZE 5 ITER:
 ============
 
-iteratively creating reachability took: 1.59471014E8 microsec
+iteratively creating reachability took: 1.59471014E8 microsec  = 159,471,014 microsec ~= 160 s
 Resizing node table from 36600007 to 40259987
 Resizing node table from 40259987 to 44285981
 Resizing node table from 44285981 to 48714569
@@ -146,12 +146,103 @@ BDD loading from files took: 2897202.0 microsecs
 BDD creation for WHITE took: 2898052.293 microsec
 BDD loading from files took: 779784.0 microsecs
 BDD creation for BLACK took: 779876.748 microsec
+overall loading took: 3677928 microsec
 
 mem after loading files:
 BLACKs turn: :mem
-Used Memory:1239 MB
-Free Memory:472 MB
-Total Memory:1712 MB
-Max Memory:8000 MB
+Used Memory:1438 MB
+Free Memory:536 MB
+Total Memory:1975 MB
+Max Memory:5333 MB
 
+BLACKs turn: :value
+var num: 81
+pos num: 61
+Value WHITE: 2.011648e+24 satisfying out of 0.0
+value computing: 1 times, 285525.0 microsec, 0 nodes
+var num: 81
+pos num: 61
+Value BLACK: 2.011648e+24 satisfying out of 0.0
+value computing: 1 times, 103428.0 microsec, 0 nodes
+
+BLACKs turn: :solutions
+Solutions WHITE: 2.473108e+16
+solutions computing: 1 times, 71279.0 microsec, 0 nodes
+Solutions BLACK: 2.473108e+16
+solutions computing: 1 times, 48565.0 microsec, 0 nodes
+
+BLACKs turn: :nodes
+Nodes WHITE: 917510.0
+Factory active nodes: 1835174
+Factory node table size: 36600007
+nodes computing: 1 times, 59586.0 microsec, 0 nodes
+Nodes BLACK: 917510.0
+Factory active nodes: 1835174
+Factory node table size: 36600007
+nodes computing: 1 times, 35182.0 microsec, 0 nodes
+
+BLACKs turn: :rating
+Rating WHITE:
+prediction for WHITE took: 2.7407596E7 microsec
+                                     2.070928e+24  2.062226e+24  2.054520e+24  2.062226e+24  2.070928e+24 
+                               2.062226e+24  2.071324e+24  2.072488e+24  2.072488e+24  2.071324e+24  2.062226e+24 
+                         2.054520e+24  2.072488e+24  2.078113e+24  2.077693e+24  2.078113e+24  2.072488e+24  2.054520e+24 
+                   2.062226e+24  2.072488e+24  2.077693e+24  2.075790e+24  2.075790e+24  2.077693e+24  2.072488e+24  2.062226e+24 
+             2.070928e+24  2.071324e+24  2.078113e+24  2.075790e+24  2.074582e+24  2.075790e+24 [2.078113e+24] 2.071324e+24  2.070928e+24 
+                   2.062226e+24  2.072488e+24  2.077693e+24  2.075790e+24  2.075790e+24  2.077693e+24  2.072488e+24  2.062226e+24 
+                         2.054520e+24  2.072488e+24  2.078113e+24  2.077693e+24  2.078113e+24  2.072488e+24  2.054520e+24 
+                               2.062226e+24  2.071324e+24  2.072488e+24  2.072488e+24  2.071324e+24  2.062226e+24 
+                                     2.070928e+24  2.062226e+24  2.054520e+24  2.062226e+24  2.070928e+24 
+
+Best index: 42 - g3
+evaluation WHITE - restrict: 61 times, 1.6795526E7 microsec, -8203497 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 61 times, 362.0 microsec, 0 nodes
+evaluation WHITE - sat count: 61 times, 2670678.0 microsec, 0 nodes
+Rating BLACK:
+Garbage collection #1: 36600007 nodes / 34176473 free / 0.893s / 0.893s total
+Resizing node table from 36600007 to 40259987
+prediction for BLACK took: 3.0003072E7 microsec
+                                     2.070928e+24  2.062226e+24  2.054520e+24  2.062226e+24  2.070928e+24 
+                               2.062226e+24  2.071324e+24  2.072488e+24  2.072488e+24  2.071324e+24  2.062226e+24 
+                         2.054520e+24  2.072488e+24  2.078113e+24  2.077693e+24  2.078113e+24  2.072488e+24  2.054520e+24 
+                   2.062226e+24  2.072488e+24  2.077693e+24  2.075790e+24  2.075790e+24  2.077693e+24  2.072488e+24  2.062226e+24 
+             2.070928e+24  2.071324e+24  2.078113e+24  2.075790e+24  2.074582e+24  2.075790e+24 [2.078113e+24] 2.071324e+24  2.070928e+24 
+                   2.062226e+24  2.072488e+24  2.077693e+24  2.075790e+24  2.075790e+24  2.077693e+24  2.072488e+24  2.062226e+24 
+                         2.054520e+24  2.072488e+24  2.078113e+24  2.077693e+24  2.078113e+24  2.072488e+24  2.054520e+24 
+                               2.062226e+24  2.071324e+24  2.072488e+24  2.072488e+24  2.071324e+24  2.062226e+24 
+                                     2.070928e+24  2.062226e+24  2.054520e+24  2.062226e+24  2.070928e+24 
+
+Best index: 42 - g3
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 61 times, 1.9057669E7 microsec, -8203497 nodes
+evaluation BLACK - copy win: 61 times, 340.0 microsec, 0 nodes
+evaluation BLACK - sat count: 61 times, 2678191.0 microsec, 0 nodes
+overall evaluation took: 57410668 microsec
+
+BLACKs turn: a1
+WHITE's situation updated for BLACK's move: 1 times, 263712.0 microsec, -30743 nodes
+BLACK's situation updated for BLACK's move: 1 times, 12.0 microsec, -87682 nodes
+prediction for WHITE took: 2.4948006E7 microsec
+Garbage collection #2: 40259987 nodes / 38425826 free / 0.857s / 1.75s total
+Resizing node table from 40259987 to 44285981
+prediction for BLACK took: 2.5392083E7 microsec
+evaluation WHITE - restrict: 60 times, 1.5065974E7 microsec, -8186368 nodes
+evaluation BLACK - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation WHITE - copy win: 60 times, 331.0 microsec, 0 nodes
+evaluation WHITE - sat count: 60 times, 2405139.0 microsec, 0 nodes
+evaluation WHITE - restrict: 0 times, 0.0 microsec, 0 nodes
+evaluation BLACK - restrict: 60 times, 1.5874675E7 microsec, -7660652 nodes
+evaluation BLACK - copy win: 60 times, 324.0 microsec, 0 nodes
+evaluation BLACK - sat count: 60 times, 2253521.0 microsec, 0 nodes
+WHITE's situation updated for WHITE's move: 1 times, 255091.0 microsec, -51119 nodes
+BLACK's situation updated for WHITE's move: 1 times, 249521.0 microsec, -21852 nodes
+answering turn took: 5.1378985E7 microsec
+WHITEs turn: 80 - E1
+
+BLACKs turn: :mem
+Used Memory:3353 MB
+Free Memory:723 MB
+Total Memory:4077 MB
+Max Memory:5333 MB
 
