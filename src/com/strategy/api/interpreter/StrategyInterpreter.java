@@ -37,6 +37,7 @@ import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
 import com.strategy.util.operation.Logging;
+import java.lang.Math;
 
 /**
  * @author Ralph Dürig
@@ -415,13 +416,12 @@ public class StrategyInterpreter extends Thread {
 	private void printValue(Situation sit) {
 		Logging l = Logging.create("value computing");
 		double value = l.satCountLog(sit.getWinningCondition());
-		double total = IntMath.pow(2, sit.getWinningCondition().getFactory()
-				.varNum());
-		System.out.println("var num: "
+		double total = Math.pow(2, board.getPositions().size());
+		out.println("var num: "
 				+ sit.getWinningCondition().getFactory().varNum());
-		System.out.println("pos num: " + board.getPositions().size());
+		out.println("pos num: " + board.getPositions().size());
 		out.println("Value " + sit.getStoneColor().name() + ": "
-				+ String.format("%e", value) + " satisfying out of " + total);
+				+ String.format("%e", value) + " satisfying out of " + String.format("%e", total));
 		l.log();
 	}
 

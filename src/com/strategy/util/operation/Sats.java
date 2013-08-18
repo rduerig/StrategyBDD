@@ -18,6 +18,7 @@ public class Sats implements UnaryOp {
 	@Override
 	public double apply(BDD x) {
 		BDD varset = getVarset(x);
+		//return x.satCount(varset);
 		return x.satCount(varset);
 	}
 
