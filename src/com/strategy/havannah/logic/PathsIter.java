@@ -43,6 +43,9 @@ public class PathsIter implements PathCalculator {
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
+		if(p.equals(q)){
+			return fac.one();
+		}
 		Integer indexP = board.getField(p.getRow(), p.getCol()).getIndex();
 		Integer indexQ = board.getField(q.getRow(), q.getCol()).getIndex();
 		int V = board.getRows() * board.getColumns();
@@ -82,54 +85,91 @@ public class PathsIter implements PathCalculator {
 		reachWhite = new BDD[V * V];
 		reachBlack = new BDD[V * V];
 
-		for (int p = 0; p < V; p++) {
-			if (!board.isValidField(p)) {
-				continue;
-			}
-			for (int q = 0; q < V; q++) {
-				if (!board.isValidField(q)) {
-					continue;
-				}
+		//for (int p = 0; p < V; p++) {
+		//	if (!board.isValidField(p)) {
+		//		continue;
+		//	}
+		//	for (int q = 0; q < V; q++) {
+		//		if (!board.isValidField(q)) {
+		//			continue;
+		//		}
 
-				Position posP = board.getField(p).getPosition();
-				Position posQ = board.getField(q).getPosition();
-				if (posP.isNeighbour(posQ)) {
-					reachWhite[V * p + q] = logPandQ.andLog(fac.ithVar(p),
-							fac.ithVar(q));
-					reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
-							fac.nithVar(q));
-				} else {
-					reachWhite[V * p + q] = fac.zero();
-					reachBlack[V * p + q] = fac.zero();
-				}
-			}
-		}
+		//		Position posP = board.getField(p).getPosition();
+		//		Position posQ = board.getField(q).getPosition();
+		//		if (posP.isNeighbour(posQ)) {
+		//			reachWhite[V * p + q] = logPandQ.andLog(fac.ithVar(p),
+		//					fac.ithVar(q));
+		//			reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
+		//					fac.nithVar(q));
+		//		} else {
+		//			reachWhite[V * p + q] = fac.zero();
+		//			reachBlack[V * p + q] = fac.zero();
+		//		}
+		//	}
+		//}
 
 		// printMatrix(reachWhite);
 
 		// reachability matrix with floyd-warshall-algorithm and bdd style also
-		for (int k = 0; k < V; k++) {
-			if (!board.isValidField(k)) {
+		for (int m = 0; m < V; m++) {
+			if (!board.isValidField(m)) {
 				continue;
 			}
 			// Pick all vertices as source one by one
-			for (int i = 0; i < V; i++) {
-				if (!board.isValidField(i) || i == k) {
+			for (int p = 0; p < V; p++) {
+				if (!board.isValidField(p) || p == m) {
 					continue;
 				}
 				// Pick all vertices as destination for the
 				// above picked source
-				for (int j = 0; j < V; j++) {
-					if (!board.isValidField(j) || j == k || j == i) {
+				for (int q = 0; q < V; q++) {
+					if (!board.isValidField(q) || q == m || q == p) {
 						continue;
 					}
 
 					rec++;
 
+					Position posP = board.getField(p).getPosition();
+					Position posQ = board.getField(q).getPosition();
+					Position posM = board.getField(m).getPosition();
+					if(null == reachWhite[V*p+q]){
+					if (posP.isNeighbour(posQ)) {
+						reachWhite[V * p + q] = logPandQ.andLog(fac.ithVar(p),
+								fac.ithVar(q));
+						reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
+								fac.nithVar(q));
+					} else {
+						reachWhite[V * p + q] = fac.zero();
+						reachBlack[V * p + q] = fac.zero();
+					}
+					}
+					if(null == reachWhite[V*p+m]){
+					if (posP.isNeighbour(posM)) {
+						reachWhite[V * p + m] = logPandQ.andLog(fac.ithVar(p),
+								fac.ithVar(m));
+						reachBlack[V * p + m] = logNPandNQ.andLog(fac.nithVar(p),
+								fac.nithVar(m));
+					} else {
+						reachWhite[V * p + m] = fac.zero();
+						reachBlack[V * p + m] = fac.zero();
+					}
+					}
+					if(null == reachWhite[V*m+q]){
+					if (posM.isNeighbour(posQ)) {
+						reachWhite[V * m + q] = logPandQ.andLog(fac.ithVar(m),
+								fac.ithVar(q));
+						reachBlack[V * m + q] = logNPandNQ.andLog(fac.nithVar(m),
+								fac.nithVar(q));
+					} else {
+						reachWhite[V * m + q] = fac.zero();
+						reachBlack[V * m + q] = fac.zero();
+					}
+					}
+
 					// If vertex k is on a path from i to j,
 					// then make sure that the value of reach[i][j] is 1
-					doReach(reachWhite, k, i, j, board);
-					doReach(reachBlack, k, i, j, board);
+					doReach(reachWhite, m, p, q, board);
+					doReach(reachBlack, m, p, q, board);
 
 				}
 			}
