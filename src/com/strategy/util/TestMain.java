@@ -2,6 +2,7 @@ package com.strategy.util;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sf.javabdd.BDD;
@@ -13,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
 import com.strategy.api.logic.BoardAnalyzer;
+import com.strategy.api.logic.Position;
 import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.BoardAnalyzerHavannah;
@@ -31,31 +33,40 @@ public class TestMain {
 
 		// profilingStrategyBdd();
 
-		// Board b = BoardHavannah.createInstance(
-		// PrimitiveBoardProvider.getBoard(SIZE), SIZE);
-		// System.out.println(b.toRowColString());
-		// BoardAnalyzer analyzer = new BoardAnalyzerHavannah(b);
-		// // Situation sit = new SituationHavannah(analyzer, b,
+		Board b = BoardHavannah.createInstance(PrimitiveBoardProvider.getBoard(SIZE), SIZE);
+		System.out.println(b.toRowColString());
+		BoardAnalyzer analyzer = new BoardAnalyzerHavannah(b);
+		
+		 // // Situation sit = new SituationHavannah(analyzer, b,
 		// StoneColor.WHITE);
 		// // BDD path = sit.getWinningCondition();
-		// BDD path = analyzer.getPath(b.getField(1).getPosition(),
-		// b.getField(7)
-		// .getPosition(), StoneColor.WHITE);
-		// System.out.println(b.toIndexString());
+		 
+		Position pos1 = b.getField(1).getPosition();
+		Position pos2 = b.getField(7).getPosition();
+		BDDFactory fac = BddFactoryProvider.getOrCreateBddFactory(b);
+//		fac.setVarOrder(new int[]{3,7,8,5,1,0,2,6,4});
+		fac.setVarOrder(new int[]{0,1,2,3,4,5,6,7,8});
+		System.out.println("computing path from "+pos1+" to "+pos2);
+		BDD path = analyzer.getPath(pos1, pos2, StoneColor.WHITE);
+		path = path.restrictWith(fac.ithVar(1));
+//		fac.reorder(BDDFactory.REORDER_SIFT);
+		path.printDot();
+		 
+		 // System.out.println(b.toIndexString());
 		// // System.out.println(path);
-		// System.out.println("nodes\t\t: " + path.nodeCount());
-		// System.out.println("sat count\t: " + path.satCount());
-		// System.out.println("path count\t: " + path.pathCount());
-		//
+//		 System.out.println("nodes\t\t: " + path.nodeCount());
+//		 System.out.println("sat count\t: " + path.satCount());
+//		 System.out.println("path count\t: " + path.pathCount());
+		 
 		// path.restrictWith(analyzer.getFactory().ithVar(4));
 		// System.out.println("nodes\t\t: " + path.nodeCount());
 		// System.out.println("sat count\t: " + path.satCount());
 		// System.out.println("path count\t: " + path.pathCount());
-		//
-		// analyzer.done();
-		// // PrintStream out = new PrintStream("tmp/win2.dot");
-		// // System.setOut(out);
-		// // path.printDot();
+		 
+		 analyzer.done();
+//		 PrintStream out = new PrintStream("win"+SIZE+"-3.dot");
+//		 System.setOut(out);
+//		 path.printDot();
 
 	}
 
