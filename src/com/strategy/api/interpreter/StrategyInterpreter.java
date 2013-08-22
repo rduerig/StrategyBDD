@@ -19,14 +19,20 @@ import static com.strategy.api.interpreter.InterpreterCommands.CMD_VALUE;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_WHITE;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.math.IntMath;
+import net.sf.javabdd.BDD;
+
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
+import com.strategy.api.logic.Position;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.api.logic.situation.Situation;
@@ -37,6 +43,8 @@ import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
 import com.strategy.util.operation.Logging;
+import com.strategy.util.predicates.EmptyPositionFilter;
+import com.strategy.util.predicates.ValidPositionFilter;
 
 /**
  * @author Ralph Dürig
@@ -173,7 +181,7 @@ public class StrategyInterpreter extends Thread {
 				// out.println("Rating BLACK:");
 				// printEvaluation(p.getEvaluationBlack());
 				out.println("Rating: ");
-				printEvaluation(p.getEvaluation());
+				printEvaluation(p.getEvaluation(cpuColor.getOpposite()));
 				return;
 			}
 
@@ -190,8 +198,8 @@ public class StrategyInterpreter extends Thread {
 			}
 
 			if (CMD_VALUE.equals(line)) {
-				printValue(p.getWhite());
-				printValue(p.getBlack());
+				printValue(p.getWhite(), p.getBlack());
+				// printValue(p.getBlack());
 				return;
 			}
 
@@ -391,10 +399,10 @@ public class StrategyInterpreter extends Thread {
 	}
 
 	private void printEvaluation(Evaluation eval) {
-		out.println(board.toRatingString(eval.getRating(), eval.getMaxIndex()));
-		String coord = RowConstant.parseToCoordString(eval.getMaxIndex(),
+		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
+		String coord = RowConstant.parseToCoordString(eval.getBestIndex(),
 				board.getBoardSize());
-		out.println("Best index: " + eval.getMaxIndex() + " - " + coord);
+		out.println("Best index: " + eval.getBestIndex() + " - " + coord);
 		eval.log();
 	}
 
@@ -414,17 +422,36 @@ public class StrategyInterpreter extends Thread {
 		sit.getWinningCondition().printDot();
 	}
 
-	private void printValue(Situation sit) {
-		Logging l = Logging.create("value computing");
-		double value = l.satCountLog(sit.getWinningCondition());
-		double total = IntMath.pow(2, sit.getWinningCondition().getFactory()
-				.varNum());
-		System.out.println("var num: "
+	private void printValue(Situation sit, Situation sitBlack) {
+		// Logging l = Logging.create("sat count computing");
+		Collection<Position> valid = Collections2.filter(board.getPositions(),
+				new ValidPositionFilter(board));
+		Collection<Position> validEmpty = Collections2.filter(valid,
+				new EmptyPositionFilter(board));
+		ArrayList<Position> filtered = Lists.newArrayList(valid);
+
+		int[] varset = new int[filtered.size()];
+		int count = 0;
+		for (Position p : filtered) {
+			varset[count++] = board.getField(p.getRow(), p.getCol()).getIndex();
+		}
+		BDD v = sit.getWinningCondition().getFactory().makeSet(varset);
+
+		double total = Math.pow(2, filtered.size());
+		double satCountWhite = sit.getWinningCondition().satCount(v);
+		double satCountBlack = sitBlack.getWinningCondition().satCount(v);
+		double value = (satCountWhite - satCountBlack)
+				/ Math.pow(2, filtered.size());
+		out.println("var num: "
 				+ sit.getWinningCondition().getFactory().varNum());
-		System.out.println("pos num: " + board.getPositions().size());
-		out.println("Value " + sit.getStoneColor().name() + ": "
-				+ String.format("%e", value) + " satisfying out of " + total);
-		l.log();
+		out.println("pos num: " + board.getPositions().size());
+		out.println("Sat Count " + sit.getStoneColor().name() + ": "
+				+ String.format("%e", satCountWhite) + " satisfying out of "
+				+ String.format("%e", total));
+		out.println("Sat Count " + sitBlack.getStoneColor().name() + ": "
+				+ String.format("%e", satCountBlack) + " satisfying out of "
+				+ String.format("%e", total));
+		out.println("Value: " + value);
 	}
 
 	private void printSolutions(Situation sit) {

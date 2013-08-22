@@ -102,7 +102,7 @@ public class GtpInterpreter extends Thread {
 	}
 
 	private void pringEvaluation(Evaluation eval) {
-		out.println(board.toRatingString(eval.getRating(), eval.getMaxIndex()));
+		out.println(board.toRatingString(eval.getRating(), eval.getBestIndex()));
 	}
 
 	// private void printUsage() {

@@ -60,8 +60,8 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
-	public Evaluation getEvaluation() {
-		return EvaluationHavannah.create(situationWhite, situationBlack);
+	public Evaluation getEvaluation(StoneColor color) {
+		return EvaluationHavannah.create(situationWhite, situationBlack, color);
 	}
 
 	@Override
@@ -93,12 +93,12 @@ public class PredictionHavannah implements Prediction {
 
 		if (StoneColor.WHITE.equals(colorToUse)) {
 			Evaluation eval = EvaluationHavannah.create(situationWhite,
-					situationBlack);
-			best = eval.getMaxIndex();
+					situationBlack, colorToUse);
+			best = eval.getBestIndex();
 		} else {
-			Evaluation eval = EvaluationHavannah.create(situationBlack,
-					situationWhite);
-			best = eval.getMaxIndex();
+			Evaluation eval = EvaluationHavannah.create(situationWhite,
+					situationBlack, colorToUse);
+			best = eval.getBestIndex();
 		}
 
 		doManualTurn(best, colorToUse);

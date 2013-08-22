@@ -11,7 +11,7 @@ public interface Evaluation {
 
 	double getAverageRating();
 
-	int getMaxIndex();
+	int getBestIndex();
 
 	double[] getRating();
 

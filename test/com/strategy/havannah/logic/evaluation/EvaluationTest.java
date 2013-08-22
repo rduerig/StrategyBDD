@@ -43,13 +43,14 @@ public class EvaluationTest extends AbstractTest {
 				StoneColor.BLACK);
 		// Situation sitOpp = new SituationHavannah(analyzerOpp, analyzer,
 		// board);
-		Evaluation eval = EvaluationHavannah.create(sitWhite, sitBlack);
+		Evaluation eval = EvaluationHavannah.create(sitWhite, sitBlack,
+				StoneColor.WHITE);
 
 		// System.out.println("max: field " + max.getKey() + " with rating "
 		// + max.getValue());
 
 		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getMaxIndex()));
+				eval.getBestIndex()));
 
 		// int expected = 8;
 		// int actual = eval.getBestIndex();
@@ -69,7 +70,8 @@ public class EvaluationTest extends AbstractTest {
 				StoneColor.WHITE);
 		Situation sitBlack = new SituationHavannah(analyzer, board,
 				StoneColor.BLACK);
-		Evaluation eval = EvaluationHavannah.create(sitWhite, sitBlack);
+		Evaluation eval = EvaluationHavannah.create(sitWhite, sitBlack,
+				StoneColor.WHITE);
 		analyzer.done();
 
 		// ConditionCalculator calc = new ForkConditionCalculator(analyzer,
@@ -79,10 +81,10 @@ public class EvaluationTest extends AbstractTest {
 		// Evaluation eval = new EvaluationHavannah(board, result);
 
 		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getMaxIndex()));
+				eval.getBestIndex()));
 
 		int expectedBest = 1;
-		int actualBest = eval.getMaxIndex();
+		int actualBest = eval.getBestIndex();
 		Assert.assertEquals(expectedBest, actualBest);
 
 		sitWhite.update(actualBest, StoneColor.WHITE);
@@ -113,13 +115,14 @@ public class EvaluationTest extends AbstractTest {
 		Situation sitWhite = new SituationHavannah(analyzer, board,
 				StoneColor.WHITE);
 		sit.update(46, StoneColor.WHITE);
-		Evaluation eval = EvaluationHavannah.create(sit, sitWhite);
+		Evaluation eval = EvaluationHavannah.create(sit, sitWhite,
+				StoneColor.BLACK);
 
 		System.out.println(board.toRatingString(eval.getRating(),
-				eval.getMaxIndex()));
+				eval.getBestIndex()));
 
 		int expectedBest = 10;
-		int actualBest = eval.getMaxIndex();
+		int actualBest = eval.getBestIndex();
 		Assert.assertEquals(expectedBest, actualBest);
 	}
 }

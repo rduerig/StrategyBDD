@@ -63,9 +63,10 @@ public interface Prediction extends HasDebugFlag {
 
 	/**
 	 * 
+	 * @param cpuColor
 	 * @return {@link Evaluation} for white's situation
 	 */
-	Evaluation getEvaluation();
+	Evaluation getEvaluation(StoneColor cpuColor);
 
 	/**
 	 * 
