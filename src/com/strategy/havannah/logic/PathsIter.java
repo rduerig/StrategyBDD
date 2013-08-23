@@ -99,8 +99,13 @@ public class PathsIter implements PathCalculator {
 					reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
 							fac.nithVar(q));
 				} else {
-					reachWhite[V * p + q] = fac.zero();
-					reachBlack[V * p + q] = fac.zero();
+					if (posP.equals(posQ)) {
+						reachWhite[V * p + q] = fac.one();
+						reachBlack[V * p + q] = fac.one();
+					} else {
+						reachWhite[V * p + q] = fac.zero();
+						reachBlack[V * p + q] = fac.zero();
+					}
 				}
 			}
 		}
