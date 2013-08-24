@@ -11,10 +11,14 @@ public class EvaluationFormatter {
 	}
 
 	public String format(int index, double value) {
+		// if (index == bestIndex) {
+		// return "[" + String.format("%e", value) + "]";
+		// }
+		// return " " + String.format("%e", value) + " ";
 		if (index == bestIndex) {
-			return "[" + String.format("%e", value) + "]";
+			return "[" + value + "]";
 		}
-		return " " + String.format("%e", value) + " ";
+		return " " + value + " ";
 	}
 
 	public String space() {

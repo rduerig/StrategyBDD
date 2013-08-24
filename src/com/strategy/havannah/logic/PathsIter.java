@@ -43,7 +43,7 @@ public class PathsIter implements PathCalculator {
 	}
 
 	public BDD getPath(Position p, Position q, StoneColor color) {
-		if(p.equals(q)){
+		if (p.equals(q)) {
 			return fac.one();
 		}
 		Integer indexP = board.getField(p.getRow(), p.getCol()).getIndex();
@@ -85,32 +85,38 @@ public class PathsIter implements PathCalculator {
 		reachWhite = new BDD[V * V];
 		reachBlack = new BDD[V * V];
 
-		//for (int p = 0; p < V; p++) {
-		//	if (!board.isValidField(p)) {
-		//		continue;
-		//	}
-		//	for (int q = 0; q < V; q++) {
-		//		if (!board.isValidField(q)) {
-		//			continue;
-		//		}
+		for (int p = 0; p < V; p++) {
+			if (!board.isValidField(p)) {
+				continue;
+			}
+			for (int q = 0; q < V; q++) {
+				if (!board.isValidField(q)) {
+					continue;
+				}
 
-		//		Position posP = board.getField(p).getPosition();
-		//		Position posQ = board.getField(q).getPosition();
-		//		if (posP.isNeighbour(posQ)) {
-		//			reachWhite[V * p + q] = logPandQ.andLog(fac.ithVar(p),
-		//					fac.ithVar(q));
-		//			reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
-		//					fac.nithVar(q));
-		//		} else {
-		//			reachWhite[V * p + q] = fac.zero();
-		//			reachBlack[V * p + q] = fac.zero();
-		//		}
-		//	}
-		//}
+				Position posP = board.getField(p).getPosition();
+				Position posQ = board.getField(q).getPosition();
+				if (posP.isNeighbour(posQ)) {
+					reachWhite[V * p + q] = logPandQ.andLog(fac.ithVar(p),
+							fac.ithVar(q));
+					reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
+							fac.nithVar(q));
+				} else {
+					if (posP.equals(posQ)) {
+						reachWhite[V * p + q] = fac.one();
+						reachBlack[V * p + q] = fac.one();
+					} else {
+						reachWhite[V * p + q] = fac.zero();
+						reachBlack[V * p + q] = fac.zero();
+					}
+				}
+			}
+		}
 
 		// printMatrix(reachWhite);
 
 		// reachability matrix with floyd-warshall-algorithm and bdd style also
+		// adjacency information is generated on the fly
 		for (int m = 0; m < V; m++) {
 			if (!board.isValidField(m)) {
 				continue;
@@ -128,43 +134,6 @@ public class PathsIter implements PathCalculator {
 					}
 
 					rec++;
-
-					Position posP = board.getField(p).getPosition();
-					Position posQ = board.getField(q).getPosition();
-					Position posM = board.getField(m).getPosition();
-					if(null == reachWhite[V*p+q]){
-					if (posP.isNeighbour(posQ)) {
-						reachWhite[V * p + q] = logPandQ.andLog(fac.ithVar(p),
-								fac.ithVar(q));
-						reachBlack[V * p + q] = logNPandNQ.andLog(fac.nithVar(p),
-								fac.nithVar(q));
-					} else {
-						reachWhite[V * p + q] = fac.zero();
-						reachBlack[V * p + q] = fac.zero();
-					}
-					}
-					if(null == reachWhite[V*p+m]){
-					if (posP.isNeighbour(posM)) {
-						reachWhite[V * p + m] = logPandQ.andLog(fac.ithVar(p),
-								fac.ithVar(m));
-						reachBlack[V * p + m] = logNPandNQ.andLog(fac.nithVar(p),
-								fac.nithVar(m));
-					} else {
-						reachWhite[V * p + m] = fac.zero();
-						reachBlack[V * p + m] = fac.zero();
-					}
-					}
-					if(null == reachWhite[V*m+q]){
-					if (posM.isNeighbour(posQ)) {
-						reachWhite[V * m + q] = logPandQ.andLog(fac.ithVar(m),
-								fac.ithVar(q));
-						reachBlack[V * m + q] = logNPandNQ.andLog(fac.nithVar(m),
-								fac.nithVar(q));
-					} else {
-						reachWhite[V * m + q] = fac.zero();
-						reachBlack[V * m + q] = fac.zero();
-					}
-					}
 
 					// If vertex k is on a path from i to j,
 					// then make sure that the value of reach[i][j] is 1

@@ -60,8 +60,11 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
+		Situation sit2 = new SituationHavannah(analyzer, board,
+				StoneColor.WHITE);
 
-		Evaluation eval = EvaluationHavannah.create(sit);
+		Evaluation eval = EvaluationHavannah
+				.create(sit, sit2, StoneColor.BLACK);
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));
@@ -85,8 +88,11 @@ public class RingConditionCalculatorTest extends AbstractTest {
 		BoardAnalyzerHavannah analyzer = new BoardAnalyzerHavannah(board);
 
 		Situation sit = new SituationHavannah(analyzer, board, StoneColor.BLACK);
+		Situation sit2 = new SituationHavannah(analyzer, board,
+				StoneColor.WHITE);
 
-		Evaluation eval = EvaluationHavannah.create(sit);
+		Evaluation eval = EvaluationHavannah
+				.create(sit, sit2, StoneColor.BLACK);
 		System.out.println(board);
 		System.out.println(board.toRatingString(eval.getRating(),
 				eval.getBestIndex()));

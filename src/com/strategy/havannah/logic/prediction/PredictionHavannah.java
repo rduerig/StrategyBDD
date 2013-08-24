@@ -60,13 +60,8 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
-	public Evaluation getEvaluationWhite() {
-		return createEvaluationWhite();
-	}
-
-	@Override
-	public Evaluation getEvaluationBlack() {
-		return createEvaluationBlack();
+	public Evaluation getEvaluation(StoneColor color) {
+		return EvaluationHavannah.create(situationWhite, situationBlack, color);
 	}
 
 	@Override
@@ -94,21 +89,16 @@ public class PredictionHavannah implements Prediction {
 			return null;
 		}
 
-		Evaluation evalWhite = createEvaluationWhite();
-		Evaluation evalBlack = createEvaluationBlack();
+		int best;
 
-		debug(evalWhite, evalBlack);
-
-		double maxWhite = evalWhite.getRating()[evalWhite.getBestIndex()];
-		double maxBlack = evalBlack.getRating()[evalBlack.getBestIndex()];
-
-		Integer best;
 		if (StoneColor.WHITE.equals(colorToUse)) {
-			best = maxWhite >= maxBlack ? evalWhite.getBestIndex() : evalBlack
-					.getBestIndex();
+			Evaluation eval = EvaluationHavannah.create(situationWhite,
+					situationBlack, colorToUse);
+			best = eval.getBestIndex();
 		} else {
-			best = maxBlack >= maxWhite ? evalBlack.getBestIndex() : evalWhite
-					.getBestIndex();
+			Evaluation eval = EvaluationHavannah.create(situationWhite,
+					situationBlack, colorToUse);
+			best = eval.getBestIndex();
 		}
 
 		doManualTurn(best, colorToUse);
@@ -168,16 +158,6 @@ public class PredictionHavannah implements Prediction {
 			}
 		}
 
-	}
-
-	private Evaluation createEvaluationWhite() {
-		Evaluation evalWhite = EvaluationHavannah.create(situationWhite);
-		return evalWhite;
-	}
-
-	private Evaluation createEvaluationBlack() {
-		Evaluation evalBlack = EvaluationHavannah.create(situationBlack);
-		return evalBlack;
 	}
 
 	private void checkVictory() {
