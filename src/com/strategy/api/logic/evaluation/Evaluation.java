@@ -1,6 +1,7 @@
 package com.strategy.api.logic.evaluation;
 
 import com.strategy.api.logic.situation.Situation;
+import com.strategy.util.StoneColor;
 
 /**
  * Evaluates a {@link Situation}.
@@ -14,6 +15,8 @@ public interface Evaluation {
 	int getBestIndex();
 
 	double[] getRating();
+
+	StoneColor getColor();
 
 	void log();
 

@@ -5,6 +5,7 @@ import java.util.List;
 import com.strategy.api.HasDebugFlag;
 import com.strategy.api.logic.evaluation.Evaluation;
 import com.strategy.api.logic.situation.Situation;
+import com.strategy.util.PredictedMove;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
 
@@ -85,5 +86,12 @@ public interface Prediction extends HasDebugFlag {
 	 * @return the current {@link Situation} for color black
 	 */
 	Situation getBlack();
+
+	/**
+	 * 
+	 * @return a list of {@link PredictedMove}s that are predicted for the next
+	 *         best possible moves for the given color
+	 */
+	List<PredictedMove> getPrediction(StoneColor color);
 
 }

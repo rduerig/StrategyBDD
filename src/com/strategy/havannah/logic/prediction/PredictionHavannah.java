@@ -2,6 +2,7 @@ package com.strategy.havannah.logic.prediction;
 
 import static com.strategy.util.Output.print;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -14,6 +15,7 @@ import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.Debug;
+import com.strategy.util.PredictedMove;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
@@ -32,6 +34,7 @@ public class PredictionHavannah implements Prediction {
 	private boolean winBlack = false;
 	private Integer lastTurn = null;
 	private List<Turn> turnsSoFar;
+	private Evaluation eval;
 
 	public PredictionHavannah(Board board) {
 		this.turnsSoFar = Lists.newArrayList();
@@ -61,7 +64,12 @@ public class PredictionHavannah implements Prediction {
 
 	@Override
 	public Evaluation getEvaluation(StoneColor color) {
-		return EvaluationHavannah.create(situationWhite, situationBlack, color);
+		if (null == eval || !eval.getColor().equals(color)) {
+			eval = EvaluationHavannah.create(situationWhite, situationBlack,
+					color);
+		}
+
+		return eval;
 	}
 
 	@Override
@@ -80,6 +88,32 @@ public class PredictionHavannah implements Prediction {
 	}
 
 	@Override
+	public List<PredictedMove> getPrediction(StoneColor color) {
+		int boardSize = situationWhite.getBoard().getBoardSize();
+		double[] rating = getEvaluation(color).getRating();
+
+		List<PredictedMove> result = Lists.newLinkedList();
+		for (int i = 0; i < rating.length; i++) {
+			if (!situationWhite.getBoard().isValidField(i)) {
+				continue;
+			}
+			PredictedMove m = PredictedMove.create(boardSize, i, color,
+					rating[i]);
+			result.add(m);
+		}
+
+		if (StoneColor.WHITE.equals(color)) {
+			// sort from max to min - max is best for white
+			Collections.sort(result, Collections.reverseOrder());
+		} else {
+			// sort from min to max - min is best for black
+			Collections.sort(result);
+		}
+
+		return result;
+	}
+
+	@Override
 	public Integer doCalculatedTurn(StoneColor colorToUse) {
 
 		// has someone already won?
@@ -89,17 +123,9 @@ public class PredictionHavannah implements Prediction {
 			return null;
 		}
 
-		int best;
-
-		if (StoneColor.WHITE.equals(colorToUse)) {
-			Evaluation eval = EvaluationHavannah.create(situationWhite,
-					situationBlack, colorToUse);
-			best = eval.getBestIndex();
-		} else {
-			Evaluation eval = EvaluationHavannah.create(situationWhite,
-					situationBlack, colorToUse);
-			best = eval.getBestIndex();
-		}
+		// Evaluation eval = EvaluationHavannah.create(situationWhite,
+		// situationBlack, colorToUse);
+		int best = getEvaluation(colorToUse).getBestIndex();
 
 		doManualTurn(best, colorToUse);
 
@@ -120,6 +146,7 @@ public class PredictionHavannah implements Prediction {
 		StoneColor playerColor = colorLastSet;
 		situationWhite.update(fieldIndex, playerColor);
 		situationBlack.update(fieldIndex, playerColor);
+		eval = null;
 
 		Board b = situationWhite.getBoard();
 		int bSize = b.getBoardSize();

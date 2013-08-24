@@ -8,6 +8,7 @@ import static com.strategy.api.interpreter.InterpreterCommands.CMD_HELP;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_MEM;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_NODES;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_NUMBERS;
+import static com.strategy.api.interpreter.InterpreterCommands.CMD_PREDICT;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_PREFIX;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_RATING;
 import static com.strategy.api.interpreter.InterpreterCommands.CMD_REDO;
@@ -39,6 +40,7 @@ import com.strategy.api.logic.situation.Situation;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
 import com.strategy.util.Debug;
 import com.strategy.util.FieldGenerator;
+import com.strategy.util.PredictedMove;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
@@ -206,6 +208,11 @@ public class StrategyInterpreter extends Thread {
 			if (CMD_SOLUTIONS.equals(line)) {
 				printSolutions(p.getWhite());
 				printSolutions(p.getBlack());
+				return;
+			}
+
+			if (CMD_PREDICT.equals(line)) {
+				printPrediction(p.getPrediction(cpuColor.getOpposite()));
 				return;
 			}
 
@@ -454,6 +461,13 @@ public class StrategyInterpreter extends Thread {
 		out.println("Value: " + value);
 	}
 
+	private void printPrediction(List<PredictedMove> moves) {
+		out.println("predicted moves:");
+		for (PredictedMove m : moves) {
+			out.println(m);
+		}
+	}
+
 	private void printSolutions(Situation sit) {
 		Logging l = Logging.create("solutions computing");
 		double value = l.pathCountLog(sit.getWinningCondition());
@@ -512,6 +526,9 @@ public class StrategyInterpreter extends Thread {
 		out.println("\t "
 				+ CMD_SOLUTIONS
 				+ " \t prints the solutions (= number of paths to the BDD's true terminal) for the current situation");
+		out.println("\t "
+				+ CMD_PREDICT
+				+ " \t prints the next 5 best moves that are predicted for the current situation");
 		out.println("\t :[NUMBER] \t sets a stone to the field specified by the given number");
 		out.println("\t :[CHARACTER][NUMBER] \t sets a stone to the field specified by the given hgf-coordinate");
 		out.println("\t [NUMBER] \t sets a stone to the field specified by the given number and let the cpu answer");

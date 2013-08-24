@@ -21,5 +21,5 @@ public class InterpreterCommands {
 	static final String CMD_BDD = CMD_PREFIX + "bdd";
 	static final String CMD_VALUE = CMD_PREFIX + "value";
 	static final String CMD_SOLUTIONS = CMD_PREFIX + "solutions";
-
+	static final String CMD_PREDICT = CMD_PREFIX + "predict";
 }

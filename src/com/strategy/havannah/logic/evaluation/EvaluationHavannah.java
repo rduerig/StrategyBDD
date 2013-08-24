@@ -92,6 +92,11 @@ public class EvaluationHavannah implements Evaluation {
 		logSat.log();
 	}
 
+	@Override
+	public StoneColor getColor() {
+		return color;
+	}
+
 	// ************************************************************************
 
 	private void init() {
