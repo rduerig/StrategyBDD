@@ -1,5 +1,6 @@
 package com.strategy.api.logic;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Splitter;
@@ -10,11 +11,11 @@ import com.strategy.api.field.Field;
 import com.strategy.api.logic.prediction.Prediction;
 import com.strategy.havannah.board.BoardHavannah;
 import com.strategy.havannah.logic.prediction.PredictionHavannah;
+import com.strategy.util.PredictedMove;
 import com.strategy.util.PrimitiveBoardProvider;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
 import com.strategy.util.Turn;
-import com.strategy.havannah.logic.PathCalculatorProvider;
 import com.strategy.util.preferences.Preferences;
 
 public class GtpWrapper {
@@ -22,12 +23,15 @@ public class GtpWrapper {
 	private static final Splitter splitter = Splitter.on(" ")
 			.omitEmptyStrings().trimResults();
 
+	public static String SEPARATOR = ",";
+
 	private Board board;
 	private Prediction p;
 
 	public GtpWrapper() {
-		//Preferences.getInstance().setAlg(PathCalculatorProvider.PathCalculatorKey.ITERATIVE);
-		System.out.println("Using Algorithm "+Preferences.getInstance().getAlg());
+		// Preferences.getInstance().setAlg(PathCalculatorProvider.PathCalculatorKey.ITERATIVE);
+		System.out.println("Using Algorithm "
+				+ Preferences.getInstance().getAlg());
 	}
 
 	public void setBoardSize(Integer size) {
@@ -74,6 +78,35 @@ public class GtpWrapper {
 		}
 
 		return "?";
+	}
+
+	public String getPredictedMoves() {
+		if (null == board || null == p) {
+			return "?";
+		}
+
+		List<Turn> turnsSoFar = p.getTurnsSoFar();
+		StoneColor color;
+		if (turnsSoFar.isEmpty()) {
+			color = StoneColor.BLACK;
+		} else {
+			Turn last = Iterables.getLast(turnsSoFar);
+			color = last.getColor().getOpposite();
+		}
+
+		List<PredictedMove> prediction = p.getPrediction(color);
+		StringBuilder sb = new StringBuilder();
+		Iterator<PredictedMove> it = prediction.iterator();
+		while (it.hasNext()) {
+			PredictedMove next = it.next();
+			sb.append(next.getTurn().getCoord());
+			sb.append(next.getTurn().getCoordNumber());
+			if (it.hasNext()) {
+				sb.append(SEPARATOR);
+			}
+		}
+
+		return sb.toString();
 	}
 
 	// ************************************************************************
