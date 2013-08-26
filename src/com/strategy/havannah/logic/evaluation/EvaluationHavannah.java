@@ -56,12 +56,12 @@ public class EvaluationHavannah implements Evaluation {
 		this.color = color;
 		avg = 0d;
 		best = 0;
-		logRestrictWhite = Logging.create("evaluation " + StoneColor.WHITE
+		logRestrictWhite = Logging.create("evaluation: " + StoneColor.WHITE
 				+ " - restrict");
-		logRestrictBlack = Logging.create("evaluation " + StoneColor.BLACK
+		logRestrictBlack = Logging.create("evaluation: " + StoneColor.BLACK
 				+ " - restrict");
-		logId = Logging.create("evaluation " + color + " - copy win");
-		logSat = Logging.create("evaluation " + color + " - sat count");
+		logId = Logging.create("evaluation: " + color + " - copy win");
+		logSat = Logging.create("evaluation: " + color + " - sat count");
 
 		String caption = "prediction for " + color;
 		Debug initlog = Debug.create(caption);
@@ -125,10 +125,10 @@ public class EvaluationHavannah implements Evaluation {
 			if (StoneColor.WHITE.equals(color)) {
 				bddWin = logRestrictWhite.restrictLog(bddWin,
 						fac.ithVar(field.getIndex()));
-				bddWinBlack = logRestrictWhite.restrictLog(bddWinBlack,
+				bddWinBlack = logRestrictBlack.restrictLog(bddWinBlack,
 						fac.ithVar(field.getIndex()));
 			} else {
-				bddWin = logRestrictBlack.restrictLog(bddWin,
+				bddWin = logRestrictWhite.restrictLog(bddWin,
 						fac.nithVar(field.getIndex()));
 				bddWinBlack = logRestrictBlack.restrictLog(bddWinBlack,
 						fac.nithVar(field.getIndex()));

@@ -187,7 +187,6 @@ public class PathsRec implements PathCalculator {
 				pq = cache.restore(color, p, q, i - 1);
 			}
 
-			BDD pmAndmq = fac.zero();
 			// Set<Position> special = distance
 			// .get(com.strategy.api.logic.BddCache.BddCacheIndex
 			// .getIndex(StoneColor.EMPTY, p, q, i - 1));
@@ -218,14 +217,13 @@ public class PathsRec implements PathCalculator {
 					mq = cache.restore(color, m, q, i - 1);
 				}
 				// pmAndmq = pmAndmq.orWith(pm.andWith(mq));
-				pmAndmq = logPMMQ.orLog(pmAndmq, logPMandMQ.andLog(pm, mq));
+				pq = logPQorPMMQ.orLog(pq, logPMandMQ.andLog(pm, mq));
 			}
 			// }
 
-			BDD result = logPQorPMMQ.orLog(pq, pmAndmq);
 			// return result;
-			cache.store(color, p, q, i, result);
-			result.free();
+			cache.store(color, p, q, i, pq);
+			pq.free();
 		}
 
 		return cache.restore(color, p, q, i);
