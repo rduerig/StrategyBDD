@@ -4,6 +4,7 @@ import static com.strategy.util.Output.print;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 import com.strategy.api.board.Board;
@@ -15,6 +16,7 @@ import com.strategy.havannah.logic.BoardAnalyzerHavannah;
 import com.strategy.havannah.logic.evaluation.EvaluationHavannah;
 import com.strategy.havannah.logic.situation.SituationHavannah;
 import com.strategy.util.Debug;
+import com.strategy.util.FirstMoveProvider;
 import com.strategy.util.PredictedMove;
 import com.strategy.util.RowConstant;
 import com.strategy.util.StoneColor;
@@ -115,6 +117,17 @@ public class PredictionHavannah implements Prediction {
 
 	@Override
 	public Integer doCalculatedTurn(StoneColor colorToUse) {
+
+		if (turnsSoFar.isEmpty()) {
+			// make a move that doesn't get swapped
+			int[] moves = FirstMoveProvider.getMoves(situationWhite.getBoard()
+					.getBoardSize());
+			if (null != moves) {
+				Random r = new Random();
+				int index = r.nextInt(moves.length);
+				return moves[index];
+			}
+		}
 
 		// has someone already won?
 		checkVictory();
