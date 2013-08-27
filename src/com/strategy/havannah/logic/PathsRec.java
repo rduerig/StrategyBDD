@@ -8,6 +8,7 @@ import java.util.Set;
 import net.sf.javabdd.BDD;
 import net.sf.javabdd.BDDFactory;
 
+import com.google.common.collect.Collections2;
 import com.google.common.math.IntMath;
 import com.strategy.api.board.Board;
 import com.strategy.api.field.Field;
@@ -18,6 +19,7 @@ import com.strategy.util.ColorDependingBDDFieldVisitor;
 import com.strategy.util.Debug;
 import com.strategy.util.StoneColor;
 import com.strategy.util.operation.Logging;
+import com.strategy.util.predicates.ValidPositionFilter;
 import com.strategy.util.preferences.Preferences;
 
 /**
@@ -51,8 +53,9 @@ public class PathsRec implements PathCalculator {
 		// .println("all cells: " + board.getColumns() * board.getRows());
 		// System.out.println("legal cells: " + board.getPositions().size());
 
-		this.pathLength = IntMath.log2(board.getPositions().size(),
-				RoundingMode.HALF_UP);
+		Collection<Position> valid = Collections2.filter(board.getPositions(),
+				new ValidPositionFilter(board));
+		this.pathLength = IntMath.log2(valid.size(), RoundingMode.HALF_UP);
 		// this.pathLength = 1;
 		this.rec = 0;
 		// System.out.println("starting distance calculation");
