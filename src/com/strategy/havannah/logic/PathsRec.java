@@ -32,7 +32,6 @@ public class PathsRec implements PathCalculator {
 	private Logging logNPandNQ = Logging.create("not p and not q");
 	private Logging logPMandMQ = Logging.create("pm and mq");
 	private Logging logPQorPMMQ = Logging.create("pq or (pm and mq)");
-	private Logging logPMMQ = Logging.create("or pm and mq");
 
 	private int pathLength;
 	private int rec;
@@ -121,7 +120,6 @@ public class PathsRec implements PathCalculator {
 		logNPandNQ.log();
 		logPMandMQ.log();
 		logPQorPMMQ.log();
-		logPMMQ.log();
 	}
 
 	public void done() {
