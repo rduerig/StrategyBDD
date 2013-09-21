@@ -104,16 +104,16 @@ public class EvaluationHavannah implements Evaluation {
 				new ValidPositionFilter(board));
 		Collection<Position> validEmpty = Collections2.filter(valid,
 				new EmptyPositionFilter(board));
-		ArrayList<Position> filtered = Lists.newArrayList(valid);
+		ArrayList<Position> filtered = Lists.newArrayList(validEmpty);
 		BDDFactory fac = win.getFactory();
 		rating = new double[board.getRows() * board.getColumns()];
 		double sum = 0d;
 		double maxValue = -1d;
 		double minValue = 1d;
 
-		int[] varset = new int[filtered.size()];
+		int[] varset = new int[valid.size()];
 		int count = 0;
-		for (Position p : filtered) {
+		for (Position p : valid) {
 			varset[count++] = board.getField(p.getRow(), p.getCol()).getIndex();
 		}
 		BDD v = win.getFactory().makeSet(varset);
@@ -138,7 +138,7 @@ public class EvaluationHavannah implements Evaluation {
 			// double valuation = Valuation.compute(bddWin, bddWinBlack,
 			// filtered.size());
 			double valuation = (bddWin.satCount(v) - bddWinBlack.satCount(v))
-					/ Math.pow(2, filtered.size());
+					/ Math.pow(2, valid.size());
 			rating[field.getIndex()] = valuation;
 			sum += valuation;
 			if (StoneColor.WHITE.equals(color)) {
